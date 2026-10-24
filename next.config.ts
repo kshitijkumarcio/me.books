@@ -1,7 +1,19 @@
+// Repo: me.books
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  basePath: "/books",
+  assetPrefix: "/books-static",
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: "/books-static/_next/:path+",
+          destination: "/_next/:path+",
+        },
+      ],
+    };
+  },
   cacheComponents: true,
   partialPrefetching: true,
   reactCompiler: true,
