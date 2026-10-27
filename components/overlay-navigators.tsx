@@ -1,66 +1,45 @@
 "use client";
 
+// global imports
 import { useState } from "react";
-import { motion } from "motion/react";
-import { easing016 } from "@/constants";
-import { useOverlayButtons } from "@/hooks/layout-hooks/useoverlaybuttons";
+import { motion, type Transition } from "motion/react";
+
+// local imports
 import { cn } from "@/lib/utils";
+import { dotRows, dotVariants, easing016 } from "@/constants";
 import FlipTextButton from "./ui-components/flip-text-button";
+import { useOverlayButtons } from "@/hooks/layout-hooks/useoverlaybuttons";
+import { useMediaQuery } from "@/hooks/ui-hooks/use-media-query";
 
-// 9 dots morphing between a 3x3 grid (9 dots) and a 7-dot flower/hexagon (1 center + 6 outer dots, 2 hidden)
-const dotVariants = [
-  // Row 0
-  {
-    grid: { x: 0, y: 0, scale: 1, opacity: 1 },
-    moodboard: { x: 1, y: 4, scale: 1, opacity: 1 },
-  },
-  {
-    grid: { x: 0, y: 0, scale: 1, opacity: 1 },
-    moodboard: { x: 0, y: 0, scale: 1, opacity: 1 },
-  },
-  {
-    grid: { x: 0, y: 0, scale: 1, opacity: 1 },
-    moodboard: { x: -1, y: 4, scale: 1, opacity: 1 },
-  },
-
-  // Row 1
-  {
-    grid: { x: 0, y: 0, scale: 1, opacity: 1 },
-    moodboard: { scale: 0, opacity: 0 },
-  },
-  {
-    grid: { x: 0, y: 0, scale: 1, opacity: 1 },
-    moodboard: { x: 0, y: 0, scale: 1, opacity: 1 },
-  },
-  {
-    grid: { x: 0, y: 0, scale: 1, opacity: 1 },
-    moodboard: { scale: 0, opacity: 0 },
-  },
-
-  // Row 2
-  {
-    grid: { x: 0, y: 0, scale: 1, opacity: 1 },
-    moodboard: { x: 1, y: -4, scale: 1, opacity: 1 },
-  },
-  {
-    grid: { x: 0, y: 0, scale: 1, opacity: 1 },
-    moodboard: { x: 0, y: 0, scale: 1, opacity: 1 },
-  },
-  {
-    grid: { x: 0, y: 0, scale: 1, opacity: 1 },
-    moodboard: { x: -1, y: -4, scale: 1, opacity: 1 },
-  },
-];
-
-const dotRows = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-];
+const ViewDotsIcon = ({
+  pattern,
+  transition,
+}: {
+  pattern: "moodboard" | "grid";
+  transition: Transition;
+}) => (
+  <div className="flex flex-col gap-y-1">
+    {dotRows.map((row, rowIdx) => (
+      <div key={rowIdx} className="flex gap-x-1">
+        {row.map((dotIdx) => (
+          <motion.div
+            key={dotIdx}
+            variants={dotVariants[dotIdx]}
+            animate={pattern}
+            initial={pattern}
+            transition={transition}
+            className="aspect-square h-1 rounded-full bg-black"
+          />
+        ))}
+      </div>
+    ))}
+  </div>
+);
 
 const OverlayNavigators = () => {
   const { toggleAbout, toggleUseCase, pageView, setPageView } =
     useOverlayButtons();
+  const isThinnerThanLg = useMediaQuery("(max-width: 1023px)");
 
   const [isMoodboardHovered, setIsMoodboardHovered] = useState<boolean>(false);
   const [isMoodboardClickLocked, setIsMoodboardClickLocked] =
@@ -76,19 +55,19 @@ const OverlayNavigators = () => {
     pageView === "moodboard" ? !effectiveHovered : effectiveHovered;
   const currentPattern = isShowingMoodboard ? "moodboard" : "grid";
 
-  const dotTransition = {
-    duration: isMoodboardClickLocked ? 0 : 0.5,
+  const dotTransition: Transition = {
+    duration: isMoodboardClickLocked ? 0 : 0.8,
     ease: easing016,
   };
 
   return (
     <div className="fixed top-0 left-0 z-999 flex h-screen w-full flex-col justify-between px-6 pt-4 pb-9.5">
       {/* top bar */}
-      <div className="flex items-baseline-last justify-between">
+      <div className="flex items-center justify-between">
         <div className="">
           <p className="font-mona-sans text-[20px] font-bold">Kshelf.</p>
         </div>
-        <div className="flex gap-x-6">
+        <div className="hidden gap-x-6 lg:flex">
           <div onClick={() => toggleAbout()} className={cn("cursor-pointer")}>
             <FlipTextButton>
               <p
@@ -112,6 +91,16 @@ const OverlayNavigators = () => {
             </FlipTextButton>
           </div>
         </div>
+
+        {/* mobile dot pattern button (without text) */}
+        <div
+          onClick={() => {
+            setPageView(pageView === "moodboard" ? "index" : "moodboard");
+          }}
+          className="flex aspect-square h-10 cursor-pointer items-center justify-center rounded-sm border border-black bg-white lg:hidden"
+        >
+          <ViewDotsIcon pattern={currentPattern} transition={dotTransition} />
+        </div>
       </div>
 
       <div
@@ -127,27 +116,12 @@ const OverlayNavigators = () => {
           setIsMoodboardClickLocked(true);
           setPageView(pageView === "moodboard" ? "index" : "moodboard");
         }}
-        className="group/vb absolute top-10 left-1/2 flex -translate-x-1/2 cursor-pointer items-center justify-center gap-x-1"
+        className="group/vb absolute top-10 left-1/2 hidden -translate-x-1/2 cursor-pointer items-center justify-center gap-x-1 lg:flex"
       >
-        <div className="flex aspect-square h-11 items-center justify-center rounded-sm border border-black bg-white">
-          <div className="flex flex-col gap-y-1">
-            {dotRows.map((row, rowIdx) => (
-              <div key={rowIdx} className="flex gap-x-1">
-                {row.map((dotIdx) => (
-                  <motion.div
-                    key={dotIdx}
-                    variants={dotVariants[dotIdx]}
-                    animate={currentPattern}
-                    initial={currentPattern}
-                    transition={dotTransition}
-                    className="aspect-square h-1 rounded-full bg-black"
-                  />
-                ))}
-              </div>
-            ))}
-          </div>
+        <div className="flex aspect-square h-10 items-center justify-center rounded-sm border border-black bg-white">
+          <ViewDotsIcon pattern={currentPattern} transition={dotTransition} />
         </div>
-        <div className="flex h-11 min-w-28 items-center justify-center rounded-sm border border-black bg-white px-4">
+        <div className="flex h-10 min-w-40 items-center justify-center rounded-sm border border-black bg-white px-4">
           <FlipTextButton
             isHovered={effectiveHovered}
             hoverText={
@@ -165,7 +139,7 @@ const OverlayNavigators = () => {
       <div className="flex items-center justify-center gap-x-3">
         {/* first button */}
         <div className="group/nb flex cursor-pointer gap-x-1">
-          <div className="flex aspect-square w-11 flex-col items-center justify-center gap-y-[2.5px] rounded-sm bg-black">
+          <div className="flex aspect-square w-10 flex-col items-center justify-center gap-y-[2.5px] rounded-sm bg-black">
             <div className="h-[1.5px] w-4 bg-white"></div>
             <div
               className={cn(
@@ -175,10 +149,10 @@ const OverlayNavigators = () => {
             ></div>
             <div className="h-[1.5px] w-4 bg-white"></div>
           </div>
-          <div className="flex items-center justify-center rounded-sm bg-black px-4">
+          <div className="flex h-10 items-center justify-center rounded-sm bg-black px-4">
             <FlipTextButton>
               <p className="font-mona-sans text-[14px] font-semibold text-white">
-                chapters
+                {isThinnerThanLg ? "navigate" : "chapters"}
               </p>
             </FlipTextButton>
           </div>
@@ -186,7 +160,7 @@ const OverlayNavigators = () => {
 
         {/* second button */}
         <div className="group/fb flex cursor-pointer gap-x-1">
-          <div className="flex aspect-square w-11 flex-col items-center justify-center gap-y-1.25 rounded-sm border border-black bg-white">
+          <div className="flex aspect-square w-10 flex-col items-center justify-center gap-y-1.25 rounded-sm border border-black bg-white">
             <div className="relative h-0.5 w-5 bg-black">
               <div
                 className={cn(
@@ -215,10 +189,10 @@ const OverlayNavigators = () => {
               />
             </div>
           </div>
-          <div className="flex items-center justify-center rounded-sm border border-black bg-white px-4">
+          <div className="flex h-10 items-center justify-center rounded-sm border border-black bg-white px-4">
             <FlipTextButton>
               <p className="font-mona-sans text-[14px] font-semibold text-black">
-                curate
+                {isThinnerThanLg ? "filter" : "curate"}
               </p>
             </FlipTextButton>
           </div>

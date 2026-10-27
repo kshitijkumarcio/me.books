@@ -9,3 +9,54 @@ export const linkUnderlineAfterBlack =
   'after:absolute after:content-[" "] after:left-0 after:-bottom-[1px] after:block after:w-full after:h-[1px] after:bg-black after:duration-1000 after:transition-all after:cubic-bezier(0.19, 1, 0.22, 1) after:origin-right after:delay-300 hover:after:scale-x-0 hover:after:delay-0';
 
 export const easing016: Easing = [0.16, 1, 0.3, 1];
+
+// 9 dots morphing between a 3x3 grid (9 dots) and a 7-dot flower/hexagon (1 center + 6 outer dots, 2 hidden)
+export const dotVariants = [
+  // Row 0
+  {
+    grid: { x: 0, y: 0, scale: 1, opacity: 1 },
+    moodboard: { x: 1, y: 4, scale: 1, opacity: 1 },
+  },
+  {
+    grid: { x: 0, y: 0, scale: 1, opacity: 1 },
+    moodboard: { x: 0, y: 0, scale: 1, opacity: 1 },
+  },
+  {
+    grid: { x: 0, y: 0, scale: 1, opacity: 1 },
+    moodboard: { x: -1, y: 4, scale: 1, opacity: 1 },
+  },
+
+  // Row 1
+  {
+    grid: { x: 0, y: 0, scale: 1, opacity: 1 },
+    moodboard: { scale: 0, opacity: 0 },
+  },
+  {
+    grid: { x: 0, y: 0, scale: 1, opacity: 1 },
+    moodboard: { x: 0, y: 0, scale: 1, opacity: 1 },
+  },
+  {
+    grid: { x: 0, y: 0, scale: 1, opacity: 1 },
+    moodboard: { scale: 0, opacity: 0 },
+  },
+
+  // Row 2
+  {
+    grid: { x: 0, y: 0, scale: 1, opacity: 1 },
+    moodboard: { x: 1, y: -4, scale: 1, opacity: 1 },
+  },
+  {
+    grid: { x: 0, y: 0, scale: 1, opacity: 1 },
+    moodboard: { x: 0, y: 0, scale: 1, opacity: 1 },
+  },
+  {
+    grid: { x: 0, y: 0, scale: 1, opacity: 1 },
+    moodboard: { x: -1, y: -4, scale: 1, opacity: 1 },
+  },
+];
+
+export const dotRows = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+];

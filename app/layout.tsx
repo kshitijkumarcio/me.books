@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "./", // Automatically resolves to https://kshitijkumar.me/book-shelf/[current-path]
   },
-  title: "Kshelf | kshitijkumar.me",
+  title: "Books Shelf | kshitijkumar.me",
   description: "A curated collection of books I love.",
 };
 
