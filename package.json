@@ -4,14 +4,24 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:c": "rm -rf .next && next dev",
+    "convex:dev": "convex dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "bun ./scripts/lint.mjs",
+    "lint:fix": "eslint --fix",
+    "format": "prettier --write ."
   },
   "dependencies": {
+    "clsx": "^2.1.1",
+    "motion": "^14.7.1",
     "next": "16.4.3",
+    "prettier": "^3.9.10",
+    "prettier-plugin-tailwindcss": "^0.8.1",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "tailwind-merge": "^3.7.0",
+    "zustand": "^5.0.16"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",

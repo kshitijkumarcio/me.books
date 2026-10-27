@@ -2,13 +2,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  basePath: "/books",
-  assetPrefix: "/books-static",
+  basePath: "/book-shelf",
+  assetPrefix: "/book-shelf-static",
   async rewrites() {
     return {
       beforeFiles: [
         {
-          source: "/books-static/_next/:path+",
+          source: "/book-shelf-static/_next/:path+",
           destination: "/_next/:path+",
         },
       ],
