@@ -1,9 +1,90 @@
 @import "tailwindcss";
 /* @import "lenis/dist/lenis.css"; */
 
+:root {
+  --cell-size: 40px;
+
+  @media (min-width: 768px) {
+    --cell-size: 72px;
+  }
+}
+
 @theme inline {
   --font-mona-sans: var(--font-mona-sans);
   --color-neon: #d9ff36;
+  --shadow-book:
+    0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.06),
+    8px 8px 8px rgba(0, 0, 0, 0.1), 8px 8px 8px rgba(0, 0, 0, 0.14),
+    8px 16px 8px rgba(0, 0, 0, 0.16);
+
+  --spacing-cell: var(--cell-size);
+}
+
+@utility top-cell-* {
+  top: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility bottom-cell-* {
+  bottom: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility left-cell-* {
+  left: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility right-cell-* {
+  right: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility inset-cell-* {
+  inset: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility w-cell-* {
+  width: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility h-cell-* {
+  height: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility p-cell-* {
+  padding: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility px-cell-* {
+  padding-inline: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility py-cell-* {
+  padding-block: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility pt-cell-* {
+  padding-top: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility pb-cell-* {
+  padding-bottom: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility pl-cell-* {
+  padding-left: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility pr-cell-* {
+  padding-right: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility m-cell-* {
+  margin: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility mx-cell-* {
+  margin-inline: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility my-cell-* {
+  margin-block: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility mt-cell-* {
+  margin-top: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility mb-cell-* {
+  margin-bottom: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility ml-cell-* {
+  margin-left: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility mr-cell-* {
+  margin-right: calc(var(--cell-size) * --value(number, [*]));
+}
+@utility gap-cell-* {
+  gap: calc(var(--cell-size) * --value(number, [*]));
 }
 
 @layer base {
@@ -26,7 +107,7 @@
     background-color: white;
 
     /* 1. We keep the same SVG pattern */
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 60 0 L 0 0 0 60' fill='none' stroke='black' stroke-opacity='0.5' stroke-width='1' stroke-dasharray='4 4'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23grid)'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='72' height='72' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='72' height='72' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 72 0 L 0 0 0 72' fill='none' stroke='black' stroke-opacity='0.75' stroke-width='1' stroke-dasharray='8 8'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23grid)'/%3E%3C/svg%3E");
 
     /* 2. THE MAGIC FIX: 'round' scales the tile to fit perfectly */
     background-repeat: round;
@@ -35,11 +116,7 @@
        The browser will adjust this automatically to fit the screen. 
        e.g., it might become 82px or 78px to prevent cut-offs.
     */
-    background-size: 40px 40px;
-
-    @media (min-width: 768px) {
-      background-size: 60px 60px;
-    }
+    background-size: var(--cell-size) var(--cell-size);
   }
 
   .no-scrollbar,

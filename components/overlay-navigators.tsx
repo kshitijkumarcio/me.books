@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { dotRows, dotVariants, easing016 } from "@/constants";
 import FlipTextButton from "./ui-components/flip-text-button";
 import { useOverlayButtons } from "@/hooks/layout-hooks/useoverlaybuttons";
+import { useCanvasNavigation, CANVAS_ZONES } from "@/hooks/layout-hooks/usecanvasnavigation";
 
 const ViewDotsIcon = ({
   pattern,
@@ -38,6 +39,13 @@ const ViewDotsIcon = ({
 const OverlayNavigators = () => {
   const { toggleAbout, toggleUseCase, pageView, setPageView } =
     useOverlayButtons();
+  const {
+    isChaptersMenuOpen,
+    toggleChaptersMenu,
+    closeChaptersMenu,
+    goToZone,
+    activeZoneId,
+  } = useCanvasNavigation();
 
   const [isMoodboardHovered, setIsMoodboardHovered] = useState<boolean>(false);
   const [isMoodboardClickLocked, setIsMoodboardClickLocked] =
@@ -59,7 +67,7 @@ const OverlayNavigators = () => {
   };
 
   return (
-    <div className="pointer-events-none fixed top-0 left-0 z-999 flex h-dvh w-full flex-col justify-between px-4 pt-4 pb-10 select-none lg:px-6">
+    <div className="pointer-events-none fixed top-0 left-0 z-999 flex h-dvh w-full flex-col justify-between px-4 pt-4 pb-10 lg:px-6">
       {/* top bar */}
       <div className="flex items-center justify-between">
         <div className="">
@@ -134,9 +142,64 @@ const OverlayNavigators = () => {
       </div>
 
       {/* bottom buttons */}
-      <div className="flex items-center justify-center gap-x-3">
+      <div className="relative flex items-center justify-center gap-x-3">
+        {/* Chapters Dropdown Popup */}
+        {isChaptersMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="pointer-events-auto absolute bottom-14 mb-2 flex flex-col gap-1 rounded-md border border-black bg-white p-2 shadow-2xl min-w-64 z-50"
+          >
+            <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-neutral-400">
+              Jump to Chapter
+            </div>
+            {CANVAS_ZONES.map((zone) => {
+              const isActive = activeZoneId === zone.id;
+              return (
+                <button
+                  key={zone.id}
+                  onClick={() => goToZone(zone.id)}
+                  className={cn(
+                    "flex items-center gap-3 rounded px-2.5 py-2 text-left transition-colors cursor-pointer",
+                    isActive
+                      ? "bg-black text-white"
+                      : "hover:bg-neutral-100 text-neutral-900"
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "font-mono text-[11px] font-bold flex h-5 w-5 items-center justify-center rounded-xs",
+                      isActive ? "bg-white text-black" : "bg-neutral-200 text-neutral-700"
+                    )}
+                  >
+                    {zone.number}
+                  </span>
+                  <div>
+                    <p className="font-mona-sans text-[13px] font-semibold leading-tight">
+                      {zone.title}
+                    </p>
+                    <p
+                      className={cn(
+                        "font-mona-sans text-[10px]",
+                        isActive ? "text-neutral-300" : "text-neutral-500"
+                      )}
+                    >
+                      {zone.subtitle}
+                    </p>
+                  </div>
+                </button>
+              );
+            })}
+          </motion.div>
+        )}
+
         {/* first button */}
-        <div className="group/nb pointer-events-auto flex cursor-pointer gap-x-1">
+        <div
+          onClick={toggleChaptersMenu}
+          className="group/nb pointer-events-auto flex cursor-pointer gap-x-1"
+        >
           <div className="flex aspect-square w-10 flex-col items-center justify-center gap-y-[2.5px] rounded-sm bg-black">
             <div className="h-[1.5px] w-4 bg-white"></div>
             <div

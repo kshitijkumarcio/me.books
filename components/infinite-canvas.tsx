@@ -42,7 +42,7 @@ export const CANVAS_PHYSICS = {
 
   /** Elastic rubber-band resistance at canvas edges (0 = hard stop, 0.35 = iOS bounce) */
   elasticResistance: 0.25,
-  maxElasticPx: 20,
+  maxElasticPx: 8,
 };
 
 export interface InfiniteCanvasProps {
@@ -52,6 +52,7 @@ export interface InfiniteCanvasProps {
   initialCenter?: boolean;
   /** Optional overrides if you ever want a specific page to deviate from CANVAS_PHYSICS */
   physicsOverride?: Partial<typeof CANVAS_PHYSICS>;
+  onPanToReady?: (panTo: (x: number, y: number) => void) => void;
 }
 
 const InfiniteCanvas = ({
@@ -60,6 +61,7 @@ const InfiniteCanvas = ({
   contentClassName,
   initialCenter = true,
   physicsOverride,
+  onPanToReady,
 }: InfiniteCanvasProps) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -176,6 +178,13 @@ const InfiniteCanvas = ({
       syncTouch: false,
       autoRaf: false,
       wheelMultiplier: cfg.wheelMultiplier,
+      virtualScroll: (data: { event: Event }) => {
+        // Prevent Lenis's stopPropagation check from swallowing the event for the
+        // sibling axis. On non-window wrappers, Lenis sets `event.lenisStopPropagation = true`,
+        // which completely blocks the second Lenis instance from processing diagonal trackpad/wheel gestures.
+        (data.event as unknown as { lenisStopPropagation?: boolean }).lenisStopPropagation = false;
+        return true;
+      },
       ...scrollAnimOptions,
     };
 
@@ -193,6 +202,9 @@ const InfiniteCanvas = ({
 
     lenisXRef.current = lenisX;
     lenisYRef.current = lenisY;
+
+    // Expose panTo to parent or canvas navigation store
+    onPanToReady?.(panTo);
 
     // 3. Unified Ticker: Lenis ALWAYS runs and interpolates both wheel & drag!
     const update = (time: number, deltaTime: number) => {
@@ -375,7 +387,7 @@ const InfiniteCanvas = ({
       onPointerCancel={handlePointerUp}
       onClickCapture={handleClickCapture}
       className={cn(
-        "no-scrollbar fixed inset-0 h-screen w-screen cursor-grab overflow-scroll overscroll-none select-none",
+        "no-scrollbar fixed inset-0 h-screen w-screen cursor-grab overflow-scroll overscroll-none touch-none",
         wrapperClassName
       )}
     >

@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${monaSans.variable} no-scrollbar antialiased`}>
-      <body className="no-scrollbar selection:bg-neon/80 min-h-screen selection:text-black">
+      <body className="no-scrollbar selection:bg-neon/80 bg-neon/80 min-h-screen selection:text-black">
         <OverlayNavigators />
         {children}
       </body>
