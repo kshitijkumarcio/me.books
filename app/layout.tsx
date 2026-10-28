@@ -11,17 +11,14 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "./", // Automatically resolves to https://kshitijkumar.me/book-shelf/[current-path]
   },
-  title: "Books Shelf | kshitijkumar.me",
+  title: "Book Shelf | kshitijkumar.me",
   description: "A curated collection of books I love.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${monaSans.variable} mx-auto h-full max-w-[1920px] antialiased`}
-    >
-      <body className="flex min-h-full flex-col">
+    <html lang="en" className={`${monaSans.variable} no-scrollbar antialiased`}>
+      <body className="no-scrollbar selection:bg-neon/80 min-h-screen selection:text-black">
         <OverlayNavigators />
         {children}
       </body>

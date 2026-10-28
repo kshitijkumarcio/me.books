@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 import { dotRows, dotVariants, easing016 } from "@/constants";
 import FlipTextButton from "./ui-components/flip-text-button";
 import { useOverlayButtons } from "@/hooks/layout-hooks/useoverlaybuttons";
-import { useMediaQuery } from "@/hooks/ui-hooks/use-media-query";
 
 const ViewDotsIcon = ({
   pattern,
@@ -39,7 +38,6 @@ const ViewDotsIcon = ({
 const OverlayNavigators = () => {
   const { toggleAbout, toggleUseCase, pageView, setPageView } =
     useOverlayButtons();
-  const isThinnerThanLg = useMediaQuery("(max-width: 1023px)");
 
   const [isMoodboardHovered, setIsMoodboardHovered] = useState<boolean>(false);
   const [isMoodboardClickLocked, setIsMoodboardClickLocked] =
@@ -61,13 +59,13 @@ const OverlayNavigators = () => {
   };
 
   return (
-    <div className="fixed top-0 left-0 z-999 flex h-dvh w-full flex-col justify-between lg:px-6 px-4 pt-4 pb-10">
+    <div className="pointer-events-none fixed top-0 left-0 z-999 flex h-dvh w-full flex-col justify-between px-4 pt-4 pb-10 select-none lg:px-6">
       {/* top bar */}
       <div className="flex items-center justify-between">
         <div className="">
           <p className="font-mona-sans text-[20px] font-bold">Kshelf.</p>
         </div>
-        <div className="hidden gap-x-6 lg:flex">
+        <div className="pointer-events-auto hidden gap-x-6 lg:flex">
           <div onClick={() => toggleAbout()} className={cn("cursor-pointer")}>
             <FlipTextButton>
               <p
@@ -97,7 +95,7 @@ const OverlayNavigators = () => {
           onClick={() => {
             setPageView(pageView === "moodboard" ? "index" : "moodboard");
           }}
-          className="flex aspect-square h-10 cursor-pointer items-center justify-center rounded-sm border border-black bg-white lg:hidden"
+          className="pointer-events-auto flex aspect-square h-10 cursor-pointer items-center justify-center rounded-sm border border-black bg-white lg:hidden"
         >
           <ViewDotsIcon pattern={currentPattern} transition={dotTransition} />
         </div>
@@ -116,7 +114,7 @@ const OverlayNavigators = () => {
           setIsMoodboardClickLocked(true);
           setPageView(pageView === "moodboard" ? "index" : "moodboard");
         }}
-        className="group/vb absolute top-10 left-1/2 hidden -translate-x-1/2 cursor-pointer items-center justify-center gap-x-1 lg:flex"
+        className="group/vb pointer-events-auto absolute top-10 left-1/2 hidden -translate-x-1/2 cursor-pointer items-center justify-center gap-x-1 lg:flex"
       >
         <div className="flex aspect-square h-10 items-center justify-center rounded-sm border border-black bg-white">
           <ViewDotsIcon pattern={currentPattern} transition={dotTransition} />
@@ -138,7 +136,7 @@ const OverlayNavigators = () => {
       {/* bottom buttons */}
       <div className="flex items-center justify-center gap-x-3">
         {/* first button */}
-        <div className="group/nb flex cursor-pointer gap-x-1">
+        <div className="group/nb pointer-events-auto flex cursor-pointer gap-x-1">
           <div className="flex aspect-square w-10 flex-col items-center justify-center gap-y-[2.5px] rounded-sm bg-black">
             <div className="h-[1.5px] w-4 bg-white"></div>
             <div
@@ -152,14 +150,14 @@ const OverlayNavigators = () => {
           <div className="flex h-10 items-center justify-center rounded-sm bg-black px-4">
             <FlipTextButton>
               <p className="font-mona-sans text-[14px] font-semibold text-white">
-                {isThinnerThanLg ? "navigate" : "chapters"}
+                chapters
               </p>
             </FlipTextButton>
           </div>
         </div>
 
         {/* second button */}
-        <div className="group/fb flex cursor-pointer gap-x-1">
+        <div className="group/fb pointer-events-auto flex cursor-pointer gap-x-1">
           <div className="flex aspect-square w-10 flex-col items-center justify-center gap-y-1.25 rounded-sm border border-black bg-white">
             <div className="relative h-0.5 w-5 bg-black">
               <div
@@ -192,7 +190,7 @@ const OverlayNavigators = () => {
           <div className="flex h-10 items-center justify-center rounded-sm border border-black bg-white px-4">
             <FlipTextButton>
               <p className="font-mona-sans text-[14px] font-semibold text-black">
-                {isThinnerThanLg ? "filter" : "curate"}
+                curate
               </p>
             </FlipTextButton>
           </div>
