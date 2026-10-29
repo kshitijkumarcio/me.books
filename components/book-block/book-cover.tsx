@@ -22,12 +22,12 @@ export const BookCover = ({
   alt,
   className,
   rotation = "rotate-0",
-  widthClass,
+  widthClass = "w-40",
   format = "standard",
 }: BookCoverProps) => {
   if (!src) return null;
   const effectiveWidthClass =
-    widthClass || COVER_FORMAT_SIZES[format] || COVER_FORMAT_SIZES.standard;
+    widthClass || COVER_FORMAT_SIZES[format] || "w-40";
   const cellWidth = parseCellUnit(effectiveWidthClass);
 
   return (

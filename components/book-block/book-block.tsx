@@ -154,7 +154,7 @@ function normalizeLayout(book: BookItem, size: 8 | 6): BlockLayoutElement[] {
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-24 md:w-32",
+        widthClass: "w-40",
         zIndex: 10,
       },
     ];
