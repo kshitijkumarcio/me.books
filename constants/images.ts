@@ -78,6 +78,9 @@ import AMITC3 from "@/public/images/amitc-img-3.png";
 import ALTG1 from "@/public/images/altg1.png";
 import ALTG2 from "@/public/images/altg2.png";
 import ALTG3 from "@/public/images/altg3.png";
+import BOBH1 from "@/public/images/bobh1.png";
+import BOBH2 from "@/public/images/bobh2.png";
+import BOBH3 from "@/public/images/bobh3.png";
 
 export const images = {
   AMonthInTheCountry,
@@ -160,6 +163,9 @@ export const images = {
   ALTG1,
   ALTG2,
   ALTG3,
+  BOBH1,
+  BOBH2,
+  BOBH3
 };
 
 export default images;

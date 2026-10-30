@@ -78,7 +78,7 @@ const OverlayNavigators = () => {
             <FlipTextButton>
               <p
                 className={cn(
-                  "font-mona-sans relative text-[14px] font-semibold"
+                  "font-mona-sans relative text-[14px] hover:text-neon font-semibold"
                 )}
               >
                 about.

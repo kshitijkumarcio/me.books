@@ -340,7 +340,7 @@ export const BookBlock = ({
       className={cn(
         size === 6 ? "w-cell-6 h-cell-6" : "w-cell-8 h-cell-8",
         "relative aspect-square select-none",
-        // "border border-red-500",
+        "border border-red-500",
         className
       )}
     >
