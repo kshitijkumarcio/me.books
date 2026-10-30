@@ -23,7 +23,7 @@ export interface BaseLayoutElement extends ElementPosition {
 export type BookFormat = "standard" | "little-penguin-classic";
 
 export const COVER_FORMAT_SIZES: Record<BookFormat, string> = {
-  standard: "w-40",
+  standard: "w-46",
   "little-penguin-classic": "w-40",
 };
 
@@ -40,8 +40,13 @@ export interface QuoteLayoutElement extends BaseLayoutElement {
   quote: string;
   author?: string;
   paperColor?: string;
+  textColor?: "black" | "white";
   paperSeed?: number;
   tearStrength?: number;
+  tearFrequency?: number;
+  roughness?: number;
+  lightAngle?: number;
+  lightElevation?: number;
   maxWidthClass?: string;
 }
 
@@ -438,22 +443,50 @@ export const BooksRead: ReadBook[] = [
     layout: [
       {
         type: "cover",
-        top: "top-cell-0.5",
-        left: "left-cell-0.5",
+        top: "top-cell-1.4",
+        left: "left-cell-2.4",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-46",
         zIndex: 10,
       },
       {
         type: "quote",
-        quote: "“Every lemon has a story. Every tree has a soul.”",
-        paperColor: "#FFFBEA",
+        quote: "“We dont have to stop living just because we might die”",
+        paperColor: "#334FA2",
+        textColor: "white",
         paperSeed: 55,
-        tearStrength: 6,
-        bottom: "bottom-cell-0.5",
-        right: "right-cell-0.5",
+        tearStrength: 8,
+        maxWidthClass: "max-w-58",
+        bottom: "bottom-cell-1.1",
+        left: "left-cell-0.85",
         rotation: "rotate-0",
         zIndex: 20,
+        lightAngle: 20,
+        lightElevation: 60,  
+      },
+      {
+        type: "image",
+        top: "top-cell-1.8",
+        left: "left-cell-5.5",
+        src: images.ALTG1,
+        widthClass: "w-34",
+        alt: "yellow-roses",
+      },
+      {
+        type: "image",
+        top: "top-cell-3",
+        left: "left-cell-0.7",
+        src: images.ALTG2,
+        widthClass: "w-24",
+        alt: "yellow-roses",
+      },
+      {
+        type: "image",
+        top: "top-cell-5.75",
+        left: "left-cell-4.5",
+        src: images.ALTG3,
+        widthClass: "w-48",
+        alt: "yellow-roses",
       },
     ],
   },
@@ -1285,7 +1318,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“If you are lucky enough to have lived in Paris as a young man, then Paris is a moveable feast.”",
+        quote:
+          "“If you are lucky enough to have lived in Paris as a young man, then Paris is a moveable feast.”",
         paperColor: "#FBF3DE",
         paperSeed: 12,
         tearStrength: 7,
@@ -1316,7 +1350,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“You do not need a reason to exist. You are allowed to just live.”",
+        quote:
+          "“You do not need a reason to exist. You are allowed to just live.”",
         paperColor: "#E8F5E9",
         paperSeed: 24,
         tearStrength: 7,
@@ -1347,7 +1382,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“All happy families are alike; each unhappy family is unhappy in its own way.”",
+        quote:
+          "“All happy families are alike; each unhappy family is unhappy in its own way.”",
         paperColor: "#FFF8E1",
         paperSeed: 36,
         tearStrength: 8,
@@ -1440,7 +1476,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“There are two things I simply cannot abide: margarine and an uncurious mind.”",
+        quote:
+          "“There are two things I simply cannot abide: margarine and an uncurious mind.”",
         paperColor: "#FFFBEA",
         paperSeed: 71,
         tearStrength: 7,
@@ -1471,7 +1508,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“Pain and suffering are always inevitable for a large intelligence and a deep heart.”",
+        quote:
+          "“Pain and suffering are always inevitable for a large intelligence and a deep heart.”",
         paperColor: "#F3F4F6",
         paperSeed: 83,
         tearStrength: 8,
@@ -1502,7 +1540,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“His soul swooned slowly as he heard the snow falling faintly through the universe.”",
+        quote:
+          "“His soul swooned slowly as he heard the snow falling faintly through the universe.”",
         paperColor: "#E0F2FE",
         paperSeed: 95,
         tearStrength: 7,
@@ -1533,7 +1572,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“Our lives are shaped by accidental collisions and unforeseen ripples.”",
+        quote:
+          "“Our lives are shaped by accidental collisions and unforeseen ripples.”",
         paperColor: "#ECFDF5",
         paperSeed: 17,
         tearStrength: 6,
@@ -1564,7 +1604,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“In the smallest creatures we uncover the machinery of memory and time.”",
+        quote:
+          "“In the smallest creatures we uncover the machinery of memory and time.”",
         paperColor: "#FEF3C7",
         paperSeed: 28,
         tearStrength: 7,
@@ -1626,7 +1667,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“प्रेम जब आदर्श की सीमाओं को छूता है, तब वह तपस्या बन जाता है।”",
+        quote:
+          "“प्रेम जब आदर्श की सीमाओं को छूता है, तब वह तपस्या बन जाता है।”",
         paperColor: "#FFF27B",
         paperSeed: 51,
         tearStrength: 8,
@@ -1688,7 +1730,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“I am no bird; and no net ensnares me; I am a free human being with an independent will.”",
+        quote:
+          "“I am no bird; and no net ensnares me; I am a free human being with an independent will.”",
         paperColor: "#F1F5F9",
         paperSeed: 75,
         tearStrength: 8,
@@ -1719,7 +1762,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“Human speech is like a cracked kettle on which we tap crude rhythms for bears to dance to.”",
+        quote:
+          "“Human speech is like a cracked kettle on which we tap crude rhythms for bears to dance to.”",
         paperColor: "#FEF9C3",
         paperSeed: 87,
         tearStrength: 7,
@@ -1812,7 +1856,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“She was living, feeling herself breathe, and that was almost unbearable.”",
+        quote:
+          "“She was living, feeling herself breathe, and that was almost unbearable.”",
         paperColor: "#FCE7F3",
         paperSeed: 31,
         tearStrength: 8,
@@ -1843,7 +1888,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“All concepts in which an entire process is semiotically summarized elude definition.”",
+        quote:
+          "“All concepts in which an entire process is semiotically summarized elude definition.”",
         paperColor: "#E5E7EB",
         paperSeed: 43,
         tearStrength: 7,
@@ -1874,7 +1920,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“From up here, there are no borders, only the blue ribbon of our home.”",
+        quote:
+          "“From up here, there are no borders, only the blue ribbon of our home.”",
         paperColor: "#E0F2FE",
         paperSeed: 55,
         tearStrength: 7,
@@ -1936,7 +1983,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“Memory makes reality. Rewrite memory, and you rewrite the world.”",
+        quote:
+          "“Memory makes reality. Rewrite memory, and you rewrite the world.”",
         paperColor: "#EDE9FE",
         paperSeed: 79,
         tearStrength: 7,
@@ -2060,7 +2108,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“In his extreme youth Stoner had thought of love as an absolute state of being.”",
+        quote:
+          "“In his extreme youth Stoner had thought of love as an absolute state of being.”",
         paperColor: "#F4F6F0",
         paperSeed: 37,
         tearStrength: 8,
@@ -2091,7 +2140,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“Taste carries memory across oceans and through forgotten eras.”",
+        quote:
+          "“Taste carries memory across oceans and through forgotten eras.”",
         paperColor: "#FFFBEA",
         paperSeed: 49,
         tearStrength: 7,
@@ -2122,7 +2172,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“To report the truth is to stand between light and the darkness that fears it.”",
+        quote:
+          "“To report the truth is to stand between light and the darkness that fears it.”",
         paperColor: "#EBF3FF",
         paperSeed: 61,
         tearStrength: 7,
@@ -2153,7 +2204,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“Whatever teaches us to talk to ourselves is important: whatever teaches us to sing ourselves out of despair.”",
+        quote:
+          "“Whatever teaches us to talk to ourselves is important: whatever teaches us to sing ourselves out of despair.”",
         paperColor: "#FEF3C7",
         paperSeed: 73,
         tearStrength: 8,
@@ -2184,7 +2236,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“So we beat on, boats against the current, borne back ceaselessly into the past.”",
+        quote:
+          "“So we beat on, boats against the current, borne back ceaselessly into the past.”",
         paperColor: "#E0F2FE",
         paperSeed: 85,
         tearStrength: 8,
@@ -2215,7 +2268,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“Trees are memories of the earth, rooted in time and whispering to the wind.”",
+        quote:
+          "“Trees are memories of the earth, rooted in time and whispering to the wind.”",
         paperColor: "#E8F5E9",
         paperSeed: 97,
         tearStrength: 7,
@@ -2246,7 +2300,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“And it seemed that in a little while the solution would be found, and then a new and splendid life would begin.”",
+        quote:
+          "“And it seemed that in a little while the solution would be found, and then a new and splendid life would begin.”",
         paperColor: "#FCE7F3",
         paperSeed: 18,
         tearStrength: 7,
@@ -2308,7 +2363,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“The kitchen is where life and mortality prepare their endless feast.”",
+        quote:
+          "“The kitchen is where life and mortality prepare their endless feast.”",
         paperColor: "#FFE7E7",
         paperSeed: 42,
         tearStrength: 7,
@@ -2463,7 +2519,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“A whole moment of happiness! Why, isn't that enormous for the whole of a human life?”",
+        quote:
+          "“A whole moment of happiness! Why, isn't that enormous for the whole of a human life?”",
         paperColor: "#FFF8E1",
         paperSeed: 99,
         tearStrength: 7,
@@ -2494,7 +2551,8 @@ export const wishlistBooks: WishlistBook[] = [
       },
       {
         type: "quote",
-        quote: "“You are about to begin reading Italo Calvino's new novel. Relax. Concentrate.”",
+        quote:
+          "“You are about to begin reading Italo Calvino's new novel. Relax. Concentrate.”",
         paperColor: "#EDE7F6",
         paperSeed: 14,
         tearStrength: 8,

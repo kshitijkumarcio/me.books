@@ -103,7 +103,7 @@ const OverlayNavigators = () => {
           onClick={() => {
             setPageView(pageView === "moodboard" ? "index" : "moodboard");
           }}
-          className="pointer-events-auto flex aspect-square h-10 cursor-pointer items-center justify-center rounded-sm border border-black bg-white lg:hidden"
+          className="pointer-events-auto flex aspect-square h-10 cursor-pointer items-center justify-center rounded-sm border border-black bg-white transition-colors duration-200 hover:bg-neon lg:hidden"
         >
           <ViewDotsIcon pattern={currentPattern} transition={dotTransition} />
         </div>
@@ -124,10 +124,10 @@ const OverlayNavigators = () => {
         }}
         className="group/vb pointer-events-auto absolute top-10 left-1/2 hidden -translate-x-1/2 cursor-pointer items-center justify-center gap-x-1 lg:flex"
       >
-        <div className="flex aspect-square h-10 items-center justify-center rounded-sm border border-black bg-white">
+        <div className="flex aspect-square h-10 items-center justify-center rounded-sm border border-black bg-white transition-colors duration-200 group-hover/vb:bg-neon">
           <ViewDotsIcon pattern={currentPattern} transition={dotTransition} />
         </div>
-        <div className="flex h-10 min-w-40 items-center justify-center rounded-sm border border-black bg-white px-4">
+        <div className="flex h-10 min-w-40 items-center justify-center rounded-sm border border-black bg-white px-4 transition-colors duration-200 group-hover/vb:bg-neon">
           <FlipTextButton
             isHovered={effectiveHovered}
             hoverText={
@@ -165,7 +165,7 @@ const OverlayNavigators = () => {
                     "flex items-center gap-3 rounded px-2.5 py-2 text-left transition-colors cursor-pointer",
                     isActive
                       ? "bg-black text-white"
-                      : "hover:bg-neutral-100 text-neutral-900"
+                      : "hover:bg-neon text-neutral-900"
                   )}
                 >
                   <span
@@ -221,7 +221,7 @@ const OverlayNavigators = () => {
 
         {/* second button */}
         <div className="group/fb pointer-events-auto flex cursor-pointer gap-x-1">
-          <div className="flex aspect-square w-10 flex-col items-center justify-center gap-y-1.25 rounded-sm border border-black bg-white">
+          <div className="flex aspect-square w-10 flex-col items-center justify-center gap-y-1.25 rounded-sm border border-black bg-white transition-colors duration-200 group-hover/fb:bg-neon">
             <div className="relative h-0.5 w-5 bg-black">
               <div
                 className={cn(
@@ -250,7 +250,7 @@ const OverlayNavigators = () => {
               />
             </div>
           </div>
-          <div className="flex h-10 items-center justify-center rounded-sm border border-black bg-white px-4">
+          <div className="flex h-10 items-center justify-center rounded-sm border border-black bg-white px-4 transition-colors duration-200 group-hover/fb:bg-neon">
             <FlipTextButton>
               <p className="font-mona-sans text-[14px] font-semibold text-black">
                 curate

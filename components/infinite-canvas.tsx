@@ -41,15 +41,15 @@ export const CANVAS_PHYSICS = {
   throwMultiplier: 8,
 
   /** Elastic rubber-band resistance at canvas edges (0 = hard stop, 0.35 = iOS bounce) */
-  elasticResistance: 0.25,
-  maxElasticPx: 8,
+  elasticResistance: 0.05,
+  maxElasticPx: 72,
 };
 
 export interface InfiniteCanvasProps {
   children?: React.ReactNode;
   wrapperClassName?: string;
   contentClassName?: string;
-  initialCenter?: boolean;
+  initialCenter?: boolean | "horizontal" | "vertical" | "both";
   /** Optional overrides if you ever want a specific page to deviate from CANVAS_PHYSICS */
   physicsOverride?: Partial<typeof CANVAS_PHYSICS>;
   onPanToReady?: (panTo: (x: number, y: number) => void) => void;
@@ -161,8 +161,17 @@ const InfiniteCanvas = ({
 
     // 1. Initial Center
     const max = getMax();
-    const startX = initialCenter ? Math.round(max.x / 2) : 0;
-    const startY = initialCenter ? Math.round(max.y / 2) : 0;
+    const shouldCenterX =
+      initialCenter === true ||
+      initialCenter === "both" ||
+      initialCenter === "horizontal";
+    const shouldCenterY =
+      initialCenter === true ||
+      initialCenter === "both" ||
+      initialCenter === "vertical";
+
+    const startX = shouldCenterX ? Math.round(max.x / 2) : 0;
+    const startY = shouldCenterY ? Math.round(max.y / 2) : 0;
 
     wrapper.scrollLeft = startX;
     wrapper.scrollTop = startY;

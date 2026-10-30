@@ -4,7 +4,6 @@ import React, { useMemo } from "react";
 import type { BookItem } from "@/books/books-index";
 import BookBlock from "@/components/book-block";
 import WelcomeBlock from "@/components/welcome-block";
-import ShelfGap from "./shelf-gap";
 import { cn } from "@/lib/utils";
 
 interface ShelfGridProps {
@@ -12,10 +11,8 @@ interface ShelfGridProps {
   cols?: number;
   rows?: number;
   blockSize?: 8 | 6; // cells
-  gapSize?: 2 | 1; // cells
+  gapSize?: number; // cells
   className?: string;
-  showDebugBorder?: boolean;
-  getRowLabel?: (rowIdx: number) => string | undefined;
   centerWelcomeSlot?: React.ReactNode;
   centerRow?: number;
   centerCol?: number;
@@ -28,8 +25,6 @@ export const ShelfGrid = ({
   blockSize = 8,
   gapSize = 1,
   className,
-  showDebugBorder = false,
-  getRowLabel,
   centerWelcomeSlot = <WelcomeBlock />,
   centerRow: customCenterRow,
   centerCol: customCenterCol,
@@ -37,119 +32,129 @@ export const ShelfGrid = ({
   // Calculate total required slots (all books + 1 for center welcome slot if present)
   const totalSlots = books.length + (centerWelcomeSlot ? 1 : 0);
 
-  // Calculate rows and columns dynamically based on what the total is of all books length
-  const cols = useMemo(() => {
-    if (propCols && propCols > 0) return propCols;
-    if (totalSlots === 0) return 1;
-    // Balanced square-like grid layout
-    return Math.ceil(Math.sqrt(totalSlots));
-  }, [propCols, totalSlots]);
+  // Dynamic alternating layout optimizer:
+  // Rows alternate between K and K-1 blocks (e.g. 6, 5, 6, 5...).
+  // Calculates optimal K and R so the overall canvas aspect ratio is as square as possible.
+  const { cols: K, rows: R } = useMemo(() => {
+    if (totalSlots === 0) return { cols: 1, rows: 1 };
 
-  const rows = useMemo(() => {
-    if (propRows && propRows > 0) return propRows;
-    if (totalSlots === 0) return 1;
-    return Math.ceil(totalSlots / cols);
-  }, [propRows, totalSlots, cols]);
+    // If explicit cols prop was provided, use it
+    if (propCols && propCols > 0) {
+      let cap = 0;
+      let r = 0;
+      while (cap < totalSlots) {
+        cap += r % 2 === 0 ? propCols : Math.max(1, propCols - 1);
+        r++;
+      }
+      return { cols: propCols, rows: propRows ?? r };
+    }
 
-  // Determine center slot for the 8x8 Welcome Block
-  const centerRow = customCenterRow ?? Math.floor(rows / 2);
-  const centerCol = customCenterCol ?? Math.floor(cols / 2);
+    let bestK = Math.max(2, Math.ceil(Math.sqrt(totalSlots)));
+    let bestR = 1;
+    let minScore = Infinity;
 
-  // Construct grid-template-columns and grid-template-rows using exact cell sizes
-  const gridStyle = useMemo(() => {
-    const colTracks: string[] = [];
-    for (let c = 0; c < cols; c++) {
-      colTracks.push(`calc(var(--cell-size) * ${blockSize})`);
-      if (c < cols - 1) {
-        colTracks.push(`calc(var(--cell-size) * ${gapSize})`);
+    // Search candidate K values to find the most square layout
+    const minK = 2;
+    const maxK = Math.max(3, Math.min(totalSlots, 25));
+
+    for (let candidateK = minK; candidateK <= maxK; candidateK++) {
+      let cap = 0;
+      let r = 0;
+      while (cap < totalSlots) {
+        cap += r % 2 === 0 ? candidateK : Math.max(1, candidateK - 1);
+        r++;
+      }
+
+      // Calculate width and height in cells for this (candidateK, r)
+      const widthCells =
+        candidateK * blockSize + Math.max(0, candidateK - 1) * gapSize;
+      const heightCells =
+        r * blockSize + Math.max(0, r - 1) * gapSize;
+
+      // Aspect ratio difference from 1:1 (square)
+      const diff = Math.abs(widthCells - heightCells);
+      const leftover = cap - totalSlots;
+      const score = diff * 100 + leftover;
+
+      if (score < minScore) {
+        minScore = score;
+        bestK = candidateK;
+        bestR = r;
       }
     }
 
-    const rowTracks: string[] = [];
-    for (let r = 0; r < rows; r++) {
-      rowTracks.push(`calc(var(--cell-size) * ${blockSize})`);
-      if (r < rows - 1) {
-        rowTracks.push(`calc(var(--cell-size) * ${gapSize})`);
-      }
-    }
+    return { cols: bestK, rows: propRows ?? bestR };
+  }, [totalSlots, propCols, propRows, blockSize, gapSize]);
 
-    return {
-      display: "grid",
-      gridTemplateColumns: colTracks.join(" "),
-      gridTemplateRows: rowTracks.join(" "),
-    };
-  }, [cols, rows, blockSize, gapSize]);
+  // Determine center slot for the Welcome Block
+  const centerRow = customCenterRow ?? Math.floor(R / 2);
+  const centerRowCapacity = centerRow % 2 === 0 ? K : Math.max(1, K - 1);
+  const centerCol = customCenterCol ?? Math.floor(centerRowCapacity / 2);
 
-  // Map book items sequentially to all slots, reserving the center slot for the Welcome Block
-  let bookIndex = 0;
-  const gridItems: React.ReactNode[] = [];
+  // Group items into alternating rows
+  const rowsData = useMemo(() => {
+    let bookIndex = 0;
+    const result: Array<Array<{ key: string; node: React.ReactNode }>> = [];
 
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const isCenter = Boolean(centerWelcomeSlot && r === centerRow && c === centerCol);
+    for (let r = 0; r < R; r++) {
+      const rowCapacity = r % 2 === 0 ? K : Math.max(1, K - 1);
+      const rowItems: Array<{ key: string; node: React.ReactNode }> = [];
 
-      if (isCenter) {
-        gridItems.push(
-          <div
-            key="center-welcome-block"
-            style={{
-              gridRow: r * 2 + 1,
-              gridColumn: c * 2 + 1,
-            }}
-            className="relative z-30 flex items-center justify-center"
-          >
-            {centerWelcomeSlot}
-          </div>
+      for (let c = 0; c < rowCapacity; c++) {
+        const isCenter = Boolean(
+          centerWelcomeSlot && r === centerRow && c === centerCol
         );
-        continue;
+
+        if (isCenter) {
+          rowItems.push({
+            key: "center-welcome-block",
+            node: centerWelcomeSlot,
+          });
+          continue;
+        }
+
+        if (bookIndex < books.length) {
+          const book = books[bookIndex++];
+          rowItems.push({
+            key: `book-${book.id || `${r}-${c}`}`,
+            node: <BookBlock book={book} size={blockSize} />,
+          });
+        }
       }
 
-      const book = books[bookIndex++];
-      if (!book) continue;
-
-      gridItems.push(
-        <div
-          key={`book-${book.id || `${r}-${c}`}`}
-          style={{
-            gridRow: r * 2 + 1,
-            gridColumn: c * 2 + 1,
-          }}
-          className="relative flex items-center justify-center"
-        >
-          <BookBlock book={book} size={blockSize} />
-        </div>
-      );
+      if (rowItems.length > 0) {
+        result.push(rowItems);
+      }
     }
-  }
+
+    return result;
+  }, [R, K, centerRow, centerCol, centerWelcomeSlot, books, blockSize]);
 
   return (
-    <div style={gridStyle} className={cn("relative select-none", className)}>
-      {/* 1. RENDER BOOK BLOCKS & WELCOME BLOCK */}
-      {gridItems}
-
-      {/* 2. RENDER HORIZONTAL SHELF LABELS */}
-      {Array.from({ length: rows - 1 }).map((_, r) => {
-        const label = getRowLabel?.(r);
-        if (!label) return null;
-
-        return (
-          <div
-            key={`h-gap-${r}`}
-            style={{
-              gridRow: r * 2 + 2,
-              gridColumn: `1 / span ${cols * 2 - 1}`,
-            }}
-            className="flex h-full w-full items-center px-2 pointer-events-none"
-          >
-            <ShelfGap
-              type="horizontal"
-              rowIdx={r}
-              gapSize={gapSize}
-              label={label}
-            />
-          </div>
-        );
-      })}
+    <div
+      className={cn("flex flex-col items-center select-none", className)}
+      style={{
+        gap: `calc(var(--cell-size) * ${gapSize})`,
+      }}
+    >
+      {rowsData.map((row, r) => (
+        <div
+          key={`shelf-row-${r}`}
+          className="flex flex-row justify-center"
+          style={{
+            gap: `calc(var(--cell-size) * ${gapSize})`,
+          }}
+        >
+          {row.map((item) => (
+            <div
+              key={item.key}
+              className="relative flex items-center justify-center shrink-0"
+            >
+              {item.node}
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
   );
 };

@@ -230,8 +230,13 @@ function renderLayoutElement(
           quote={element.quote || `“${book.title}”`}
           author={element.author || book.author}
           color={element.paperColor || "#FFF27B"}
+          textColor={element.textColor || "black"}
           seed={element.paperSeed ?? 42}
           tearStrength={element.tearStrength ?? 6}
+          tearFrequency={element.tearFrequency}
+          roughness={element.roughness}
+          lightAngle={element.lightAngle}
+          lightElevation={element.lightElevation}
           rotation={element.rotation || "rotate-0"}
           maxWidthClass={
             element.maxWidthClass || "max-w-[200px] md:max-w-[280px]"
@@ -268,7 +273,7 @@ function renderLayoutElement(
       node = (
         <div
           className={cn(
-            "rounded border border-black/15 bg-neutral-900/90 p-2 font-mono text-[10px] text-neon shadow-md backdrop-blur-xs select-none",
+            "text-neon rounded border border-black/15 bg-neutral-900/90 p-2 font-mono text-[10px] shadow-md backdrop-blur-xs select-none",
             element.className
           )}
         >
@@ -335,6 +340,7 @@ export const BookBlock = ({
       className={cn(
         size === 6 ? "w-cell-6 h-cell-6" : "w-cell-8 h-cell-8",
         "relative aspect-square select-none",
+        // "border border-red-500",
         className
       )}
     >

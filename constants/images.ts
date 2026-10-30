@@ -75,6 +75,9 @@ import WinterNightATraveller from "@/public/images/winter-night-a-traveller.jpg"
 import AMITC1 from "@/public/images/amitc-img-1.png";
 import AMITC2 from "@/public/images/amitc-img-2.png";
 import AMITC3 from "@/public/images/amitc-img-3.png";
+import ALTG1 from "@/public/images/altg1.png";
+import ALTG2 from "@/public/images/altg2.png";
+import ALTG3 from "@/public/images/altg3.png";
 
 export const images = {
   AMonthInTheCountry,
@@ -154,6 +157,9 @@ export const images = {
   AMITC1,
   AMITC2,
   AMITC3,
+  ALTG1,
+  ALTG2,
+  ALTG3,
 };
 
 export default images;

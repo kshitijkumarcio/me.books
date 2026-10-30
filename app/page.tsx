@@ -10,12 +10,12 @@ const RootPage = () => {
   const { setPanToFn } = useCanvasNavigation();
 
   return (
-    <InfiniteCanvas onPanToReady={setPanToFn} initialCenter={true}>
+    <InfiniteCanvas onPanToReady={setPanToFn} initialCenter="horizontal">
       <main className="bg-grid-dashed p-cell min-h-dvh min-w-dvw">
         <ShelfGrid
           books={allBooks}
           blockSize={8}
-          gapSize={1}
+          gapSize={0}
           centerWelcomeSlot={<WelcomeBlock />}
         />
       </main>
