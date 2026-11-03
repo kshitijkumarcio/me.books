@@ -9,7 +9,10 @@ import { cn } from "@/lib/utils";
 import { dotRows, dotVariants, easing016 } from "@/constants";
 import FlipTextButton from "./ui-components/flip-text-button";
 import { useOverlayButtons } from "@/hooks/layout-hooks/useoverlaybuttons";
-import { useCanvasNavigation, CANVAS_ZONES } from "@/hooks/layout-hooks/usecanvasnavigation";
+import {
+  useCanvasNavigation,
+  CANVAS_ZONES,
+} from "@/hooks/layout-hooks/usecanvasnavigation";
 
 const ViewDotsIcon = ({
   pattern,
@@ -74,7 +77,7 @@ const OverlayNavigators = () => {
           <p className="font-mona-sans text-[20px] font-bold">kshelf.</p>
         </div>
         <div className="pointer-events-auto hidden gap-x-6 lg:flex">
-          <div onClick={() => toggleAbout()} className={cn("cursor-pointer")}>
+          {/* <div onClick={() => toggleAbout()} className={cn("cursor-pointer")}>
             <FlipTextButton>
               <p
                 className={cn(
@@ -84,7 +87,7 @@ const OverlayNavigators = () => {
                 about.
               </p>
             </FlipTextButton>
-          </div>
+          </div> */}
           <div className={cn("cursor-pointer")} onClick={() => toggleUseCase()}>
             <FlipTextButton>
               <p
@@ -103,7 +106,7 @@ const OverlayNavigators = () => {
           onClick={() => {
             setPageView(pageView === "moodboard" ? "index" : "moodboard");
           }}
-          className="pointer-events-auto flex aspect-square h-10 cursor-pointer items-center justify-center rounded-sm border border-black bg-white transition-colors duration-200 hover:bg-neon/90 lg:hidden"
+          className="hover:bg-neon/90 pointer-events-auto flex aspect-square h-10 cursor-pointer items-center justify-center rounded-sm border border-black bg-white transition-colors duration-200 lg:hidden"
         >
           <ViewDotsIcon pattern={currentPattern} transition={dotTransition} />
         </div>
@@ -124,10 +127,10 @@ const OverlayNavigators = () => {
         }}
         className="group/vb pointer-events-auto absolute top-10 left-1/2 hidden -translate-x-1/2 cursor-pointer items-center justify-center gap-x-1 lg:flex"
       >
-        <div className="flex aspect-square h-10 items-center justify-center rounded-sm border border-black bg-white transition-colors duration-200 group-hover/vb:bg-neon">
+        <div className="group-hover/vb:bg-neon flex aspect-square h-10 items-center justify-center rounded-sm border border-black bg-white transition-colors duration-200">
           <ViewDotsIcon pattern={currentPattern} transition={dotTransition} />
         </div>
-        <div className="flex h-10 min-w-40 items-center justify-center rounded-sm border border-black bg-white px-4 transition-colors duration-200 group-hover/vb:bg-neon">
+        <div className="group-hover/vb:bg-neon flex h-10 min-w-40 items-center justify-center rounded-sm border border-black bg-white px-4 transition-colors duration-200">
           <FlipTextButton
             isHovered={effectiveHovered}
             hoverText={
@@ -150,9 +153,9 @@ const OverlayNavigators = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="pointer-events-auto absolute bottom-14 mb-2 flex flex-col gap-1 rounded-md border border-black bg-white p-2 shadow-2xl min-w-64 z-50"
+            className="pointer-events-auto absolute bottom-14 z-50 mb-2 flex min-w-64 flex-col gap-1 rounded-md border border-black bg-white p-2 shadow-2xl"
           >
-            <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-neutral-400">
+            <div className="px-2.5 py-1 text-[10px] font-bold tracking-wider text-neutral-400 uppercase">
               Jump to Chapter
             </div>
             {CANVAS_ZONES.map((zone) => {
@@ -162,7 +165,7 @@ const OverlayNavigators = () => {
                   key={zone.id}
                   onClick={() => goToZone(zone.id)}
                   className={cn(
-                    "flex items-center gap-3 rounded px-2.5 py-2 text-left transition-colors cursor-pointer",
+                    "flex cursor-pointer items-center gap-3 rounded px-2.5 py-2 text-left transition-colors",
                     isActive
                       ? "bg-black text-white"
                       : "hover:bg-neon text-neutral-900"
@@ -170,14 +173,16 @@ const OverlayNavigators = () => {
                 >
                   <span
                     className={cn(
-                      "font-mono text-[11px] font-bold flex h-5 w-5 items-center justify-center rounded-xs",
-                      isActive ? "bg-white text-black" : "bg-neutral-200 text-neutral-700"
+                      "flex h-5 w-5 items-center justify-center rounded-xs font-mono text-[11px] font-bold",
+                      isActive
+                        ? "bg-white text-black"
+                        : "bg-neutral-200 text-neutral-700"
                     )}
                   >
                     {zone.number}
                   </span>
                   <div>
-                    <p className="font-mona-sans text-[13px] font-semibold leading-tight">
+                    <p className="font-mona-sans text-[13px] leading-tight font-semibold">
                       {zone.title}
                     </p>
                     <p
@@ -221,7 +226,7 @@ const OverlayNavigators = () => {
 
         {/* second button */}
         <div className="group/fb pointer-events-auto flex cursor-pointer gap-x-1">
-          <div className="flex aspect-square w-10 flex-col items-center justify-center gap-y-1.25 rounded-sm border border-black bg-white transition-colors duration-200 group-hover/fb:bg-neon">
+          <div className="group-hover/fb:bg-neon flex aspect-square w-10 flex-col items-center justify-center gap-y-1.25 rounded-sm border border-black bg-white transition-colors duration-200">
             <div className="relative h-0.5 w-5 bg-black">
               <div
                 className={cn(
@@ -250,7 +255,7 @@ const OverlayNavigators = () => {
               />
             </div>
           </div>
-          <div className="flex h-10 items-center justify-center rounded-sm border border-black bg-white px-4 transition-colors duration-200 group-hover/fb:bg-neon">
+          <div className="group-hover/fb:bg-neon flex h-10 items-center justify-center rounded-sm border border-black bg-white px-4 transition-colors duration-200">
             <FlipTextButton>
               <p className="font-mona-sans text-[14px] font-semibold text-black">
                 curate

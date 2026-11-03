@@ -86,6 +86,18 @@
 @utility gap-cell-* {
   gap: calc(var(--cell-size) * --value(number, [*]));
 }
+@utility translate-x-cell-* {
+  translate: calc(var(--cell-size) * --value(number, [*])) 0;
+}
+@utility -translate-x-cell-* {
+  translate: calc(var(--cell-size) * -1 * --value(number, [*])) 0;
+}
+@utility translate-y-cell-* {
+  translate: 0 calc(var(--cell-size) * --value(number, [*]));
+}
+@utility -translate-y-cell-* {
+  translate: 0 calc(var(--cell-size) * -1 * --value(number, [*]));
+}
 
 @layer base {
   html {

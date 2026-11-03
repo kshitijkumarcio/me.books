@@ -72,6 +72,7 @@ import WeShouldAllBeFeminists from "@/public/images/we-should-all-be-feminists.j
 import Whistler from "@/public/images/whistler.jpg";
 import WhiteNights from "@/public/images/white-nights.jpg";
 import WinterNightATraveller from "@/public/images/winter-night-a-traveller.jpg";
+import Kshitij from "@/public/images/kshitij.png";
 import AMITC1 from "@/public/images/amitc-img-1.png";
 import AMITC2 from "@/public/images/amitc-img-2.png";
 import AMITC3 from "@/public/images/amitc-img-3.png";
@@ -157,6 +158,7 @@ export const images = {
   Whistler,
   WhiteNights,
   WinterNightATraveller,
+  Kshitij,
   AMITC1,
   AMITC2,
   AMITC3,
@@ -165,7 +167,7 @@ export const images = {
   ALTG3,
   BOBH1,
   BOBH2,
-  BOBH3
+  BOBH3,
 };
 
 export default images;
