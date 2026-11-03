@@ -37,7 +37,7 @@ const Introduction = () => {
           {/* Row 3: (  MY  ) with photo directly underneath */}
           <div className="relative mt-4 flex flex-col items-center justify-center sm:mt-7">
             {/* Parentheses and MY */}
-            <div className="relative flex w-[185px] max-w-[44vw] items-center justify-between select-none">
+            <div className="relative flex w-cell-4 max-w-[44vw] items-center justify-between select-none">
               <span className="font-mona-sans -ml-3 text-[clamp(24px,9vw,44px)] leading-[clamp(24px,10vw,44px)] font-medium text-black uppercase">
                 (
               </span>

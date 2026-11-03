@@ -1,5 +1,3 @@
-import AMITC_C from "@/public/icons/amitc-c.svg";
-
-const icons = { AMITC_C };
+const icons = {};
 
 export default icons;

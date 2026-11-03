@@ -7,12 +7,19 @@ import { monaSans } from "@/providers/font-provider";
 import OverlayNavigators from "@/components/overlay-navigators";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://kshitijkumar.me"),
+  metadataBase: new URL("https://kshitijkumar.me/book-shelf"),
   alternates: {
-    canonical: "./", // Automatically resolves to https://kshitijkumar.me/book-shelf/[current-path]
+    canonical: "./",
   },
   title: "Book Shelf | kshitijkumar.me",
   description: "A curated collection of books I love.",
+  icons: {
+    icon: [
+      { url: "/book-shelf/favicon.ico?v=2", sizes: "any" },
+      { url: "/book-shelf/icons/favicon.png?v=2", type: "image/png" },
+    ],
+    apple: "/book-shelf/icons/favicon.png?v=2",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
