@@ -70,6 +70,13 @@ export interface TagLayoutElement extends BaseLayoutElement {
   color?: string;
 }
 
+export interface PillMessageLayoutElement extends BaseLayoutElement {
+  type: "pill_message" | "pill-message";
+  text?: React.ReactNode;
+  pill_classnames?: string;
+  text_classnames?: string;
+}
+
 export interface CustomLayoutElement extends BaseLayoutElement {
   type: "custom";
   content?: React.ReactNode;
@@ -81,6 +88,7 @@ export type BlockLayoutElement =
   | ImageLayoutElement
   | CodeLayoutElement
   | TagLayoutElement
+  | PillMessageLayoutElement
   | CustomLayoutElement;
 
 export type BookStatus = "reading" | "read" | "wishlist";
@@ -443,50 +451,50 @@ export const BooksRead: ReadBook[] = [
     layout: [
       {
         type: "cover",
-        top: "top-cell-1.4",
-        left: "left-cell-2.4",
+        top: "top-cell-1",
+        left: "left-cell-2.5",
         rotation: "rotate-0",
-        widthClass: "w-46",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
         type: "quote",
-        quote: "“We dont have to stop living just because we might die”",
+        quote: "“We dont have to stop living because we might die”",
         paperColor: "#334FA2",
         textColor: "white",
         paperSeed: 55,
         tearStrength: 8,
-        maxWidthClass: "max-w-58",
-        bottom: "bottom-cell-1.1",
-        left: "left-cell-0.85",
+        maxWidthClass: "max-w-46",
+        top: "top-cell-5.8",
+        left: "left-cell-0.9",
         rotation: "rotate-0",
         zIndex: 20,
         lightAngle: 20,
-        lightElevation: 60,  
+        lightElevation: 70,
       },
       {
         type: "image",
-        top: "top-cell-1.8",
-        left: "left-cell-5.5",
+        top: "top-cell-1.6",
+        left: "left-cell-5.75",
         src: images.ALTG1,
-        widthClass: "w-34",
-        alt: "yellow-roses",
+        widthClass: "w-28",
+        alt: "couple",
       },
       {
         type: "image",
-        top: "top-cell-3",
-        left: "left-cell-0.7",
+        top: "top-cell-2.4",
+        left: "left-cell-0.5",
         src: images.ALTG2,
-        widthClass: "w-24",
-        alt: "yellow-roses",
+        widthClass: "w-23",
+        alt: "doctor",
       },
       {
         type: "image",
-        top: "top-cell-5.75",
-        left: "left-cell-4.5",
+        bottom: "bottom-cell-0.5",
+        right: "right-cell-0.4",
         src: images.ALTG3,
-        widthClass: "w-48",
-        alt: "yellow-roses",
+        widthClass: "w-44",
+        alt: "building",
       },
     ],
   },
@@ -507,7 +515,7 @@ export const BooksRead: ReadBook[] = [
         top: "top-cell-1",
         left: "left-cell-3",
         alt: "A Month In the Country",
-        widthClass: "w-46",
+        widthClass: "w-39",
       },
       {
         type: "quote",
@@ -518,22 +526,22 @@ export const BooksRead: ReadBook[] = [
           "“Ah, those days... for many years afterwards their happiness haunted me.”",
         top: "top-cell-5.5",
         left: "left-cell-0.5",
-        maxWidthClass: "w-76",
+        maxWidthClass: "w-69",
       },
       {
         type: "image",
-        top: "top-cell-3.75",
+        top: "top-cell-4",
         left: "left-cell-6",
         src: images.AMITC1,
-        widthClass: "w-24",
+        widthClass: "w-18",
         alt: "yellow-roses",
       },
       {
         type: "image",
-        top: "top-cell-5.75",
-        left: "left-cell-5.25",
+        top: "top-cell-5.85",
+        left: "left-cell-5.5",
         src: images.AMITC2,
-        widthClass: "w-40",
+        widthClass: "w-32",
         alt: "flim-image",
       },
       {
@@ -541,7 +549,7 @@ export const BooksRead: ReadBook[] = [
         top: "top-cell-3.25",
         left: "left-cell-0.75",
         src: images.AMITC3,
-        widthClass: "w-34",
+        widthClass: "w-28",
         alt: "countryside",
       },
     ],
@@ -595,32 +603,41 @@ export const BooksRead: ReadBook[] = [
         top: "top-cell-1",
         left: "left-cell-2",
         rotation: "rotate-0",
-        widthClass: "w-46",
+        widthClass: "w-39.5",
         zIndex: 10,
       },
       {
         type: "image",
-        top: "top-cell-3.5",
-        left: "left-cell-5.75",
+        bottom: "bottom-cell-2",
+        right: "right-cell-0.5",
         src: images.BOBH1,
-        widthClass: "w-34",
-        alt: "yellow-roses",
+        widthClass: "w-28",
+        alt: "sciona",
       },
       {
         type: "image",
-        top: "top-cell-5.35",
-        left: "left-cell-3.85",
+        top: "top-cell-5.4",
+        left: "left-cell-3.75",
         src: images.BOBH2,
-        widthClass: "w-26",
-        alt: "flim-image",
+        widthClass: "w-22",
+        alt: "burning house",
       },
       {
         type: "image",
-        top: "top-cell-1.8",
-        left: "left-cell-0.5",
+        top: "top-cell-2.1",
+        left: "left-cell-0.4",
         src: images.BOBH3,
-        widthClass: "w-20",
-        alt: "countryside",
+        widthClass: "w-19",
+        alt: "witch",
+      },
+
+      {
+        type: "pill-message",
+        top: "top-cell-5.72",
+        left: "left-cell-0.4",
+        text_classnames: "text-white",
+        pill_classnames: "bg-[#7E0100]",
+        text: "+ magical & provoking +",
       },
     ],
   },

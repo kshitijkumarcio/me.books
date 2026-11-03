@@ -31,7 +31,7 @@ export const WelcomeBlock = ({ children, className }: WelcomeBlockProps) => {
 
           <div className="space-y-1">
             <h2 className="font-mona-sans text-xl font-bold tracking-tight text-neutral-900">
-              Kshelf.
+              kshelf.
             </h2>
             <p className="font-mona-sans text-[11px] leading-tight font-medium text-neutral-500">
               Curated library, current readings & future wishlist.

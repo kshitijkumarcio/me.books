@@ -71,14 +71,14 @@ const OverlayNavigators = () => {
       {/* top bar */}
       <div className="flex items-center justify-between">
         <div className="">
-          <p className="font-mona-sans text-[20px] font-bold">Kshelf.</p>
+          <p className="font-mona-sans text-[20px] font-bold">kshelf.</p>
         </div>
         <div className="pointer-events-auto hidden gap-x-6 lg:flex">
           <div onClick={() => toggleAbout()} className={cn("cursor-pointer")}>
             <FlipTextButton>
               <p
                 className={cn(
-                  "font-mona-sans relative text-[14px] hover:text-neon font-semibold"
+                  "font-mona-sans relative text-[14px] font-semibold"
                 )}
               >
                 about.
@@ -103,7 +103,7 @@ const OverlayNavigators = () => {
           onClick={() => {
             setPageView(pageView === "moodboard" ? "index" : "moodboard");
           }}
-          className="pointer-events-auto flex aspect-square h-10 cursor-pointer items-center justify-center rounded-sm border border-black bg-white transition-colors duration-200 hover:bg-neon lg:hidden"
+          className="pointer-events-auto flex aspect-square h-10 cursor-pointer items-center justify-center rounded-sm border border-black bg-white transition-colors duration-200 hover:bg-neon/90 lg:hidden"
         >
           <ViewDotsIcon pattern={currentPattern} transition={dotTransition} />
         </div>

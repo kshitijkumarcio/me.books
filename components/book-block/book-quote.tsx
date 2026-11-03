@@ -19,7 +19,7 @@ interface BookQuoteProps {
   maxWidthClass?: string;
 }
 
-export const BookQuote = ({
+const BookQuote = ({
   quote,
   author,
   color = "#FFF27B",
@@ -42,10 +42,10 @@ export const BookQuote = ({
         className
       )}
     >
-      <div className={cn("relative p-3.5", maxWidthClass)}>
+      <div className={cn("relative py-2.5 px-2.5" , maxWidthClass)}>
         <p
           className={cn(
-            "font-mona-sans relative z-10 text-[12px] leading-snug font-semibold italic md:text-[13px]",
+            "font-mona-sans relative z-10 text-[12px] leading-snug font-semibold italic", 
             textColor === "white" ? "text-white" : "text-neutral-900"
           )}
         >

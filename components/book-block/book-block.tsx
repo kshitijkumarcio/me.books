@@ -9,8 +9,9 @@ import type {
   ElementPosition,
 } from "@/books/books-index";
 import { COVER_FORMAT_SIZES } from "@/books/books-index";
-import { BookCover } from "./book-cover";
-import { BookQuote } from "./book-quote";
+import BookCover from "./book-cover";
+import BookQuote from "./book-quote";
+import PillMessage from "./pill-message";
 import { cn } from "@/lib/utils";
 
 interface BookBlockProps {
@@ -22,20 +23,15 @@ interface BookBlockProps {
 
 /**
  * Resolves cell units into calc(var(--cell-size) * value).
- * Accepts:
- * - numbers: e.g. 5.3 -> calc(var(--cell-size) * 5.3)
- * - cell classes: e.g. "left-cell-5.3", "-top-cell-0.5", "w-cell-[5.3]"
- * - bare number strings: e.g. "5.3", "-2.1"
  */
-export function parseCellUnit(
+export const parseCellUnit = (
   val: string | number | undefined | null
-): string | null {
+): string | null => {
   if (val === undefined || val === null) return null;
   if (typeof val === "number") {
     return `calc(var(--cell-size) * ${val})`;
   }
   const str = String(val).trim();
-  // Match e.g. "left-cell-5.3", "-left-cell-5.3", "top-cell-[5.3]", "w-cell-3.2", etc.
   const match = str.match(
     /^(-)?(?:top|bottom|left|right|w|h|p|m|gap|inset)-cell-(?:\[)?([0-9.]+)(?:\])?$/
   );
@@ -46,7 +42,6 @@ export function parseCellUnit(
       return `calc(var(--cell-size) * ${isNegative ? -num : num})`;
     }
   }
-  // Match bare numbers in string e.g. "5.3", "-5.3"
   if (/^-?[0-9.]+$/.test(str)) {
     const num = parseFloat(str);
     if (!isNaN(num)) {
@@ -54,10 +49,10 @@ export function parseCellUnit(
     }
   }
   return null;
-}
+};
 
-/** Converts layout positioning (cell values or classes) into CSS styles and classnames */
-export function resolveElementPosition(pos: ElementPosition) {
+/** Converts layout positioning into CSS styles and classnames */
+const resolveElementPosition = (pos: ElementPosition) => {
   const classes: string[] = ["absolute"];
   const style: React.CSSProperties = {};
 
@@ -89,7 +84,6 @@ export function resolveElementPosition(pos: ElementPosition) {
     }
   }
 
-  // width & height if specified on position
   if (pos.width !== undefined && pos.width !== null) {
     const wCalc = parseCellUnit(pos.width);
     if (wCalc) {
@@ -110,12 +104,10 @@ export function resolveElementPosition(pos: ElementPosition) {
     }
   }
 
-  // zIndex
   if (typeof pos.zIndex === "number") {
     style.zIndex = pos.zIndex;
   }
 
-  // rotation
   if (pos.rotation !== undefined && pos.rotation !== null) {
     if (typeof pos.rotation === "number") {
       style.transform = `rotate(${pos.rotation}deg)`;
@@ -137,16 +129,14 @@ export function resolveElementPosition(pos: ElementPosition) {
   }
 
   return { className: classes.join(" "), style };
-}
+};
 
 /** Normalizes any layout representation into an element array */
-function normalizeLayout(book: BookItem, size: 8 | 6): BlockLayoutElement[] {
-  // 1. Array of elements if explicitly provided
+const normalizeLayout = (book: BookItem, size: 8 | 6): BlockLayoutElement[] => {
   if (Array.isArray(book.layout) && book.layout.length > 0) {
     return book.layout;
   }
 
-  // 2. Default 6x6 layout fallback
   if (size === 6) {
     return [
       {
@@ -160,7 +150,6 @@ function normalizeLayout(book: BookItem, size: 8 | 6): BlockLayoutElement[] {
     ];
   }
 
-  // 3. Default 8x8 layout: Cover on top-left, Quote on bottom-right
   const defaultQuote =
     book.status === "wishlist"
       ? `“Wishlist: ${book.title}”`
@@ -193,14 +182,14 @@ function normalizeLayout(book: BookItem, size: 8 | 6): BlockLayoutElement[] {
       zIndex: 20,
     },
   ];
-}
+};
 
 /** Renders a single layout element based on its type and positioning */
-function renderLayoutElement(
+const renderLayoutElement = (
   element: BlockLayoutElement,
   book: BookItem,
   index: number
-) {
+) => {
   const { className: posClass, style: posStyle } =
     resolveElementPosition(element);
 
@@ -254,6 +243,7 @@ function renderLayoutElement(
           style={cellWidth ? { width: cellWidth } : undefined}
           className={cn(
             "relative select-none",
+            // "border-8 border-b-12 border-[#f0ebd8]",
             !cellWidth && (element.widthClass || "w-28 md:w-36"),
             element.className
           )}
@@ -304,6 +294,19 @@ function renderLayoutElement(
       break;
     }
 
+    case "pill_message":
+    case "pill-message": {
+      node = (
+        <PillMessage
+          text={element.text}
+          pill_classnames={element.pill_classnames}
+          text_classnames={element.text_classnames}
+          className={element.className}
+        />
+      );
+      break;
+    }
+
     case "custom": {
       node = element.content;
       break;
@@ -322,9 +325,9 @@ function renderLayoutElement(
       {node}
     </div>
   );
-}
+};
 
-export const BookBlock = ({
+const BookBlock = ({
   item,
   book: propBook,
   size = 8,
@@ -340,7 +343,7 @@ export const BookBlock = ({
       className={cn(
         size === 6 ? "w-cell-6 h-cell-6" : "w-cell-8 h-cell-8",
         "relative aspect-square select-none",
-        "border border-red-500",
+        // "border border-red-500/20",
         className
       )}
     >

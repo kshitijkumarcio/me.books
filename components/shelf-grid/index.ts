@@ -1,3 +1,4 @@
-export * from "./shelf-grid";
-export { default } from "./shelf-grid";
+import ShelfGrid from "./shelf-grid";
 
+export { ShelfGrid };
+export default ShelfGrid;

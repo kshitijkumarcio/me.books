@@ -17,7 +17,7 @@ interface BookCoverProps {
   id?: string;
 }
 
-export const BookCover = ({
+const BookCover = ({
   src,
   alt,
   className,

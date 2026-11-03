@@ -5,7 +5,7 @@
   --cell-size: 40px;
 
   @media (min-width: 768px) {
-    --cell-size: 72px;
+    --cell-size: 60px;
   }
 }
 
