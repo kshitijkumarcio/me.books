@@ -71,7 +71,7 @@ export interface TagLayoutElement extends BaseLayoutElement {
 }
 
 export interface PillMessageLayoutElement extends BaseLayoutElement {
-  type: "pill_message" | "pill-message";
+  type: "pill-message";
   text?: React.ReactNode;
   pill_classnames?: string;
   text_classnames?: string;
@@ -406,40 +406,68 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r01",
+    id: "r02",
     status: "read",
-    title: "Madonna In A Fur Coat",
-    author: "Sabahatin Ali",
+    title: "Madonna in a Fur Coat",
+    author: "Sabahattin Ali",
     coverImage: images.Madonna,
     rating: 5,
     yearRead: 2024,
-    genre: "Classics",
+    genre: "Classic / Literary Fiction",
     format: "standard",
     layout: [
       {
         type: "cover",
-        top: "top-cell-0.5",
-        left: "left-cell-0.5",
+        top: "top-cell-1.1",
+        left: "left-cell-2.8",
         rotation: "rotate-0",
         widthClass: "w-40",
         zIndex: 10,
       },
       {
-        type: "quote",
-        quote:
-          "“Be patient toward all that is unsolved in your heart and try to love the questions themselves.”",
-        paperColor: "#FBF3DE",
-        paperSeed: 101,
-        tearStrength: 8,
-        bottom: "bottom-cell-0.5",
-        right: "right-cell-0.5",
-        rotation: "rotate-0",
-        zIndex: 20,
+        type: "image",
+        top: "top-cell-2",
+        right: "right-cell-0.4",
+        src: images.MIAFC1,
+        widthClass: "w-24",
+        alt: "painting",
+      },
+      {
+        type: "image",
+        bottom: "bottom-cell-0.4",
+        left: "left-cell-2.1",
+        src: images.MIAFC2,
+        widthClass: "w-24",
+        alt: "raif",
+      },
+      {
+        type: "image",
+        top: "top-cell-2.5",
+        left: "left-cell-0.5",
+        src: images.MIAFC3,
+        widthClass: "w-26",
+        alt: "street",
+      },
+      {
+        type: "pill-message",
+        top: "top-cell-5.7",
+        left: "left-cell-4.3",
+        pill_classnames: "bg-[#2a2a2a]",
+        text: "+ beautiful & haunting +",
+        text_classnames: "text-white",
+      },
+      {
+        type: "pill-message",
+        top: "top-cell-0.85",
+        left: "left-cell-2",
+        pill_classnames: "bg-black/0",
+        text: "⭐",
+        text_classnames: "text-white text-[16px]",
       },
     ],
   },
   {
-    id: "r02",
+    id: "r03",
     status: "read",
     title: "Animal Farm",
     author: "George Orwell",
@@ -472,7 +500,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r03",
+    id: "r04",
     status: "read",
     title: "As Long as the Lemon Trees Grow",
     author: "Zoulfa Katouh",
@@ -532,7 +560,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r04",
+    id: "r05",
     status: "read",
     title: "A Month In The Country",
     author: "J.L. Carr",
@@ -588,7 +616,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r05",
+    id: "r06",
     status: "read",
     title: "Beach Read",
     author: "Emily Henry",
@@ -621,7 +649,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r06",
+    id: "r07",
     status: "read",
     title: "Blood Over Bright Haven",
     author: "M.L. Wang",
@@ -675,7 +703,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r07",
+    id: "r08",
     status: "read",
     title: "Brief Answers to the Big Questions",
     author: "Stephen Hawking",
@@ -707,7 +735,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r08",
+    id: "r09",
     status: "read",
     title: "Project Hail Mary",
     author: "Andy Weir",
@@ -740,7 +768,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r09",
+    id: "r10",
     status: "read",
     title: "Captains Courageous",
     author: "Rudyard Kipling",
@@ -772,7 +800,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r10",
+    id: "r11",
     status: "read",
     title: "Circe",
     author: "Madeline Miller",
@@ -805,7 +833,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r11",
+    id: "r12",
     status: "read",
     title: "Red Rising",
     author: "Pierce Brown",
@@ -837,7 +865,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r12",
+    id: "r13",
     status: "read",
     title: "Golden Son",
     author: "Pierce Brown",
@@ -869,7 +897,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r13",
+    id: "r14",
     status: "read",
     title: "Morning Star",
     author: "Pierce Brown",
@@ -901,7 +929,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r14",
+    id: "r15",
     status: "read",
     title: "Iron Gold",
     author: "Pierce Brown",
@@ -933,7 +961,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r15",
+    id: "r16",
     status: "read",
     title: "Dark Age",
     author: "Pierce Brown",
@@ -965,7 +993,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r16",
+    id: "r17",
     status: "read",
     title: "Light Bringer",
     author: "Pierce Brown",
@@ -997,7 +1025,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r17",
+    id: "r18",
     status: "read",
     title: "Fourth Wing",
     author: "Rebecca Yarros",
@@ -1030,7 +1058,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r18",
+    id: "r19",
     status: "read",
     title: "Iron Flame",
     author: "Rebecca Yarros",
@@ -1062,7 +1090,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r19",
+    id: "r20",
     status: "read",
     title: "Looking for Alaska",
     author: "John Green",
@@ -1094,7 +1122,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r20",
+    id: "r21",
     status: "read",
     title: "Man's Search for Meaning",
     author: "Viktor E. Frankl",
@@ -1127,7 +1155,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r21",
+    id: "r22",
     status: "read",
     title: "Never Logged Out",
     author: "Ria Chopra",
@@ -1160,7 +1188,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r22",
+    id: "r23",
     status: "read",
     title: "The Old Man and the Sea",
     author: "Ernest Hemingway",
@@ -1194,7 +1222,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r23",
+    id: "r24",
     status: "read",
     title: "Poor Little Rich Slum",
     author: "Rashmi Bansal & Deepak Gandhi",
@@ -1227,7 +1255,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r24",
+    id: "r25",
     status: "read",
     title: "The Best Laid Plans",
     author: "Sidney Sheldon",
@@ -1259,7 +1287,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r25",
+    id: "r26",
     status: "read",
     title: "The Cruel Prince",
     author: "Holly Black",
@@ -1292,7 +1320,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r26",
+    id: "r27",
     status: "read",
     title: "The Last Tree on Easter Island",
     author: "Jared Diamond",
@@ -1325,7 +1353,7 @@ export const BooksRead: ReadBook[] = [
     ],
   },
   {
-    id: "r27",
+    id: "r28",
     status: "read",
     title: "We Should All Be Feminists",
     author: "Chimamanda Ngozi Adichie",

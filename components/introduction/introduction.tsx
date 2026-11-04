@@ -12,67 +12,22 @@ const Introduction = () => {
         {/* Mobile / Touch View */}
         <div className="block lg:hidden">
           {/* Row 1: BOOKS  YOU  CAN */}
-          <div className="relative flex w-dvw items-center justify-between px-4 sm:px-6">
-            <p className="font-mona-sans text-[clamp(24px,9vw,44px)] leading-[clamp(24px,10vw,36px)] font-medium text-black uppercase">
-              BOOKS
-            </p>
-            <p className="font-mona-sans text-[clamp(24px,9vw,44px)] leading-[clamp(24px,10vw,44px)] font-medium text-black uppercase">
-              YOU
-            </p>
-            <p className="font-mona-sans text-right text-[clamp(24px,9vw,44px)] leading-[clamp(24px,10vw,44px)] font-medium text-black uppercase">
-              CAN
+          <div className="relative flex w-dvw items-center justify-between px-6">
+            <p className="font-mona-sans text-[clamp(24px,8vw,44px)] leading-[130%] font-semibold text-black uppercase">
+              BOOKS YOU CAN<br/>BORROW FROM<br/>MY SHELF
             </p>
           </div>
 
-          {/* Row 2: BORROW  FROM */}
-          <div className="mt-4 flex w-dvw items-center justify-between px-4 sm:mt-6 sm:px-6">
-            <p className="font-mona-sans text-[clamp(24px,9vw,44px)] leading-[clamp(24px,10vw,44px)] font-medium text-black uppercase">
-              BORROW
-            </p>
-            <p className="font-mona-sans text-right text-[clamp(24px,9vw,44px)] leading-[clamp(24px,10vw,44px)] font-medium text-black uppercase">
-              FROM
-            </p>
-          </div>
+          {/* Photo centered directly under MY */}
+          <div className="mt-cell-[0.6] relative flex items-end justify-between px-6">
+            <Image
+              src={images.Kshitij}
+              alt="kshitijkumar"
+              className="w-cell-3.5 aspect-[1.3/1] max-w-[44vw] object-cover object-top"
+              priority
+            />
 
-          {/* Row 3: (  MY  ) with photo directly underneath */}
-          <div className="relative mt-4 flex flex-col items-center justify-center sm:mt-7">
-            {/* Parentheses and MY */}
-            <div className="relative flex w-cell-4 max-w-[44vw] items-center justify-between select-none">
-              <span className="font-mona-sans -ml-3 text-[clamp(24px,9vw,44px)] leading-[clamp(24px,10vw,44px)] font-medium text-black uppercase">
-                (
-              </span>
-              <span className="font-mona-sans absolute left-1/2 -translate-x-1/2 text-[clamp(24px,9vw,44px)] leading-[clamp(24px,10vw,44px)] font-medium text-black uppercase">
-                MY
-              </span>
-              <span className="font-mona-sans -mr-3 text-[clamp(24px,9vw,44px)] leading-[clamp(24px,10vw,44px)] font-medium text-black uppercase">
-                )
-              </span>
-            </div>
-
-            {/* Photo centered directly under MY */}
-            <div className="relative -mt-2 sm:-mt-1.5">
-              <Image
-                src={images.Kshitij}
-                alt="kshitijkumar"
-                className="aspect-[1.3/1] w-cell-4 max-w-[44vw] object-cover object-top"
-                priority
-              />
-            </div>
-          </div>
-
-          {/* Row 4: BOOK  SHELF */}
-          <div className="mt-1 flex w-dvw items-center justify-between px-4 sm:mt-8 sm:px-6">
-            <p className="font-mona-sans text-[clamp(24px,9vw,44px)] leading-[clamp(24px,10vw,44px)] font-medium text-black uppercase">
-              BOOK
-            </p>
-            <p className="font-mona-sans text-right text-[clamp(24px,9vw,44px)] leading-[clamp(24px,10vw,44px)] font-medium text-black uppercase">
-              SHELF
-            </p>
-          </div>
-
-          {/* Row 5: (move to explore) */}
-          <div className="mt-6.5 flex items-center justify-center sm:mt-16">
-            <p className="font-mona-sans text-[14px] font-semibold text-black select-none">
+            <p className="font-mona-sans translate-y-1 text-[14px] font-semibold text-black select-none">
               (move to explore)
             </p>
           </div>

@@ -294,7 +294,6 @@ const renderLayoutElement = (
       break;
     }
 
-    case "pill_message":
     case "pill-message": {
       node = (
         <PillMessage
@@ -341,7 +340,7 @@ const BookBlock = ({
   return (
     <div
       className={cn(
-        size === 6 ? "w-cell-6 h-cell-6" : "w-cell-8 h-cell-8",
+        "w-cell-8 h-cell-8",
         "relative aspect-square select-none",
         // "border border-red-500/20",
         className

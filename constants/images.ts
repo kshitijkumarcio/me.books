@@ -84,6 +84,9 @@ import ALTG3 from "@/public/images/altg3.png";
 import BOBH1 from "@/public/images/bobh1.png";
 import BOBH2 from "@/public/images/bobh2.png";
 import BOBH3 from "@/public/images/bobh3.png";
+import MIAFC1 from "@/public/images/miafc1.png";
+import MIAFC2 from "@/public/images/miafc2.png";
+import MIAFC3 from "@/public/images/miafc3.png";
 
 export const images = {
   AMonthInTheCountry,
@@ -173,6 +176,9 @@ export const images = {
   BOBH1,
   BOBH2,
   BOBH3,
+  MIAFC1,
+  MIAFC2,
+  MIAFC3,
 };
 
 export default images;
