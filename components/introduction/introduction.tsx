@@ -75,8 +75,8 @@ const Introduction = () => {
             </div>
             <div className="absolute left-1/2 flex max-w-120 -translate-x-1/2 items-center justify-center">
               <p className="font-mona-sans relative pl-1.5 text-[14px] font-semibold">
-                A small library of books that I have collected so far. Feel free
-                to explore and borrow whatever sparks your curiosity!
+                My small collection of books. Feel free
+                to explore and borrow whatever sparks your curiosity! [Some might not be up for swap!]
               </p>
             </div>
             <div className="pointer-events-auto">

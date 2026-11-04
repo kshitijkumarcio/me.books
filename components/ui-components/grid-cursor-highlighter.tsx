@@ -25,7 +25,7 @@ export const GridCursorHighlighter = ({
 
   // Read current --cell-size in pixels
   const getCellSize = useCallback(() => {
-    if (typeof window === "undefined") return 72;
+    if (typeof window === "undefined") return 60;
     const raw = getComputedStyle(document.documentElement).getPropertyValue(
       "--cell-size"
     );
@@ -34,7 +34,7 @@ export const GridCursorHighlighter = ({
       ? parsed
       : window.innerWidth < 768
       ? 40
-      : 72;
+      : 60;
   }, []);
 
   // Pointer movement listener

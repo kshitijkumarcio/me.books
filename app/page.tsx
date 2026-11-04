@@ -16,12 +16,9 @@ const RootPage = () => {
     <InfiniteCanvas onPanToReady={setPanToFn} initialCenter="horizontal">
       <main className="bg-grid-dashed relative min-h-dvh min-w-dvw">
         <GridCursorHighlighter />
-
         <Introduction />
-        <ShelfGrid books={allBooks} blockSize={8} gapSize={0} />
-
+        <ShelfGrid books={allBooks} blockSize={8} gapSize={1} />
         <CurrentReads />
-
         <Wishlist />
       </main>
     </InfiniteCanvas>

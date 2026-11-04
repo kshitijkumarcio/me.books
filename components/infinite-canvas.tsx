@@ -213,12 +213,13 @@ const InfiniteCanvas = ({
       wrapper,
       content,
       smoothWheel: true,
-      syncTouch: false,
+      syncTouch: true,
+      syncTouchLerp: cfg.lerp ?? 0.075,
+      touchInertiaExponent: 1.7,
+      touchMultiplier: 1,
       autoRaf: false,
       wheelMultiplier: cfg.wheelMultiplier,
       virtualScroll: (data: { event: Event }) => {
-        // If it's a touch event, don't let Lenis process or intercept it at all
-        if (data.event.type?.includes("touch")) return false;
         // Prevent Lenis's stopPropagation check from swallowing the event for the
         // sibling axis. On non-window wrappers, Lenis sets `event.lenisStopPropagation = true`,
         // which completely blocks the second Lenis instance from processing diagonal trackpad/wheel gestures.
