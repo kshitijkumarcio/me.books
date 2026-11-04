@@ -70,7 +70,7 @@ const OverlayNavigators = () => {
   };
 
   return (
-    <div className="pointer-events-none fixed top-0 left-0 z-999 flex h-dvh w-full flex-col justify-between lg:pt-4 pt-6 pb-10 px-6">
+    <div className="pointer-events-none fixed top-0 left-0 z-999 flex h-dvh w-full flex-col justify-between px-9 lg:pt-4 pt-6 pb-10 lg:px-6">
       {/* top bar */}
       <div className="flex items-center justify-between">
         <div className="">

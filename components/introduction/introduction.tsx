@@ -10,16 +10,16 @@ const Introduction = () => {
       <div className="pointer-events-none sticky left-0 w-screen">
         {" "}
         {/* Mobile / Touch View */}
-        <div className="block lg:hidden">
+        <div className="block lg:hidden pb-cell">
           {/* Row 1: BOOKS  YOU  CAN */}
-          <div className="relative flex w-dvw items-center justify-between px-6">
+          <div className="relative flex w-dvw items-center justify-between px-9">
             <p className="font-mona-sans text-[clamp(24px,8vw,44px)] leading-[130%] font-semibold text-black uppercase">
               BOOKS YOU CAN<br/>BORROW FROM<br/>MY SHELF
             </p>
           </div>
 
           {/* Photo centered directly under MY */}
-          <div className="mt-cell-[0.6] relative flex items-end justify-between px-6">
+          <div className="mt-cell-[0.6] relative flex items-end justify-between px-9">
             <Image
               src={images.Kshitij}
               alt="kshitijkumar"
