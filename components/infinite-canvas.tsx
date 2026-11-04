@@ -1,6 +1,8 @@
 "use client";
 
 import React, {
+  useState,
+  useEffect,
   useRef,
   useCallback,
   useMemo,
@@ -70,6 +72,33 @@ const InfiniteCanvas = ({
 
   const isDraggingRef = useRef(false);
   const hasMovedRef = useRef(false);
+
+  // Detect whether the current device is a touchscreen device
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  useEffect(() => {
+    const checkTouch = () => {
+      return (
+        (typeof navigator !== "undefined" && navigator.maxTouchPoints > 0) ||
+        "ontouchstart" in window ||
+        window.matchMedia("(pointer: coarse)").matches ||
+        window.matchMedia("(hover: none)").matches
+      );
+    };
+
+    setIsTouchDevice(checkTouch());
+
+    const mqlCoarse = window.matchMedia("(pointer: coarse)");
+    const mqlHover = window.matchMedia("(hover: none)");
+    const onChange = () => setIsTouchDevice(checkTouch());
+
+    mqlCoarse.addEventListener?.("change", onChange);
+    mqlHover.addEventListener?.("change", onChange);
+    return () => {
+      mqlCoarse.removeEventListener?.("change", onChange);
+      mqlHover.removeEventListener?.("change", onChange);
+    };
+  }, []);
 
   // Merge top-level config with any optional prop overrides
   const cfg = useMemo(
@@ -188,6 +217,8 @@ const InfiniteCanvas = ({
       autoRaf: false,
       wheelMultiplier: cfg.wheelMultiplier,
       virtualScroll: (data: { event: Event }) => {
+        // If it's a touch event, don't let Lenis process or intercept it at all
+        if (data.event.type?.includes("touch")) return false;
         // Prevent Lenis's stopPropagation check from swallowing the event for the
         // sibling axis. On non-window wrappers, Lenis sets `event.lenisStopPropagation = true`,
         // which completely blocks the second Lenis instance from processing diagonal trackpad/wheel gestures.
@@ -252,6 +283,8 @@ const InfiniteCanvas = ({
   }, [initialCenter, cfg.wheelMultiplier, cfg.lerp, scrollAnimOptions, getMax]);
 
   const handlePointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    // Drag feature is ONLY enabled for devices that are not touchscreen and pointer is mouse
+    if (isTouchDevice || e.pointerType !== "mouse") return;
     if (e.button !== 0) return;
     if (
       (e.target as HTMLElement | null)?.closest(
@@ -294,7 +327,7 @@ const InfiniteCanvas = ({
   };
 
   const handlePointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (!isDraggingRef.current) return;
+    if (isTouchDevice || !isDraggingRef.current) return;
 
     const phys = p.current;
     const now = performance.now();
@@ -333,7 +366,7 @@ const InfiniteCanvas = ({
   };
 
   const handlePointerUp = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (!isDraggingRef.current) return;
+    if (isTouchDevice || !isDraggingRef.current) return;
     isDraggingRef.current = false;
 
     if (wrapperRef.current) wrapperRef.current.style.cursor = "grab";
@@ -380,6 +413,7 @@ const InfiniteCanvas = ({
   };
 
   const handleClickCapture = (e: ReactMouseEvent) => {
+    if (isTouchDevice) return;
     if (hasMovedRef.current) {
       e.stopPropagation();
       e.preventDefault();
@@ -396,9 +430,13 @@ const InfiniteCanvas = ({
       onPointerCancel={handlePointerUp}
       onClickCapture={handleClickCapture}
       className={cn(
-        "no-scrollbar fixed inset-0 h-screen w-screen cursor-grab overflow-scroll overscroll-none touch-none",
+        "no-scrollbar canvas-scroll-wrapper fixed inset-0 h-screen w-screen overflow-scroll overscroll-none",
+        !isTouchDevice && "drag-enabled",
         wrapperClassName
       )}
+      style={{
+        WebkitOverflowScrolling: "touch",
+      }}
     >
       <div
         ref={contentRef}

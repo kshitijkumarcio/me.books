@@ -147,4 +147,17 @@
     width: 0;
     height: 0;
   }
+
+  .canvas-scroll-wrapper {
+    touch-action: pan-x pan-y;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .canvas-scroll-wrapper.drag-enabled {
+      touch-action: none;
+      cursor: grab;
+    }
+  }
 }
