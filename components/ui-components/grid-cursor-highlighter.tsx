@@ -33,8 +33,8 @@ export const GridCursorHighlighter = ({
     return !isNaN(parsed) && parsed > 0
       ? parsed
       : window.innerWidth < 768
-      ? 40
-      : 60;
+        ? 40
+        : 60;
   }, []);
 
   // Pointer movement listener
@@ -76,14 +76,11 @@ export const GridCursorHighlighter = ({
       if (cellEl) {
         cellEl.style.transform = `translate3d(${snappedX}px, ${snappedY}px, 0)`;
         // Web Animations API: reliable keyframe fade on compositor thread
-        cellEl.animate(
-          [{ opacity: 0.95 }, { opacity: 0 }],
-          {
-            duration: fadeDurationMs,
-            easing: "cubic-bezier(0.16, 1, 0.3, 1)",
-            fill: "forwards",
-          }
-        );
+        cellEl.animate([{ opacity: 0.95 }, { opacity: 0 }], {
+          duration: fadeDurationMs,
+          easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+          fill: "forwards",
+        });
       }
     };
 
@@ -91,7 +88,9 @@ export const GridCursorHighlighter = ({
       lastCellRef.current = null;
     };
 
-    window.addEventListener("pointermove", handlePointerMove, { passive: true });
+    window.addEventListener("pointermove", handlePointerMove, {
+      passive: true,
+    });
     document.addEventListener("pointerleave", handlePointerLeave);
 
     return () => {
@@ -115,7 +114,7 @@ export const GridCursorHighlighter = ({
           ref={(el) => {
             if (el) trailPoolRef.current[idx] = el;
           }}
-          className="absolute top-0 left-0 pointer-events-none rounded-xs border border-black/15"
+          className="pointer-events-none absolute top-0 left-0 rounded-xs border border-black/15"
           style={{
             width: "var(--cell-size)",
             height: "var(--cell-size)",

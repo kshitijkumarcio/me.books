@@ -17,7 +17,12 @@ const RootPage = () => {
       <main className="bg-grid-dashed relative min-h-dvh min-w-dvw">
         <GridCursorHighlighter />
         <Introduction />
-        <ShelfGrid books={allBooks} blockSize={8} gapSize={1} />
+        <ShelfGrid
+          books={allBooks}
+          blockSize={8}
+          horizontalGap={1}
+          verticalGap={0}
+        />
         <CurrentReads />
         <Wishlist />
       </main>

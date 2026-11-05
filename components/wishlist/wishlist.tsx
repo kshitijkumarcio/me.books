@@ -9,11 +9,7 @@ interface WishlistProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const Wishlist = ({ className, ...props }: WishlistProps) => {
   return (
-    <div
-      id="wishlist"
-      className={cn("relative h-dvh", className)}
-      {...props}
-    >
+    <div id="wishlist" className={cn("relative h-dvh", className)} {...props}>
       <div className="">
         <div className=""></div>
       </div>

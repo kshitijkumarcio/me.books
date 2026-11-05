@@ -40,15 +40,9 @@ const ViewDotsIcon = ({
 );
 
 const OverlayNavigators = () => {
-  const { toggleAbout, toggleUseCase, pageView, setPageView } =
-    useOverlayButtons();
-  const {
-    isChaptersMenuOpen,
-    toggleChaptersMenu,
-    closeChaptersMenu,
-    goToZone,
-    activeZoneId,
-  } = useCanvasNavigation();
+  const { toggleUseCase, pageView, setPageView } = useOverlayButtons();
+  const { isChaptersMenuOpen, toggleChaptersMenu, goToZone, activeZoneId } =
+    useCanvasNavigation();
 
   const [isMoodboardHovered, setIsMoodboardHovered] = useState<boolean>(false);
   const [isMoodboardClickLocked, setIsMoodboardClickLocked] =
@@ -70,11 +64,13 @@ const OverlayNavigators = () => {
   };
 
   return (
-    <div className="pointer-events-none fixed top-0 left-0 z-999 flex h-dvh w-full flex-col justify-between px-9 lg:pt-4 pt-6 pb-10 lg:px-6">
+    <div className="pointer-events-none fixed top-0 left-0 z-999 flex h-dvh w-full flex-col justify-between px-9 pt-6 pb-10 lg:px-6 lg:pt-4">
       {/* top bar */}
       <div className="flex items-center justify-between">
         <div className="">
-          <p className="font-mona-sans lg:text-[20px] text-[16px] font-bold">kshelf.</p>
+          <p className="font-mona-sans text-[16px] font-bold lg:text-[20px]">
+            kshelf.
+          </p>
         </div>
         <div className="pointer-events-auto hidden gap-x-6 lg:flex">
           {/* <div onClick={() => toggleAbout()} className={cn("cursor-pointer")}>
@@ -92,7 +88,7 @@ const OverlayNavigators = () => {
             <FlipTextButton>
               <p
                 className={cn(
-                  "font-mona-sans relative text-[14px] font-semibold"
+                  "font-mona-sans relative py-2 text-[14px] font-semibold"
                 )}
               >
                 use case.
@@ -205,7 +201,7 @@ const OverlayNavigators = () => {
           onClick={toggleChaptersMenu}
           className="group/nb pointer-events-auto flex cursor-pointer gap-x-1"
         >
-          <div className="flex aspect-square w-10 flex-col items-center justify-center gap-y-[2.5px] rounded-sm bg-black">
+          <div className="flex aspect-square w-10 flex-col items-center justify-center gap-y-[2.5px] rounded-sm border border-white bg-black">
             <div className="h-[1.5px] w-4 bg-white"></div>
             <div
               className={cn(
@@ -215,7 +211,7 @@ const OverlayNavigators = () => {
             ></div>
             <div className="h-[1.5px] w-4 bg-white"></div>
           </div>
-          <div className="flex h-10 items-center justify-center rounded-sm bg-black px-4">
+          <div className="flex h-10 items-center justify-center rounded-sm border border-white bg-black px-4">
             <FlipTextButton>
               <p className="font-mona-sans text-[14px] font-semibold text-white">
                 chapters

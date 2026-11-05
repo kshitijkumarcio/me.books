@@ -3,7 +3,7 @@
 import { type ReactNode } from "react";
 import { motion, type Variants } from "motion/react";
 import { useOverlayButtons } from "@/hooks/layout-hooks/useoverlaybuttons";
-import { easing016, easing022 } from "@/constants";
+import { easing022 } from "@/constants";
 import { cn } from "@/lib/utils";
 
 const variants: Variants = {

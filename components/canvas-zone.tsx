@@ -11,12 +11,7 @@ interface CanvasZoneProps {
   className?: string;
 }
 
-export const CanvasZone = ({
-  zone,
-  children,
-  itemCount,
-  className,
-}: CanvasZoneProps) => {
+export const CanvasZone = ({ zone, children, className }: CanvasZoneProps) => {
   return (
     <div
       id={zone.id}

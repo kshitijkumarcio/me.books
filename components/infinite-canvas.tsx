@@ -1,11 +1,10 @@
 "use client";
 
 import React, {
-  useState,
-  useEffect,
   useRef,
   useCallback,
   useMemo,
+  useSyncExternalStore,
   type PointerEvent as ReactPointerEvent,
   type MouseEvent as ReactMouseEvent,
 } from "react";
@@ -57,6 +56,33 @@ export interface InfiniteCanvasProps {
   onPanToReady?: (panTo: (x: number, y: number) => void) => void;
 }
 
+function subscribeTouch(onChange: () => void) {
+  if (typeof window === "undefined") return () => {};
+  const mqlCoarse = window.matchMedia("(pointer: coarse)");
+  const mqlHover = window.matchMedia("(hover: none)");
+
+  mqlCoarse.addEventListener?.("change", onChange);
+  mqlHover.addEventListener?.("change", onChange);
+  return () => {
+    mqlCoarse.removeEventListener?.("change", onChange);
+    mqlHover.removeEventListener?.("change", onChange);
+  };
+}
+
+function getTouchSnapshot(): boolean {
+  if (typeof window === "undefined") return false;
+  return (
+    (typeof navigator !== "undefined" && navigator.maxTouchPoints > 0) ||
+    "ontouchstart" in window ||
+    window.matchMedia("(pointer: coarse)").matches ||
+    window.matchMedia("(hover: none)").matches
+  );
+}
+
+function getServerTouchSnapshot(): boolean {
+  return false;
+}
+
 const InfiniteCanvas = ({
   children,
   wrapperClassName,
@@ -74,31 +100,11 @@ const InfiniteCanvas = ({
   const hasMovedRef = useRef(false);
 
   // Detect whether the current device is a touchscreen device
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
-
-  useEffect(() => {
-    const checkTouch = () => {
-      return (
-        (typeof navigator !== "undefined" && navigator.maxTouchPoints > 0) ||
-        "ontouchstart" in window ||
-        window.matchMedia("(pointer: coarse)").matches ||
-        window.matchMedia("(hover: none)").matches
-      );
-    };
-
-    setIsTouchDevice(checkTouch());
-
-    const mqlCoarse = window.matchMedia("(pointer: coarse)");
-    const mqlHover = window.matchMedia("(hover: none)");
-    const onChange = () => setIsTouchDevice(checkTouch());
-
-    mqlCoarse.addEventListener?.("change", onChange);
-    mqlHover.addEventListener?.("change", onChange);
-    return () => {
-      mqlCoarse.removeEventListener?.("change", onChange);
-      mqlHover.removeEventListener?.("change", onChange);
-    };
-  }, []);
+  const isTouchDevice = useSyncExternalStore(
+    subscribeTouch,
+    getTouchSnapshot,
+    getServerTouchSnapshot
+  );
 
   // Merge top-level config with any optional prop overrides
   const cfg = useMemo(
@@ -223,7 +229,9 @@ const InfiniteCanvas = ({
         // Prevent Lenis's stopPropagation check from swallowing the event for the
         // sibling axis. On non-window wrappers, Lenis sets `event.lenisStopPropagation = true`,
         // which completely blocks the second Lenis instance from processing diagonal trackpad/wheel gestures.
-        (data.event as unknown as { lenisStopPropagation?: boolean }).lenisStopPropagation = false;
+        (
+          data.event as unknown as { lenisStopPropagation?: boolean }
+        ).lenisStopPropagation = false;
         return true;
       },
       ...scrollAnimOptions,

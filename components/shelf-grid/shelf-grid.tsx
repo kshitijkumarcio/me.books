@@ -10,7 +10,11 @@ export interface ShelfGridProps {
   cols?: number;
   rows?: number;
   blockSize?: 8 | 6; // cells
-  gapSize?: number; // cells
+  gapSize?: number; // uniform gap fallback in cells
+  horizontalGap?: number; // horizontal gap between blocks in cells
+  verticalGap?: number; // vertical gap between rows in cells
+  gapX?: number; // alias for horizontalGap
+  gapY?: number; // alias for verticalGap
   className?: string;
   showCoordinates?: boolean; // Explicit control of coordinate overlay
   enableCoordinateToggle?: boolean; // Show floating toggle button (default: true in development)
@@ -93,8 +97,8 @@ const EmptyBlock = ({
         size === 6 ? "w-cell-6 h-cell-6" : "w-cell-8 h-cell-8",
         "relative aspect-square select-none",
         showCoordinate
-          ? "flex flex-col items-center justify-center rounded-xl border border-dashed border-black/25 bg-black/[0.02] text-black/50 transition-colors"
-          : "invisible pointer-events-none"
+          ? "flex flex-col items-center justify-center rounded-xl border border-dashed border-black/25 bg-black/2 text-black/50 transition-colors"
+          : "pointer-events-none invisible"
       )}
     >
       {showCoordinate && (
@@ -112,10 +116,16 @@ const ShelfGrid = ({
   rows: propRows,
   blockSize = 8,
   gapSize = 0,
+  horizontalGap,
+  verticalGap,
+  gapX,
+  gapY,
   showCoordinates: propShowCoordinates,
   enableCoordinateToggle = true,
   className,
 }: ShelfGridProps) => {
+  const effectiveGapX = horizontalGap ?? gapX ?? gapSize;
+  const effectiveGapY = verticalGap ?? gapY ?? gapSize;
   // Local coordinate toggle state
   const [localShowCoordinates, setLocalShowCoordinates] =
     useState<boolean>(false);
@@ -197,7 +207,9 @@ const ShelfGrid = ({
             console.warn(
               `[ShelfGrid Collision] Position "${coordLabel}" was claimed by ${assignedBooks.length} books: ${assignedBooks
                 .map((b) => `"${b.title || b.id}"`)
-                .join(", ")}. Book "${assignedBooks[0].title || assignedBooks[0].id}" was placed here; others were moved to unpositioned auto-flow.`
+                .join(
+                  ", "
+                )}. Book "${assignedBooks[0].title || assignedBooks[0].id}" was placed here; others were moved to unpositioned auto-flow.`
             );
           }
           // Push conflicting books into autoflow queue so they still appear on shelf
@@ -246,7 +258,10 @@ const ShelfGrid = ({
 
     // Search candidate K values starting from at least minRequiredK
     const minK = Math.max(2, minRequiredK);
-    const maxK = Math.max(minK, Math.min(Math.max(totalSlots, minRequiredK * 2), 30));
+    const maxK = Math.max(
+      minK,
+      Math.min(Math.max(totalSlots, minRequiredK * 2), 30)
+    );
 
     for (let candidateK = minK; candidateK <= maxK; candidateK++) {
       let cap = 0;
@@ -258,8 +273,8 @@ const ShelfGrid = ({
 
       // Calculate width and height in cells for this (candidateK, r)
       const widthCells =
-        candidateK * blockSize + Math.max(0, candidateK - 1) * gapSize;
-      const heightCells = r * blockSize + Math.max(0, r - 1) * gapSize;
+        candidateK * blockSize + Math.max(0, candidateK - 1) * effectiveGapX;
+      const heightCells = r * blockSize + Math.max(0, r - 1) * effectiveGapY;
 
       // Aspect ratio difference from 1:1 (square)
       const diff = Math.abs(widthCells - heightCells);
@@ -285,7 +300,8 @@ const ShelfGrid = ({
     propCols,
     propRows,
     blockSize,
-    gapSize,
+    effectiveGapX,
+    effectiveGapY,
   ]);
 
   // 3. 2-Phase Fill: Group items into alternating rows to create the brick masonry pattern
@@ -358,11 +374,11 @@ const ShelfGrid = ({
   return (
     <div
       className={cn(
-        "flex flex-col px-cell items-center select-none relative",
+        "px-cell relative flex flex-col items-center select-none",
         className
       )}
       style={{
-        gap: `calc(var(--cell-size) * ${gapSize})`,
+        rowGap: `calc(var(--cell-size) * ${effectiveGapY})`,
       }}
     >
       {/* Optional Floating Coordinate Toggle Button */}
@@ -372,10 +388,10 @@ const ShelfGrid = ({
           onClick={() => setLocalShowCoordinates((prev) => !prev)}
           title="Toggle grid coordinate badges (Shortcut: G)"
           className={cn(
-            "fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-mono font-medium shadow-lg transition-all duration-200 cursor-pointer backdrop-blur-md select-none",
+            "fixed right-6 bottom-6 z-50 flex cursor-pointer items-center gap-2 rounded-full px-3.5 py-1.5 font-mono text-xs font-medium shadow-lg backdrop-blur-md transition-all duration-200 select-none",
             isCoordinatesVisible
               ? "bg-black text-white hover:bg-neutral-800"
-              : "bg-white/90 text-neutral-800 hover:bg-white border border-black/10"
+              : "border border-black/10 bg-white/90 text-neutral-800 hover:bg-white"
           )}
         >
           <span
@@ -384,7 +400,11 @@ const ShelfGrid = ({
               isCoordinatesVisible ? "bg-emerald-400" : "bg-neutral-400"
             )}
           />
-          <span>{isCoordinatesVisible ? "Grid: Coordinates ON" : "Grid: Coordinates"}</span>
+          <span>
+            {isCoordinatesVisible
+              ? "Grid: Coordinates ON"
+              : "Grid: Coordinates"}
+          </span>
         </button>
       )}
 
@@ -394,19 +414,19 @@ const ShelfGrid = ({
           key={`shelf-row-${r}`}
           className="flex flex-row justify-center"
           style={{
-            gap: `calc(var(--cell-size) * ${gapSize})`,
+            columnGap: `calc(var(--cell-size) * ${effectiveGapX})`,
           }}
         >
           {row.map((item) => (
             <div
               key={item.key}
-              className="relative flex items-center justify-center shrink-0"
+              className="relative flex shrink-0 items-center justify-center"
             >
               {item.node}
 
               {/* Coordinate badge for occupied book blocks */}
               {isCoordinatesVisible && item.isOccupied && (
-                <div className="absolute top-2 left-2 z-40 pointer-events-none rounded bg-black/80 px-1.5 py-0.5 font-mono text-[10px] font-bold text-white shadow backdrop-blur-xs select-none">
+                <div className="pointer-events-none absolute top-2 left-2 z-40 rounded bg-black/80 px-1.5 py-0.5 font-mono text-[10px] font-bold text-white shadow backdrop-blur-xs select-none">
                   {item.coordinate}
                 </div>
               )}

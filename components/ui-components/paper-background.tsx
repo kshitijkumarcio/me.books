@@ -108,7 +108,7 @@ export const PaperBackground = ({
       height="100%"
       preserveAspectRatio="none"
       className={cn(
-        "pointer-events-none saturate-[1.1] absolute inset-0 h-full w-full overflow-visible",
+        "pointer-events-none absolute inset-0 h-full w-full overflow-visible saturate-[1.1]",
         className
       )}
       xmlns="http://www.w3.org/2000/svg"

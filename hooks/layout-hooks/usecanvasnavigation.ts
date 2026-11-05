@@ -61,31 +61,33 @@ interface CanvasNavigationState {
   goToZone: (zoneId: string) => void;
 }
 
-export const useCanvasNavigation = create<CanvasNavigationState>((set, get) => ({
-  panToFn: null,
-  activeZoneId: "books-read",
-  isChaptersMenuOpen: false,
-  setPanToFn: (fn) => set({ panToFn: fn }),
-  setActiveZoneId: (id) => set({ activeZoneId: id }),
-  toggleChaptersMenu: () =>
-    set((state) => ({ isChaptersMenuOpen: !state.isChaptersMenuOpen })),
-  closeChaptersMenu: () => set({ isChaptersMenuOpen: false }),
+export const useCanvasNavigation = create<CanvasNavigationState>(
+  (set, get) => ({
+    panToFn: null,
+    activeZoneId: "books-read",
+    isChaptersMenuOpen: false,
+    setPanToFn: (fn) => set({ panToFn: fn }),
+    setActiveZoneId: (id) => set({ activeZoneId: id }),
+    toggleChaptersMenu: () =>
+      set((state) => ({ isChaptersMenuOpen: !state.isChaptersMenuOpen })),
+    closeChaptersMenu: () => set({ isChaptersMenuOpen: false }),
 
-  goToZone: (zoneId: string) => {
-    const { panToFn } = get();
-    const zone = CANVAS_ZONES.find((z) => z.id === zoneId);
-    if (!zone || !panToFn) return;
+    goToZone: (zoneId: string) => {
+      const { panToFn } = get();
+      const zone = CANVAS_ZONES.find((z) => z.id === zoneId);
+      if (!zone || !panToFn) return;
 
-    // Read current cell size from CSS variable or window width
-    const isDesktop = typeof window !== "undefined" && window.innerWidth >= 768;
-    const cellSize = isDesktop ? 60 : 40;
+      // Read current cell size from CSS variable or window width
+      const isDesktop =
+        typeof window !== "undefined" && window.innerWidth >= 768;
+      const cellSize = isDesktop ? 60 : 40;
 
-    // Calculate pixel coordinates for the zone
-    const targetX = zone.colStart * cellSize;
-    const targetY = zone.rowStart * cellSize;
+      // Calculate pixel coordinates for the zone
+      const targetX = zone.colStart * cellSize;
+      const targetY = zone.rowStart * cellSize;
 
-    panToFn(targetX, targetY);
-    set({ activeZoneId: zoneId, isChaptersMenuOpen: false });
-  },
-}));
-
+      panToFn(targetX, targetY);
+      set({ activeZoneId: zoneId, isChaptersMenuOpen: false });
+    },
+  })
+);

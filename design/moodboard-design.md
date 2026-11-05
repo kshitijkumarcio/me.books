@@ -22,12 +22,11 @@ we will have 3 navigation zones, adjacent to each other, 1- current reads, 2- wi
 each navigation zone has a defined position (x & y) in the canvas, so the chapters button can help us go to each zone when selected.
 <!--  -->
 
-books data will be stored in books-index.ts file for now, until i hook up convex and a custom dashboard to update this /book-shelf page. 
+books data will be stored in books-index.ts file for now, until i hook up convex and a custom dashboard to update this /book-shelf page.
 <!--  -->
 
 i will have design in between the block gaps, as well, so we cannot just have space-cell in the tailwind, we need a div in between the blocks to separate them
 <!--  -->
 
-i want all this code to be dynamic, i should not have to write each block separately, so we will probably just map array and inside them block with its modular and dynamic characteristics, 
+i want all this code to be dynamic, i should not have to write each block separately, so we will probably just map array and inside them block with its modular and dynamic characteristics,
 <!--  -->
-

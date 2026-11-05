@@ -87,6 +87,60 @@ import BOBH3 from "@/public/images/bobh3.png";
 import MIAFC1 from "@/public/images/miafc1.png";
 import MIAFC2 from "@/public/images/miafc2.png";
 import MIAFC3 from "@/public/images/miafc3.png";
+import BeachRead1 from "@/public/images/br1.png";
+import BeachRead2 from "@/public/images/br2.png";
+import BeachRead3 from "@/public/images/br3.png";
+import Circe1 from "@/public/images/circe1.png";
+import Circe2 from "@/public/images/circe2.png";
+import Circe3 from "@/public/images/circe3.png";
+import PHM1 from "@/public/images/phm1.png";
+import PHM2 from "@/public/images/phm2.png";
+import PHM3 from "@/public/images/phm3.png";
+import CP1 from "@/public/images/cp1.png";
+import CP2 from "@/public/images/cp2.png";
+import CP3 from "@/public/images/cp3.png";
+import LFA1 from "@/public/images/lfa1.png";
+import LFA2 from "@/public/images/lfa2.png";
+import LFA3 from "@/public/images/lfa3.png";
+import OMATS1 from "@/public/images/omats1.png";
+import OMATS2 from "@/public/images/omats2.png";
+import OMATS3 from "@/public/images/omats3.png";
+import ODPABAB1 from "@/public/images/odpabab1.png";
+import ODPABAB2 from "@/public/images/odpabab2.png";
+import ODPABAB3 from "@/public/images/odpabab3.png";
+import LTAYP1 from "@/public/images/ltayp1.png";
+import LTAYP2 from "@/public/images/ltayp2.png";
+import LTAYP3 from "@/public/images/ltayp3.png";
+import MSFM1 from "@/public/images/msfm1.png";
+import MSFM2 from "@/public/images/msfm2.png";
+import MSFM3 from "@/public/images/msfm3.png";
+import AF1 from "@/public/images/af1.png";
+import AF2 from "@/public/images/af2.png";
+import AF3 from "@/public/images/af3.png";
+import CC1 from "@/public/images/cc1.png";
+import CC2 from "@/public/images/cc2.png";
+import CC3 from "@/public/images/cc3.png";
+import TLTOEI1 from "@/public/images/tltoei1.png";
+import TLTOEI2 from "@/public/images/tltoei2.png";
+import TLTOEI3 from "@/public/images/tltoei3.png";
+import PLRS1 from "@/public/images/plrs1.png";
+import PLRS2 from "@/public/images/plrs2.png";
+import PLRS3 from "@/public/images/plrs3.png";
+import WSABF1 from "@/public/images/wsabf1.png";
+import WSABF2 from "@/public/images/wsabf2.png";
+import WSABF3 from "@/public/images/wsabf3.png";
+import NLO1 from "@/public/images/nlo1.png";
+import NLO2 from "@/public/images/nlo2.png";
+import NLO3 from "@/public/images/nlo3.png";
+import FW1 from "@/public/images/fw1.png";
+import FW2 from "@/public/images/fw2.png";
+import FW3 from "@/public/images/fw3.png";
+import FW4 from "@/public/images/fw4.png";
+import FWIF from "@/public/images/fw-if.png";
+import IF1 from "@/public/images/if1.png";
+import IF2 from "@/public/images/if2.png";
+import IF3 from "@/public/images/if3.png";
+import IF4 from "@/public/images/if4.png";
 
 export const images = {
   AMonthInTheCountry,
@@ -179,6 +233,60 @@ export const images = {
   MIAFC1,
   MIAFC2,
   MIAFC3,
+  BeachRead1,
+  BeachRead2,
+  BeachRead3,
+  Circe1,
+  Circe2,
+  Circe3,
+  PHM1,
+  PHM2,
+  PHM3,
+  CP1,
+  CP2,
+  CP3,
+  LFA1,
+  LFA2,
+  LFA3,
+  OMATS1,
+  OMATS2,
+  OMATS3,
+  ODPABAB1,
+  ODPABAB2,
+  ODPABAB3,
+  LTAYP1,
+  LTAYP2,
+  LTAYP3,
+  MSFM1,
+  MSFM2,
+  MSFM3,
+  AF1,
+  AF2,
+  AF3,
+  CC1,
+  CC2,
+  CC3,
+  TLTOEI1,
+  TLTOEI2,
+  TLTOEI3,
+  PLRS1,
+  PLRS2,
+  PLRS3,
+  WSABF1,
+  WSABF2,
+  WSABF3,
+  NLO1,
+  NLO2,
+  NLO3,
+  FW1,
+  FW2,
+  FW3,
+  FW4,
+  FWIF,
+  IF1,
+  IF2,
+  IF3,
+  IF4,
 };
 
 export default images;

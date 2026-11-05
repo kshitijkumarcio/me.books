@@ -10,11 +10,15 @@ const Introduction = () => {
       <div className="pointer-events-none sticky left-0 w-screen">
         {" "}
         {/* Mobile / Touch View */}
-        <div className="block lg:hidden pb-cell">
+        <div className="pb-cell block lg:hidden">
           {/* Row 1: BOOKS  YOU  CAN */}
           <div className="relative flex w-dvw items-center justify-between px-9">
             <p className="font-mona-sans text-[clamp(24px,8vw,44px)] leading-[130%] font-semibold text-black uppercase">
-              BOOKS YOU CAN<br/>BORROW FROM<br/>MY SHELF
+              BOOKS YOU CAN
+              <br />
+              BORROW FROM
+              <br />
+              MY SHELF
             </p>
           </div>
 
@@ -75,8 +79,8 @@ const Introduction = () => {
             </div>
             <div className="absolute left-1/2 flex max-w-120 -translate-x-1/2 items-center justify-center">
               <p className="font-mona-sans relative pl-1.5 text-[14px] font-semibold">
-                My small collection of books. Feel free
-                to explore and borrow whatever sparks your curiosity! [Some might not be up for swap!]
+                My small collection of books. Feel free to explore and borrow
+                whatever sparks your curiosity! [Some might not be up for swap!]
               </p>
             </div>
             <div className="pointer-events-auto">
