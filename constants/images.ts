@@ -141,6 +141,18 @@ import IF1 from "@/public/images/if1.png";
 import IF2 from "@/public/images/if2.png";
 import IF3 from "@/public/images/if3.png";
 import IF4 from "@/public/images/if4.png";
+import RR1 from "@/public/images/rr1.png";
+import RR2 from "@/public/images/rr2.png";
+import RR3 from "@/public/images/rr3.png";
+import RR4 from "@/public/images/rr4.png";
+import GS1 from "@/public/images/gs1.png";
+import GS2 from "@/public/images/gs2.png";
+import GS3 from "@/public/images/gs3.png";
+import GS4 from "@/public/images/gs4.png";
+import IG1 from "@/public/images/ig1.png";
+import IG2 from "@/public/images/ig2.png";
+import IG3 from "@/public/images/ig3.png";
+import IG4 from "@/public/images/ig4.png";
 
 export const images = {
   AMonthInTheCountry,
@@ -287,6 +299,18 @@ export const images = {
   IF2,
   IF3,
   IF4,
+  RR1,
+  RR2,
+  RR3,
+  RR4,
+  GS1,
+  GS2,
+  GS3,
+  GS4,
+  IG1,
+  IG2,
+  IG3,
+  IG4,
 };
 
 export default images;

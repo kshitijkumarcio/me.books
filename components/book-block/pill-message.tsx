@@ -22,7 +22,7 @@ const PillMessage = ({
   return (
     <div
       className={cn(
-        "inline-flex items-center justify-center rounded-full px-4 py-2.5 whitespace-nowrap transition-transform duration-200 select-none",
+        "inline-flex items-center justify-center rounded-full px-[calc(16px*var(--book-scale))] py-[calc(10px*var(--book-scale))] whitespace-nowrap transition-transform duration-200 select-none",
         pill_classnames,
         className
       )}
@@ -30,8 +30,13 @@ const PillMessage = ({
     >
       <span
         className={cn(
-          "font-mona-sans text-[12px] leading-none text-white antialiased",
-          text_classnames
+          "font-mona-sans text-[calc(12px*var(--book-scale))] leading-none text-white antialiased",
+          typeof text_classnames === "string"
+            ? text_classnames.replace(
+                /text-\[([0-9.]+)px\]/g,
+                "text-[calc($1px*var(--book-scale))]"
+              )
+            : text_classnames
         )}
       >
         {text ?? children}

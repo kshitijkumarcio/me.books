@@ -22,7 +22,8 @@ interface BookBlockProps {
 }
 
 /**
- * Resolves cell units into calc(var(--cell-size) * value).
+ * Resolves cell units or Tailwind size classes into calc(var(--cell-size) * ...),
+ * scaling them proportionally with the grid size (60px on >=768px, 40px on <768px).
  */
 export const parseCellUnit = (
   val: string | number | undefined | null
@@ -32,22 +33,79 @@ export const parseCellUnit = (
     return `calc(var(--cell-size) * ${val})`;
   }
   const str = String(val).trim();
-  const match = str.match(
+  if (!str) return null;
+
+  if (str.startsWith("calc(")) {
+    return str;
+  }
+
+  // 1. Explicit cell units: e.g. "top-cell-0.5", "w-cell-[2.5]", "-left-cell-1.5"
+  const cellMatch = str.match(
     /^(-)?(?:top|bottom|left|right|w|h|p|m|gap|inset)-cell-(?:\[)?([0-9.]+)(?:\])?$/
   );
-  if (match) {
-    const isNegative = match[1] === "-";
-    const num = parseFloat(match[2]);
+  if (cellMatch) {
+    const isNegative = cellMatch[1] === "-";
+    const num = parseFloat(cellMatch[2]);
     if (!isNaN(num)) {
       return `calc(var(--cell-size) * ${isNegative ? -num : num})`;
     }
   }
+
+  // 2. Pure numbers as string: e.g. "0.5", "2", "-1.5"
   if (/^-?[0-9.]+$/.test(str)) {
     const num = parseFloat(str);
     if (!isNaN(num)) {
       return `calc(var(--cell-size) * ${num})`;
     }
   }
+
+  // 3. Composite with md: prefix (e.g. "max-w-[200px] md:max-w-[280px]" or "w-28 md:w-36")
+  // The md: value represents the desktop base designed for 60px grid cells.
+  if (str.includes("md:")) {
+    const mdPxMatch = str.match(/md:(?:max-)?(?:w|h)-\[([0-9.]+)px\]/);
+    if (mdPxMatch) {
+      const px = parseFloat(mdPxMatch[1]);
+      if (!isNaN(px)) {
+        return `calc(var(--cell-size) * ${px} / 60)`;
+      }
+    }
+    const mdNumMatch = str.match(/md:(?:max-)?(?:w|h)-([0-9.]+)/);
+    if (mdNumMatch) {
+      const num = parseFloat(mdNumMatch[1]);
+      if (!isNaN(num)) {
+        return `calc(var(--cell-size) * ${num * 4} / 60)`;
+      }
+    }
+  }
+
+  // 4. Arbitrary pixel sizes: e.g. "w-[160px]", "max-w-[280px]", "top-[10px]"
+  const pxMatch = str.match(
+    /^(-)?(?:max-)?(?:w|h|top|bottom|left|right)-\[([0-9.]+)px\]$/
+  );
+  if (pxMatch) {
+    const isNegative = pxMatch[1] === "-";
+    const px = parseFloat(pxMatch[2]);
+    if (!isNaN(px)) {
+      return `calc(var(--cell-size) * ${isNegative ? -px : px} / 60)`;
+    }
+  }
+
+  // 5. Standard Tailwind spacing / sizing: e.g. "w-40", "w-36", "w-39.5", "max-w-62", "top-4"
+  // In Tailwind, 1 unit = 0.25rem = 4px.
+  // Desktop cell size = 60px.
+  // Proportional scale = (num * 4) / 60 cells.
+  const tailwindMatch = str.match(
+    /^(-)?(?:max-)?(?:w|h|top|bottom|left|right)-([0-9.]+)$/
+  );
+  if (tailwindMatch) {
+    const isNegative = tailwindMatch[1] === "-";
+    const num = parseFloat(tailwindMatch[2]);
+    if (!isNaN(num)) {
+      const desktopPx = num * 4;
+      return `calc(var(--cell-size) * ${isNegative ? -desktopPx : desktopPx} / 60)`;
+    }
+  }
+
   return null;
 };
 
@@ -178,7 +236,7 @@ const normalizeLayout = (book: BookItem, size: 8 | 6): BlockLayoutElement[] => {
       bottom: "bottom-cell-0.5",
       right: "right-cell-0.5",
       rotation: "rotate-0",
-      maxWidthClass: "max-w-[200px] md:max-w-[280px]",
+      maxWidthClass: "max-w-[280px]",
       zIndex: 20,
     },
   ];
@@ -228,7 +286,7 @@ const renderLayoutElement = (
           lightElevation={element.lightElevation}
           rotation={element.rotation || "rotate-0"}
           maxWidthClass={
-            element.maxWidthClass || "max-w-[200px] md:max-w-[280px]"
+            element.maxWidthClass || "max-w-[280px]"
           }
           className={element.className}
         />
@@ -237,14 +295,14 @@ const renderLayoutElement = (
     }
 
     case "image": {
-      const cellWidth = parseCellUnit(element.widthClass);
+      const cellWidth = parseCellUnit(element.widthClass || "w-36");
       node = (
         <div
           style={cellWidth ? { width: cellWidth } : undefined}
           className={cn(
             "relative select-none",
             // "border-8 border-b-12 border-[#f0ebd8]",
-            !cellWidth && (element.widthClass || "w-28 md:w-36"),
+            !cellWidth && (element.widthClass || "w-36"),
             element.className
           )}
         >
@@ -263,12 +321,12 @@ const renderLayoutElement = (
       node = (
         <div
           className={cn(
-            "text-neon rounded border border-black/15 bg-neutral-900/90 p-2 font-mono text-[10px] shadow-md backdrop-blur-xs select-none",
+            "text-neon rounded border border-black/15 bg-neutral-900/90 p-[calc(8px*var(--book-scale))] font-mono text-[calc(10px*var(--book-scale))] shadow-md backdrop-blur-xs select-none",
             element.className
           )}
         >
           {element.filename && (
-            <div className="mb-1 text-[9px] text-neutral-400">
+            <div className="mb-1 text-[calc(9px*var(--book-scale))] text-neutral-400">
               {element.filename}
             </div>
           )}
@@ -284,7 +342,7 @@ const renderLayoutElement = (
       node = (
         <span
           className={cn(
-            "inline-flex items-center rounded-xs border border-black/15 bg-white/95 px-2 py-0.5 font-mono text-[9px] font-bold tracking-wider text-neutral-800 uppercase shadow-xs select-none",
+            "inline-flex items-center rounded-xs border border-black/15 bg-white/95 px-[calc(8px*var(--book-scale))] py-[calc(2px*var(--book-scale))] font-mono text-[calc(9px*var(--book-scale))] font-bold tracking-wider text-neutral-800 uppercase shadow-xs select-none",
             element.className
           )}
         >

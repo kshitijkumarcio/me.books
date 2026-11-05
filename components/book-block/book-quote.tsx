@@ -4,6 +4,7 @@ import type { CSSProperties } from "react";
 import PaperBackground from "@/components/ui-components/paper-background";
 import { cn } from "@/lib/utils";
 import type { QuoteTextColor } from "@/books/books-index";
+import { parseCellUnit } from "./book-block";
 
 interface BookQuoteProps {
   quote: string;
@@ -79,17 +80,32 @@ const BookQuote = ({
   lightElevation = 70,
   rotation = "rotate-0",
   className,
-  maxWidthClass = "max-w-[260px] md:max-w-[300px]",
+  maxWidthClass = "max-w-[280px]",
 }: BookQuoteProps) => {
   const { className: textClass, style: textStyle } =
     getTextStyleAndClass(textColor);
+  const cellMaxWidth = parseCellUnit(maxWidthClass);
+  const isWidthClass = maxWidthClass?.trim().startsWith("w-");
 
   return (
     <div className={cn("relative select-none", rotation, className)}>
-      <div className={cn("relative px-2.5 py-2.5", maxWidthClass)}>
+      <div
+        style={
+          cellMaxWidth
+            ? {
+                maxWidth: cellMaxWidth,
+                ...(isWidthClass ? { width: cellMaxWidth } : {}),
+              }
+            : undefined
+        }
+        className={cn(
+          "relative px-[calc(10px*var(--book-scale))] py-[calc(10px*var(--book-scale))]",
+          !cellMaxWidth && maxWidthClass
+        )}
+      >
         <p
           className={cn(
-            "font-mona-sans relative z-10 text-[12px] leading-snug font-semibold italic",
+            "font-mona-sans relative z-10 text-[calc(12px*var(--book-scale))] leading-snug font-semibold italic",
             textClass
           )}
           style={textStyle}

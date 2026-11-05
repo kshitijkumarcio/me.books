@@ -3,20 +3,26 @@
 
 :root {
   --cell-size: 40px;
+  --book-scale: calc(40 / 60);
+  --shadow-book:
+    0 0 0 1px rgba(0, 0, 0, 0.08), 0 1.33px 2.67px rgba(0, 0, 0, 0.06),
+    5.33px 5.33px 5.33px rgba(0, 0, 0, 0.1), 5.33px 5.33px 5.33px rgba(0, 0, 0, 0.14),
+    5.33px 10.67px 5.33px rgba(0, 0, 0, 0.16);
 
   @media (min-width: 768px) {
     --cell-size: 60px;
+    --book-scale: 1;
+    --shadow-book:
+      0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.06),
+      8px 8px 8px rgba(0, 0, 0, 0.1), 8px 8px 8px rgba(0, 0, 0, 0.14),
+      8px 16px 8px rgba(0, 0, 0, 0.16);
   }
 }
 
 @theme inline {
   --font-mona-sans: var(--font-mona-sans);
   --color-neon: #d9ff36;
-  --shadow-book:
-    0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.06),
-    8px 8px 8px rgba(0, 0, 0, 0.1), 8px 8px 8px rgba(0, 0, 0, 0.14),
-    8px 16px 8px rgba(0, 0, 0, 0.16);
-
+  --shadow-book: var(--shadow-book);
   --spacing-cell: var(--cell-size);
 }
 
