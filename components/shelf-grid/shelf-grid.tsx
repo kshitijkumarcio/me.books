@@ -4,6 +4,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import type { BookItem } from "@/books/books-index";
 import BookBlock from "@/components/book-block";
 import { cn } from "@/lib/utils";
+import GridSizeIndicator from "./grid-size-indicator";
 
 export interface ShelfGridProps {
   books: BookItem[];
@@ -17,7 +18,8 @@ export interface ShelfGridProps {
   gapY?: number; // alias for verticalGap
   className?: string;
   showCoordinates?: boolean; // Explicit control of coordinate overlay
-  enableCoordinateToggle?: boolean; // Show floating toggle button (default: true in development)
+  showGridSize?: boolean; // Explicit control of grid size display
+  enableGridSizeDisplay?: boolean; // Show floating grid size indicator in bottom left (only in developer mode by default)
 }
 
 /**
@@ -121,7 +123,8 @@ const ShelfGrid = ({
   gapX,
   gapY,
   showCoordinates: propShowCoordinates,
-  enableCoordinateToggle = true,
+  showGridSize,
+  enableGridSizeDisplay,
   className,
 }: ShelfGridProps) => {
   const effectiveGapX = horizontalGap ?? gapX ?? gapSize;
@@ -129,14 +132,38 @@ const ShelfGrid = ({
   // Local coordinate toggle state
   const [localShowCoordinates, setLocalShowCoordinates] =
     useState<boolean>(false);
+  const [showGridBounds, setShowGridBounds] = useState<boolean>(false);
+  const [isDevParam, setIsDevParam] = useState<boolean>(false);
+
+  // Safely check ?dev=true query parameter on client without SSR mismatch
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("dev") === "true") {
+        setIsDevParam(true);
+      }
+    }
+  }, []);
+
+  const isDevEnvironment = process.env.NODE_ENV === "development";
+  const isDeveloperMode = isDevEnvironment || isDevParam;
+
+  const shouldShowGridSizeIndicator =
+    enableGridSizeDisplay !== undefined
+      ? enableGridSizeDisplay
+      : showGridSize !== undefined
+        ? showGridSize
+        : isDeveloperMode;
 
   const isCoordinatesVisible =
     propShowCoordinates !== undefined
       ? propShowCoordinates
       : localShowCoordinates;
 
-  // Keyboard shortcut: Press 'g' or 'G' to toggle coordinate helper
+  // Keyboard shortcut: Press 'g' or 'G' to toggle coordinate helper (only in developer mode)
   useEffect(() => {
+    if (!shouldShowGridSizeIndicator) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       // Ignore if user is typing in an input / textarea
       if (
@@ -153,7 +180,7 @@ const ShelfGrid = ({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [shouldShowGridSizeIndicator]);
 
   // 1. Parse explicit positions & detect collisions
   const { explicitMap, unpositionedBooks, minRequiredK, minRequiredR } =
@@ -375,48 +402,54 @@ const ShelfGrid = ({
     <div
       className={cn(
         "px-cell relative flex flex-col items-center select-none",
+        showGridBounds &&
+          "rounded-3xl p-4 outline-2 outline-indigo-500/30 transition-all duration-300 outline-dashed",
         className
       )}
       style={{
         rowGap: `calc(var(--cell-size) * ${effectiveGapY})`,
       }}
     >
-      {/* Optional Floating Coordinate Toggle Button */}
-      {enableCoordinateToggle && (
-        <button
-          type="button"
-          onClick={() => setLocalShowCoordinates((prev) => !prev)}
-          title="Toggle grid coordinate badges (Shortcut: G)"
-          className={cn(
-            "fixed right-6 bottom-6 z-50 flex cursor-pointer items-center gap-2 rounded-full px-3.5 py-1.5 font-mono text-xs font-medium shadow-lg backdrop-blur-md transition-all duration-200 select-none",
-            isCoordinatesVisible
-              ? "bg-black text-white hover:bg-neutral-800"
-              : "border border-black/10 bg-white/90 text-neutral-800 hover:bg-white"
-          )}
-        >
-          <span
-            className={cn(
-              "h-2 w-2 rounded-full transition-colors",
-              isCoordinatesVisible ? "bg-emerald-400" : "bg-neutral-400"
-            )}
-          />
-          <span>
-            {isCoordinatesVisible
-              ? "Grid: Coordinates ON"
-              : "Grid: Coordinates"}
-          </span>
-        </button>
+      {/* Developer Mode: Bottom-Left Floating Grid Size Indicator & Inspector */}
+      {shouldShowGridSizeIndicator && (
+        <GridSizeIndicator
+          cols={K}
+          rows={R}
+          blockSize={blockSize}
+          gapX={effectiveGapX}
+          gapY={effectiveGapY}
+          totalBooks={books.length}
+          explicitBooksCount={explicitMap.size}
+          unpositionedBooksCount={unpositionedBooks.length}
+          isCoordinatesVisible={isCoordinatesVisible}
+          onToggleCoordinates={() => setLocalShowCoordinates((prev) => !prev)}
+          showGridBounds={showGridBounds}
+          onToggleGridBounds={() => setShowGridBounds((prev) => !prev)}
+          enableGridSizeDisplay={shouldShowGridSizeIndicator}
+        />
       )}
 
       {/* Render Shelf Rows */}
       {rowsData.map((row, r) => (
         <div
           key={`shelf-row-${r}`}
-          className="flex flex-row justify-center"
+          className="relative flex flex-row justify-center"
           style={{
             columnGap: `calc(var(--cell-size) * ${effectiveGapX})`,
           }}
         >
+          {/* Row Guide Label when Bounds are enabled */}
+          {showGridBounds && (
+            <div className="pointer-events-none absolute top-1/2 -left-18 flex -translate-y-1/2 items-center gap-1 rounded bg-black/85 px-2 py-0.5 font-mono text-[10px] font-semibold text-white shadow backdrop-blur-xs select-none sm:-left-24">
+              <span className="text-indigo-400">
+                Row {rowIndexToLetters(r)}
+              </span>
+              <span className="text-neutral-400">
+                ({r % 2 === 0 ? K : Math.max(1, K - 1)})
+              </span>
+            </div>
+          )}
+
           {row.map((item) => (
             <div
               key={item.key}
