@@ -84,10 +84,10 @@ const Introduction = () => {
               </p>
             </div>
             <div className="pointer-events-auto">
-              <Link href={"#waitlist"} className="block cursor-pointer">
+              <Link href={"#wishlist"} className="block cursor-pointer">
                 <FlipTextButton>
                   <p className="font-mona-sans relative text-[14px] font-semibold">
-                    (waitlist)
+                    (wishlist)
                   </p>
                 </FlipTextButton>
               </Link>
