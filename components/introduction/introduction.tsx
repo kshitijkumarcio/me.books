@@ -6,7 +6,7 @@ import FlipTextButton from "../ui-components/flip-text-button";
 
 const Introduction = () => {
   return (
-    <div className="pt-cell-2 lg:pt-cell-[1.7] lg:pb-cell w-full">
+    <div className="pt-cell-2 lg:pt-cell-[1.7] lg:pb-cell-[0.4] w-full">
       <div className="pointer-events-none sticky left-0 w-screen">
         {" "}
         {/* Mobile / Touch View */}

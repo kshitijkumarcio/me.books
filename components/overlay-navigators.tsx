@@ -201,7 +201,7 @@ const OverlayNavigators = () => {
           onClick={toggleChaptersMenu}
           className="group/nb pointer-events-auto flex cursor-pointer gap-x-1"
         >
-          <div className="flex aspect-square w-10 flex-col items-center justify-center gap-y-[2.5px] rounded-sm border border-white bg-black">
+          <div className="flex aspect-square w-10 flex-col items-center justify-center gap-y-[2.5px] rounded-sm  bg-black">
             <div className="h-[1.5px] w-4 bg-white"></div>
             <div
               className={cn(
@@ -211,7 +211,7 @@ const OverlayNavigators = () => {
             ></div>
             <div className="h-[1.5px] w-4 bg-white"></div>
           </div>
-          <div className="flex h-10 items-center justify-center rounded-sm border border-white bg-black px-4">
+          <div className="flex h-10 items-center justify-center rounded-sm bg-black px-4">
             <FlipTextButton>
               <p className="font-mona-sans text-[14px] font-semibold text-white">
                 chapters

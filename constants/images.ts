@@ -53,7 +53,6 @@ import ShowDontTell from "@/public/images/show-dont-tell.jpg";
 import SoniaAndSunny from "@/public/images/sonia-and-sunny.jpg";
 import Stoner from "@/public/images/stoner.jpg";
 import TaiwanTravelogue from "@/public/images/taiwan-travellogue.jpg";
-import TheBestLaidPlans from "@/public/images/the-best-laid-plans.jpg";
 import TheCorrespondent from "@/public/images/the-correspondent.jpg";
 import TheCruelPrince from "@/public/images/the-cruel-prince.jpg";
 import TheGoldfinch from "@/public/images/the-goldfinch.jpg";
@@ -144,15 +143,22 @@ import IF4 from "@/public/images/if4.png";
 import RR1 from "@/public/images/rr1.png";
 import RR2 from "@/public/images/rr2.png";
 import RR3 from "@/public/images/rr3.png";
-import RR4 from "@/public/images/rr4.png";
 import GS1 from "@/public/images/gs1.png";
 import GS2 from "@/public/images/gs2.png";
 import GS3 from "@/public/images/gs3.png";
-import GS4 from "@/public/images/gs4.png";
 import IG1 from "@/public/images/ig1.png";
 import IG2 from "@/public/images/ig2.png";
 import IG3 from "@/public/images/ig3.png";
 import IG4 from "@/public/images/ig4.png";
+import MS1 from "@/public/images/ms1.png";
+import MS2 from "@/public/images/ms2.png";
+import MS3 from "@/public/images/ms3.png";
+import DA1 from "@/public/images/da1.png";
+import DA2 from "@/public/images/da2.png";
+import DA3 from "@/public/images/da3.png";
+import LB1 from "@/public/images/lb1.png";
+import LB2 from "@/public/images/lb2.png";
+import LB3 from "@/public/images/lb3.png";
 
 export const images = {
   AMonthInTheCountry,
@@ -210,7 +216,6 @@ export const images = {
   SoniaAndSunny,
   Stoner,
   TaiwanTravelogue,
-  TheBestLaidPlans,
   TheCorrespondent,
   TheCruelPrince,
   TheGoldfinch,
@@ -302,15 +307,22 @@ export const images = {
   RR1,
   RR2,
   RR3,
-  RR4,
   GS1,
   GS2,
   GS3,
-  GS4,
   IG1,
   IG2,
   IG3,
   IG4,
+  MS1,
+  MS2,
+  MS3,
+  DA1,
+  DA2,
+  DA3,
+  LB1,
+  LB2,
+  LB3,
 };
 
 export default images;
