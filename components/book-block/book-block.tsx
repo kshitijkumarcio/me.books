@@ -110,7 +110,7 @@ export const parseCellUnit = (
 };
 
 /** Converts layout positioning into CSS styles and classnames */
-const resolveElementPosition = (pos: ElementPosition) => {
+export const resolveElementPosition = (pos: ElementPosition) => {
   const classes: string[] = ["absolute"];
   const style: React.CSSProperties = {};
 
@@ -285,9 +285,7 @@ const renderLayoutElement = (
           lightAngle={element.lightAngle}
           lightElevation={element.lightElevation}
           rotation={element.rotation || "rotate-0"}
-          maxWidthClass={
-            element.maxWidthClass || "max-w-[280px]"
-          }
+          maxWidthClass={element.maxWidthClass || "max-w-[280px]"}
           className={element.className}
         />
       );

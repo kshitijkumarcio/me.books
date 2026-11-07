@@ -40,7 +40,8 @@ const ViewDotsIcon = ({
 );
 
 const OverlayNavigators = () => {
-  const { toggleUseCase, pageView, setPageView } = useOverlayButtons();
+  const { toggleUseCase, toggleAbout, pageView, setPageView } =
+    useOverlayButtons();
   const { isChaptersMenuOpen, toggleChaptersMenu, goToZone, activeZoneId } =
     useCanvasNavigation();
 
@@ -73,17 +74,17 @@ const OverlayNavigators = () => {
           </p>
         </div>
         <div className="pointer-events-auto hidden gap-x-6 lg:flex">
-          {/* <div onClick={() => toggleAbout()} className={cn("cursor-pointer")}>
+          <div onClick={() => toggleAbout()} className={cn("cursor-pointer")}>
             <FlipTextButton>
               <p
                 className={cn(
-                  "font-mona-sans relative text-[14px] font-semibold"
+                  "font-mona-sans relative text-[14px] font-semibold py-2"
                 )}
               >
                 about.
               </p>
             </FlipTextButton>
-          </div> */}
+          </div>
           <div className={cn("cursor-pointer")} onClick={() => toggleUseCase()}>
             <FlipTextButton>
               <p
@@ -201,7 +202,7 @@ const OverlayNavigators = () => {
           onClick={toggleChaptersMenu}
           className="group/nb pointer-events-auto flex cursor-pointer gap-x-1"
         >
-          <div className="flex aspect-square w-10 flex-col items-center justify-center gap-y-[2.5px] rounded-sm  bg-black">
+          <div className="flex aspect-square w-10 flex-col items-center justify-center gap-y-[2.5px] rounded-sm bg-black">
             <div className="h-[1.5px] w-4 bg-white"></div>
             <div
               className={cn(

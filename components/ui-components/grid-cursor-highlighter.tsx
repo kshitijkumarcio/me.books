@@ -4,9 +4,7 @@ import { useEffect, useRef, useCallback } from "react";
 import { cn } from "@/lib/utils";
 
 export interface GridCursorHighlighterProps {
-  /** Maximum number of simultaneous trailing cells in trail mode */
   trailCount?: number;
-  /** Duration of the phosphor trail decay in milliseconds */
   fadeDurationMs?: number;
   className?: string;
 }
@@ -75,7 +73,6 @@ export const GridCursorHighlighter = ({
 
       if (cellEl) {
         cellEl.style.transform = `translate3d(${snappedX}px, ${snappedY}px, 0)`;
-        // Web Animations API: reliable keyframe fade on compositor thread
         cellEl.animate([{ opacity: 0.95 }, { opacity: 0 }], {
           duration: fadeDurationMs,
           easing: "cubic-bezier(0.16, 1, 0.3, 1)",

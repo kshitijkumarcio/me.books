@@ -4,7 +4,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import type { ClassValue } from "clsx";
 
-interface PillMessageProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface PillMessageProps extends React.HTMLAttributes<HTMLDivElement> {
   text?: React.ReactNode;
   children?: React.ReactNode;
   pill_classnames?: ClassValue;
@@ -30,7 +30,7 @@ const PillMessage = ({
     >
       <span
         className={cn(
-          "font-mona-sans text-[calc(12px*var(--book-scale))] leading-none text-white antialiased",
+          "font-mona-sans text-[calc(12px*var(--book-scale))] leading-none text-white antialiased font-medium",
           typeof text_classnames === "string"
             ? text_classnames.replace(
                 /text-\[([0-9.]+)px\]/g,
