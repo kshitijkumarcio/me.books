@@ -10,21 +10,9 @@ import React, {
 } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
-import { rowIndexToLetters } from "./shelf-grid";
+import { rowIndexToLetters } from "./grid-utils";
 import { useGridRegistry, gridRegistry } from "./grid-registry";
-
-function subscribeUrlChange(callback: () => void) {
-  window.addEventListener("popstate", callback);
-  return () => window.removeEventListener("popstate", callback);
-}
-
-function getDevParamSnapshot(): boolean {
-  return new URLSearchParams(window.location.search).get("dev") === "true";
-}
-
-function getServerDevParamSnapshot(): boolean {
-  return false;
-}
+import { useDevMode } from "@/hooks/ui-hooks/use-dev-mode";
 
 let activeMasterId: string | null = null;
 const masterChangeListeners = new Set<() => void>();
@@ -95,17 +83,10 @@ export const GridSizeIndicator = ({
   const [displayOrder, setDisplayOrder] = useState<"colsXrows" | "rowsXcols">(
     "colsXrows"
   );
-  const isDevParam = useSyncExternalStore(
-    subscribeUrlChange,
-    getDevParamSnapshot,
-    getServerDevParamSnapshot
-  );
+  const isDeveloperMode = useDevMode();
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { grids, activeGridId } = useGridRegistry();
-
-  const isDevEnvironment = process.env.NODE_ENV === "development";
-  const isDeveloperMode = isDevEnvironment || isDevParam;
 
   const shouldShow =
     enableGridSizeDisplay !== undefined

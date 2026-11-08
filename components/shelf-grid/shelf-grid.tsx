@@ -1,28 +1,29 @@
 "use client";
 
-import React, {
-  useMemo,
-  useState,
-  useSyncExternalStore,
-} from "react";
+import React, { useMemo, useState } from "react";
 import type { BookItem } from "@/books/books-index";
 import BookBlock from "@/components/book-block";
 import { cn } from "@/lib/utils";
 import GridSizeIndicator from "./grid-size-indicator";
 import { useRegisterGrid } from "./grid-registry";
+import { useDevMode } from "@/hooks/ui-hooks/use-dev-mode";
+import {
+  rowIndexToLetters,
+  lettersToRowIndex,
+  parseGridPosition,
+  formatGridPosition,
+  calculateShelfGridDimensions,
+  parseGridExplicitBooks,
+  buildAlternatingGridSlots,
+} from "./grid-utils";
 
-function subscribeUrlChange(callback: () => void) {
-  window.addEventListener("popstate", callback);
-  return () => window.removeEventListener("popstate", callback);
-}
-
-function getDevParamSnapshot(): boolean {
-  return new URLSearchParams(window.location.search).get("dev") === "true";
-}
-
-function getServerDevParamSnapshot(): boolean {
-  return false;
-}
+export {
+  rowIndexToLetters,
+  lettersToRowIndex,
+  parseGridPosition,
+  formatGridPosition,
+  calculateShelfGridDimensions,
+};
 
 export interface ShelfGridProps {
   books: BookItem[];
@@ -39,65 +40,6 @@ export interface ShelfGridProps {
   showGridSize?: boolean; // Explicit control of grid size display
   enableGridSizeDisplay?: boolean; // Show floating grid size indicator in bottom left (only in developer mode by default)
 }
-
-/**
- * Converts a 0-based row index to spreadsheet-style letters (0 -> "A", 25 -> "Z", 26 -> "AA", etc.).
- */
-export const rowIndexToLetters = (index: number): string => {
-  let letters = "";
-  let temp = index;
-  while (temp >= 0) {
-    letters = String.fromCharCode(65 + (temp % 26)) + letters;
-    temp = Math.floor(temp / 26) - 1;
-  }
-  return letters;
-};
-
-/**
- * Converts spreadsheet-style row letters to a 0-based row index ("A" -> 0, "B" -> 1, "AA" -> 26).
- */
-export const lettersToRowIndex = (letters: string): number => {
-  const upper = letters.toUpperCase();
-  let index = 0;
-  for (let i = 0; i < upper.length; i++) {
-    index = index * 26 + (upper.charCodeAt(i) - 64);
-  }
-  return index - 1;
-};
-
-/**
- * Parses grid position strings like "A1", "B5", "c12" into row and col indices.
- * col is 1-based in the string; colIndex is 0-based.
- */
-export const parseGridPosition = (
-  pos?: string | null
-): { row: number; col: number; colIndex: number; label: string } | null => {
-  if (!pos || typeof pos !== "string") return null;
-  const match = pos.trim().match(/^([A-Za-z]+)(\d+)$/);
-  if (!match) return null;
-
-  const rowLetters = match[1].toUpperCase();
-  const colNumber = parseInt(match[2], 10);
-  if (isNaN(colNumber) || colNumber < 1) return null;
-
-  const rowIndex = lettersToRowIndex(rowLetters);
-  return {
-    row: rowIndex,
-    col: colNumber,
-    colIndex: colNumber - 1,
-    label: `${rowLetters}${colNumber}`,
-  };
-};
-
-/**
- * Formats row index and col index into position string e.g. (0, 0) -> "A1".
- */
-export const formatGridPosition = (
-  rowIndex: number,
-  colIndex: number
-): string => {
-  return `${rowIndexToLetters(rowIndex)}${colIndex + 1}`;
-};
 
 /**
  * Empty placeholder block preserving grid alignment for unoccupied slots.
@@ -138,91 +80,6 @@ export const EmptyBlock = ({
   );
 };
 
-/**
- * Calculates optimal K (columns) and R (rows) for an alternating brick masonry shelf grid,
- * matching overall aspect ratio and respecting any explicitly placed books.
- */
-export const calculateShelfGridDimensions = (
-  books: BookItem[],
-  blockSize = 8,
-  effectiveGapX = 1,
-  effectiveGapY = 0.5,
-  propCols?: number,
-  propRows?: number
-): { cols: number; rows: number } => {
-  let minRequiredK = 2;
-  let minRequiredR = 1;
-
-  books.forEach((book) => {
-    if (book.position) {
-      const parsed = parseGridPosition(book.position);
-      if (parsed) {
-        const colNumber = parsed.colIndex + 1;
-        const neededK = parsed.row % 2 === 0 ? colNumber : colNumber + 1;
-        if (neededK > minRequiredK) minRequiredK = neededK;
-        if (parsed.row + 1 > minRequiredR) minRequiredR = parsed.row + 1;
-      }
-    }
-  });
-
-  const totalSlots = books.length;
-  if (totalSlots === 0) {
-    return { cols: 1, rows: 1 };
-  }
-
-  if (propCols && propCols > 0) {
-    const effectiveCols = Math.max(propCols, minRequiredK);
-    let cap = 0;
-    let r = 0;
-    while (cap < totalSlots || r < minRequiredR) {
-      cap += r % 2 === 0 ? effectiveCols : Math.max(1, effectiveCols - 1);
-      r++;
-    }
-    return {
-      cols: effectiveCols,
-      rows: propRows ? Math.max(propRows, minRequiredR) : r,
-    };
-  }
-
-  let bestK = Math.max(minRequiredK, Math.ceil(Math.sqrt(totalSlots || 1)));
-  let bestR = minRequiredR;
-  let minScore = Infinity;
-
-  const minK = Math.max(2, minRequiredK);
-  const maxK = Math.max(
-    minK,
-    Math.min(Math.max(totalSlots, minRequiredK * 2), 30)
-  );
-
-  for (let candidateK = minK; candidateK <= maxK; candidateK++) {
-    let cap = 0;
-    let r = 0;
-    while (cap < totalSlots || r < minRequiredR) {
-      cap += r % 2 === 0 ? candidateK : Math.max(1, candidateK - 1);
-      r++;
-    }
-
-    const widthCells =
-      candidateK * blockSize + Math.max(0, candidateK - 1) * effectiveGapX;
-    const heightCells = r * blockSize + Math.max(0, r - 1) * effectiveGapY;
-
-    const diff = Math.abs(widthCells - heightCells);
-    const leftover = cap - totalSlots;
-    const score = diff * 100 + leftover;
-
-    if (score < minScore) {
-      minScore = score;
-      bestK = candidateK;
-      bestR = r;
-    }
-  }
-
-  return {
-    cols: bestK,
-    rows: propRows ? Math.max(propRows, minRequiredR) : bestR,
-  };
-};
-
 const ShelfGrid = ({
   books = [],
   cols: propCols,
@@ -240,17 +97,9 @@ const ShelfGrid = ({
 }: ShelfGridProps) => {
   const effectiveGapX = horizontalGap ?? gapX ?? gapSize;
   const effectiveGapY = verticalGap ?? gapY ?? gapSize;
-  // Local coordinate toggle state
   const [localShowCoordinates, setLocalShowCoordinates] =
     useState<boolean>(false);
-  const isDevParam = useSyncExternalStore(
-    subscribeUrlChange,
-    getDevParamSnapshot,
-    getServerDevParamSnapshot
-  );
-
-  const isDevEnvironment = process.env.NODE_ENV === "development";
-  const isDeveloperMode = isDevEnvironment || isDevParam;
+  const isDeveloperMode = useDevMode();
 
   const shouldShowGridSizeIndicator =
     enableGridSizeDisplay !== undefined
@@ -264,81 +113,10 @@ const ShelfGrid = ({
       ? propShowCoordinates
       : localShowCoordinates;
 
-  // 1. Parse explicit positions & detect collisions
   const { explicitMap, unpositionedBooks } = useMemo(() => {
-    const explicit = new Map<string, BookItem>();
-    const seenExplicit = new Map<string, BookItem[]>();
-    const unpositioned: BookItem[] = [];
-
-    books.forEach((book) => {
-      if (book.position) {
-        const parsed = parseGridPosition(book.position);
-        if (parsed) {
-          const key = `${parsed.row}-${parsed.colIndex}`;
-          const existing = seenExplicit.get(key) || [];
-          existing.push(book);
-          seenExplicit.set(key, existing);
-        } else {
-          if (process.env.NODE_ENV !== "production") {
-            console.warn(
-              `[ShelfGrid] Invalid position format "${book.position}" for book "${book.title || book.id}". Expected e.g. "A1", "B5".`
-            );
-          }
-          unpositioned.push(book);
-        }
-      } else {
-        unpositioned.push(book);
-      }
-    });
-
-    let reqK = 2;
-    let reqR = 1;
-
-    // Collision detection & resolution
-    seenExplicit.forEach((assignedBooks, key) => {
-      const [r, c] = key.split("-").map(Number);
-      const coordLabel = formatGridPosition(r, c);
-
-      // First book wins the designated slot
-      explicit.set(key, assignedBooks[0]);
-
-      // Bounds tracking
-      const colNumber = c + 1;
-      // Even rows (0, 2, ...) have capacity K -> K >= colNumber
-      // Odd rows (1, 3, ...) have capacity K - 1 -> K - 1 >= colNumber => K >= colNumber + 1
-      const neededK = r % 2 === 0 ? colNumber : colNumber + 1;
-      if (neededK > reqK) reqK = neededK;
-      if (r + 1 > reqR) reqR = r + 1;
-
-      if (assignedBooks.length > 1) {
-        if (process.env.NODE_ENV !== "production") {
-          console.warn(
-            `[ShelfGrid Collision] Position "${coordLabel}" was claimed by ${assignedBooks.length} books: ${assignedBooks
-              .map((b) => `"${b.title || b.id}"`)
-              .join(
-                ", "
-              )}. Book "${assignedBooks[0].title || assignedBooks[0].id}" was placed here; others were moved to unpositioned auto-flow.`
-          );
-        }
-        // Push conflicting books into autoflow queue so they still appear on shelf
-        for (let i = 1; i < assignedBooks.length; i++) {
-          unpositioned.push(assignedBooks[i]);
-        }
-      }
-    });
-
-    return {
-      explicitMap: explicit,
-      unpositionedBooks: unpositioned,
-      minRequiredK: reqK,
-      minRequiredR: reqR,
-    };
+    return parseGridExplicitBooks(books, "ShelfGrid");
   }, [books]);
 
-  // 2. Dynamic alternating layout optimizer:
-  // Rows alternate between K and K-1 blocks (e.g. 6, 5, 6, 5...).
-  // Calculates optimal K and R so the overall canvas aspect ratio is as square as possible,
-  // respecting the minimum required bounds of all explicitly positioned books.
   const { cols: K, rows: R } = useMemo(() => {
     return calculateShelfGridDimensions(
       books,
@@ -382,71 +160,38 @@ const ShelfGrid = ({
     )
   );
 
-  // 3. 2-Phase Fill: Group items into alternating rows to create the brick masonry pattern
   const rowsData = useMemo(() => {
-    let unpositionedIndex = 0;
-    const result: Array<
-      Array<{
-        key: string;
-        coordinate: string;
-        node: React.ReactNode;
-        isOccupied: boolean;
-      }>
-    > = [];
+    const slotsMatrix = buildAlternatingGridSlots(
+      R,
+      K,
+      explicitMap,
+      unpositionedBooks
+    );
 
-    for (let r = 0; r < R; r++) {
-      const rowCapacity = r % 2 === 0 ? K : Math.max(1, K - 1);
-      const rowItems: Array<{
-        key: string;
-        coordinate: string;
-        node: React.ReactNode;
-        isOccupied: boolean;
-      }> = [];
-
-      for (let c = 0; c < rowCapacity; c++) {
-        const coord = formatGridPosition(r, c);
-        const key = `${r}-${c}`;
-
-        let bookToPlace: BookItem | undefined;
-
-        // Phase 1: Explicit position
-        if (explicitMap.has(key)) {
-          bookToPlace = explicitMap.get(key);
-        } else if (unpositionedIndex < unpositionedBooks.length) {
-          // Phase 2: Hybrid autoflow for unpositioned books
-          bookToPlace = unpositionedBooks[unpositionedIndex++];
-        }
-
-        if (bookToPlace) {
-          rowItems.push({
-            key: `book-${bookToPlace.id || coord}`,
-            coordinate: coord,
+    return slotsMatrix.map((rowSlots) =>
+      rowSlots.map((slot) => {
+        if (slot.book) {
+          return {
+            key: `book-${slot.book.id || slot.coordinate}`,
+            coordinate: slot.coordinate,
             isOccupied: true,
-            node: <BookBlock book={bookToPlace} size={blockSize} />,
-          });
-        } else {
-          // Phase 3: Empty slot placeholder to maintain grid alignment
-          rowItems.push({
-            key: `empty-${coord}`,
-            coordinate: coord,
-            isOccupied: false,
-            node: (
-              <EmptyBlock
-                size={blockSize}
-                coordinate={coord}
-                showCoordinate={isCoordinatesVisible}
-              />
-            ),
-          });
+            node: <BookBlock book={slot.book} size={blockSize} />,
+          };
         }
-      }
-
-      if (rowItems.length > 0) {
-        result.push(rowItems);
-      }
-    }
-
-    return result;
+        return {
+          key: `empty-${slot.coordinate}`,
+          coordinate: slot.coordinate,
+          isOccupied: false,
+          node: (
+            <EmptyBlock
+              size={blockSize}
+              coordinate={slot.coordinate}
+              showCoordinate={isCoordinatesVisible}
+            />
+          ),
+        };
+      })
+    );
   }, [R, K, explicitMap, unpositionedBooks, blockSize, isCoordinatesVisible]);
 
   return (

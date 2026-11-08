@@ -1,36 +1,20 @@
 "use client";
 
-import React, {
-  useMemo,
-  useState,
-  useSyncExternalStore,
-} from "react";
+import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { wishlistBooks, allBooks } from "@/books/books-index";
 import type { WishlistBook } from "@/books/books-index";
 import {
   calculateShelfGridDimensions,
-  parseGridPosition,
   formatGridPosition,
-  EmptyBlock,
-} from "@/components/shelf-grid/shelf-grid";
+  parseGridExplicitBooks,
+} from "@/components/shelf-grid/grid-utils";
+import { EmptyBlock } from "@/components/shelf-grid/shelf-grid";
 import { useRegisterGrid } from "@/components/shelf-grid/grid-registry";
+import { useDevMode } from "@/hooks/ui-hooks/use-dev-mode";
 import WishListBlock from "./wishlist-block";
 
 export const WishListBlockSize = 6;
-
-function subscribeUrlChange(callback: () => void) {
-  window.addEventListener("popstate", callback);
-  return () => window.removeEventListener("popstate", callback);
-}
-
-function getDevParamSnapshot(): boolean {
-  return new URLSearchParams(window.location.search).get("dev") === "true";
-}
-
-function getServerDevParamSnapshot(): boolean {
-  return false;
-}
 
 export interface WishlistProps {
   books?: WishlistBook[];
@@ -64,14 +48,7 @@ const Wishlist = ({
   const [localShowCoordinates, setLocalShowCoordinates] =
     useState<boolean>(false);
 
-  const isDevParam = useSyncExternalStore(
-    subscribeUrlChange,
-    getDevParamSnapshot,
-    getServerDevParamSnapshot
-  );
-
-  const isDevEnvironment = process.env.NODE_ENV === "development";
-  const isDeveloperMode = isDevEnvironment || isDevParam;
+  const isDeveloperMode = useDevMode();
 
   const shouldShowGridSizeIndicator =
     enableGridSizeDisplay !== undefined
@@ -117,48 +94,7 @@ const Wishlist = ({
   // 3. Parse explicit positions & detect min columns/rows (like ShelfGrid)
   const { explicitMap, unpositionedBooks, minRequiredK, minRequiredR } =
     useMemo(() => {
-      const explicit = new Map<string, WishlistBook>();
-      const seenExplicit = new Map<string, WishlistBook[]>();
-      const unpositioned: WishlistBook[] = [];
-
-      books.forEach((book) => {
-        if (book.position) {
-          const parsed = parseGridPosition(book.position);
-          if (parsed) {
-            const key = `${parsed.row}-${parsed.colIndex}`;
-            const existing = seenExplicit.get(key) || [];
-            existing.push(book);
-            seenExplicit.set(key, existing);
-          } else {
-            unpositioned.push(book);
-          }
-        } else {
-          unpositioned.push(book);
-        }
-      });
-
-      let reqK = 2;
-      let reqR = 1;
-
-      seenExplicit.forEach((assigned, key) => {
-        const [r, c] = key.split("-").map(Number);
-        explicit.set(key, assigned[0]);
-        const colNumber = c + 1;
-        const neededK = r % 2 === 0 ? colNumber : colNumber + 1;
-        if (neededK > reqK) reqK = neededK;
-        if (r + 1 > reqR) reqR = r + 1;
-
-        for (let i = 1; i < assigned.length; i++) {
-          unpositioned.push(assigned[i]);
-        }
-      });
-
-      return {
-        explicitMap: explicit,
-        unpositionedBooks: unpositioned,
-        minRequiredK: reqK,
-        minRequiredR: reqR,
-      };
+      return parseGridExplicitBooks(books, "Wishlist");
     }, [books]);
 
   const effectiveCols = Math.max(dynamicCols, minRequiredK);

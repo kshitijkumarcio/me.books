@@ -12,120 +12,18 @@ import PillMessage from "@/components/book-block/pill-message";
 import GenrePill from "./genres-pill";
 import ReadingProgressBar from "./reading-progress-bar";
 import { cn } from "@/lib/utils";
-import { parseCellUnit } from "@/components/book-block/book-block";
+import {
+  type ActivePillState,
+  getRandomSidePosition,
+  createBookPRNG,
+  getCoverConfig,
+  getReadingProgress,
+} from "./cr-block-geometry";
 
 export interface CRBlockProps {
   book: CurrentlyReadingBook | BookItem;
   className?: string;
   size?: 6;
-}
-
-// -------------------------------------------------------------
-// 2D SPATIAL GEOMETRY & BOUNDS
-// -------------------------------------------------------------
-interface PillCoord {
-  top: string;
-  left?: string;
-  right?: string;
-  transform: string;
-  y: number;
-}
-
-/**
- * Calculates a random position on either the "left" or "right" side:
- * - Vertically: strictly inside [0.45, 3.9] cells (NEVER reaches or hides the progress bar).
- * - Horizontally:
- *   - Overlaps the book cover by at most 0.35 cell width (guaranteed < 0.5 cell limit).
- *   - Never more than 0.25 cell away from cover (never floating far away).
- *   - Left side pills use `right` anchoring so text length never penetrates the book cover.
- *   - Right side pills use `left` anchoring so text length never penetrates the book cover.
- */
-function getRandomSidePosition(
-  side: "left" | "right",
-  customRand?: () => number
-): PillCoord {
-  const rand = customRand || Math.random;
-  const MIN_Y = 0.45;
-  const MAX_Y = 3.9; // Strictly capped so pills NEVER come down over or hide the progress bar
-
-  const bestY = MIN_Y + rand() * (MAX_Y - MIN_Y);
-  const rotation = (rand() - 0.5) * 3; // subtle tilt between -1.5deg and +1.5deg
-
-  if (side === "left") {
-    // Cover left edge is at 1.8 cells from left (4.2 cells from right edge of the 6x6 block).
-    // An offset between 3.85 and 4.45 ensures:
-    // - Overlaps cover by at most 0.35 cell width (<= 0.5 max).
-    // - Distance away from cover is at most 0.25 cell width (<= 0.5 max).
-    const rightOffset = 3.85 + rand() * 0.6;
-    return {
-      top: `calc(var(--cell-size) * ${bestY.toFixed(2)})`,
-      right: `calc(var(--cell-size) * ${rightOffset.toFixed(2)})`,
-      transform: `rotate(${rotation.toFixed(1)}deg)`,
-      y: bestY,
-    };
-  } else {
-    // Cover right edge is at 4.2 cells from left of the 6x6 block.
-    // An offset between 3.85 and 4.45 ensures:
-    // - Overlaps cover by at most 0.35 cell width (<= 0.5 max).
-    // - Distance away from cover is at most 0.25 cell width (<= 0.5 max).
-    const leftOffset = 3.85 + rand() * 0.6;
-    return {
-      top: `calc(var(--cell-size) * ${bestY.toFixed(2)})`,
-      left: `calc(var(--cell-size) * ${leftOffset.toFixed(2)})`,
-      transform: `rotate(${rotation.toFixed(1)}deg)`,
-      y: bestY,
-    };
-  }
-}
-
-/**
- * Creates a simple deterministic PRNG for unique initial book coords
- */
-function createBookPRNG(seedNum: number) {
-  let s = (seedNum * 16807 + 1013904223) % 2147483647;
-  return () => {
-    s = (s * 16807) % 2147483647;
-    return (s - 1) / 2147483646;
-  };
-}
-
-/**
- * Resolves cover dimensions, format, and rotation settings.
- */
-function getCoverConfig(book?: CurrentlyReadingBook | BookItem | null) {
-  if (!book) {
-    return { widthClass: "w-36", rotation: "rotate-0", cellWidth: undefined };
-  }
-  const coverElement = book.layout?.find((el) => el.type === "cover");
-  const defaultWidth =
-    book.format === "little-penguin-classic" ? "w-32" : "w-36";
-
-  const widthClass = coverElement?.widthClass || defaultWidth;
-  const rotation = coverElement?.rotation || "rotate-0";
-  const cellWidth = parseCellUnit(widthClass);
-
-  return { widthClass, rotation, cellWidth };
-}
-
-/**
- * Safely extracts current pages read and total pages.
- */
-function getReadingProgress(book?: CurrentlyReadingBook | BookItem | null) {
-  if (!book) return { progress: 0, totalPages: 100 };
-  const progress =
-    "progress" in book && typeof book.progress === "number" ? book.progress : 0;
-  const totalPages =
-    "total_pages" in book && typeof book.total_pages === "number"
-      ? book.total_pages
-      : 100;
-
-  return { progress, totalPages };
-}
-
-interface ActivePillState {
-  index: number;
-  side: "left" | "right";
-  coord: PillCoord;
 }
 
 export const CRBlock = ({ book, className }: CRBlockProps) => {
