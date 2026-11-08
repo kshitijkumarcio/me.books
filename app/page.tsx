@@ -14,7 +14,7 @@ const RootPage = () => {
 
   return (
     <InfiniteCanvas onPanToReady={setPanToFn} initialCenter="horizontal">
-      <main className="bg-grid-dashed relative min-h-dvh min-w-dvw pb-cell-[0.44]">
+      <main className="bg-grid-dashed pb-cell-[0.44] relative min-h-dvh min-w-dvw">
         <GridCursorHighlighter />
         <Introduction />
         <ShelfGrid

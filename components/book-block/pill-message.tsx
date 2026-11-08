@@ -30,7 +30,7 @@ const PillMessage = ({
     >
       <span
         className={cn(
-          "font-mona-sans text-[calc(12px*var(--book-scale))] leading-none text-white antialiased font-medium",
+          "font-mona-sans text-[calc(12px*var(--book-scale))] leading-none font-medium text-white antialiased",
           typeof text_classnames === "string"
             ? text_classnames.replace(
                 /text-\[([0-9.]+)px\]/g,

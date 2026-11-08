@@ -14,7 +14,6 @@ export const ReadingProgressBar = ({
   progress = 0,
   totalPages = 100,
   className,
-  showText = true,
 }: ReadingProgressBarProps) => {
   const safeTotal = Math.max(1, totalPages);
   const safeProgress = Math.min(safeTotal, Math.max(0, progress));

@@ -6,7 +6,8 @@
   --book-scale: calc(40 / 60);
   --shadow-book:
     0 0 0 1px rgba(0, 0, 0, 0.08), 0 1.33px 2.67px rgba(0, 0, 0, 0.06),
-    5.33px 5.33px 5.33px rgba(0, 0, 0, 0.1), 5.33px 5.33px 5.33px rgba(0, 0, 0, 0.14),
+    5.33px 5.33px 5.33px rgba(0, 0, 0, 0.1),
+    5.33px 5.33px 5.33px rgba(0, 0, 0, 0.14),
     5.33px 10.67px 5.33px rgba(0, 0, 0, 0.16);
 
   @media (min-width: 768px) {

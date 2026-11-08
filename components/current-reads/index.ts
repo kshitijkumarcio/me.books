@@ -6,4 +6,3 @@ export * from "./genres-pill";
 
 export { CurrentReads };
 export default CurrentReads;
-

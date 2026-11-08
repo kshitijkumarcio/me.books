@@ -47,7 +47,6 @@ function getRandomSidePosition(
   const rand = customRand || Math.random;
   const MIN_Y = 0.45;
   const MAX_Y = 3.9; // Strictly capped so pills NEVER come down over or hide the progress bar
-  const MIN_VERTICAL_GAP = 1.0; // Ensures pills never collide on the same side
 
   const bestY = MIN_Y + rand() * (MAX_Y - MIN_Y);
   const rotation = (rand() - 0.5) * 3; // subtle tilt between -1.5deg and +1.5deg
@@ -93,7 +92,10 @@ function createBookPRNG(seedNum: number) {
 /**
  * Resolves cover dimensions, format, and rotation settings.
  */
-function getCoverConfig(book: CurrentlyReadingBook | BookItem) {
+function getCoverConfig(book?: CurrentlyReadingBook | BookItem | null) {
+  if (!book) {
+    return { widthClass: "w-36", rotation: "rotate-0", cellWidth: undefined };
+  }
   const coverElement = book.layout?.find((el) => el.type === "cover");
   const defaultWidth =
     book.format === "little-penguin-classic" ? "w-32" : "w-36";
@@ -108,7 +110,8 @@ function getCoverConfig(book: CurrentlyReadingBook | BookItem) {
 /**
  * Safely extracts current pages read and total pages.
  */
-function getReadingProgress(book: CurrentlyReadingBook | BookItem) {
+function getReadingProgress(book?: CurrentlyReadingBook | BookItem | null) {
+  if (!book) return { progress: 0, totalPages: 100 };
   const progress =
     "progress" in book && typeof book.progress === "number" ? book.progress : 0;
   const totalPages =
@@ -126,14 +129,15 @@ interface ActivePillState {
 }
 
 export const CRBlock = ({ book, className }: CRBlockProps) => {
-  if (!book) return null;
-
   const { widthClass, rotation, cellWidth } = getCoverConfig(book);
   const { progress, totalPages } = getReadingProgress(book);
 
   // Extract review pills (3 pills) and genres (3 genres)
   const pills: CurrentlyReadingPill[] =
-    "pills" in book && Array.isArray(book.pills) && book.pills.length > 0
+    book &&
+    "pills" in book &&
+    Array.isArray(book.pills) &&
+    book.pills.length > 0
       ? book.pills
       : [
           {
@@ -144,11 +148,15 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
         ];
 
   const genres: string[] =
-    "genres" in book && Array.isArray(book.genres) && book.genres.length > 0
+    book &&
+    "genres" in book &&
+    Array.isArray(book.genres) &&
+    book.genres.length > 0
       ? book.genres
-      : [book.genre || "Fiction"];
+      : [book?.genre || "Fiction"];
 
-  const bookNum = parseInt(book.id.replace(/\D/g, "") || "1", 10);
+  const bookNum =
+    parseInt(book?.id ? book.id.replace(/\D/g, "") : "1", 10) || 1;
   // Alternate initial sides per book for balanced visual distribution across rows
   const initialReviewSide: "left" | "right" =
     bookNum % 2 === 1 ? "left" : "right";
@@ -178,14 +186,17 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
 
   // Re-randomize with true Math.random() upon mount for unique starting positions on every load
   useEffect(() => {
-    setReviewPill((prev) => ({
-      ...prev,
-      coord: getRandomSidePosition(prev.side),
-    }));
-    setGenrePill((prev) => ({
-      ...prev,
-      coord: getRandomSidePosition(prev.side),
-    }));
+    const timer = setTimeout(() => {
+      setReviewPill((prev) => ({
+        ...prev,
+        coord: getRandomSidePosition(prev.side),
+      }));
+      setGenrePill((prev) => ({
+        ...prev,
+        coord: getRandomSidePosition(prev.side),
+      }));
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   // Review pill cycles text & random position every 3.8s (frequency increased by half)
@@ -257,6 +268,8 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
 
     return () => clearInterval(swapInterval);
   }, []);
+
+  if (!book) return null;
 
   const currentReview = pills[reviewPill.index];
   const currentGenre = genres[genrePill.index];

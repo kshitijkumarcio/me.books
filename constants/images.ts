@@ -159,6 +159,9 @@ import DA3 from "@/public/images/da3.png";
 import LB1 from "@/public/images/lb1.png";
 import LB2 from "@/public/images/lb2.png";
 import LB3 from "@/public/images/lb3.png";
+import WN1 from "@/public/images/wn1.png";
+import WN2 from "@/public/images/wn2.png";
+import WN3 from "@/public/images/wn3.png";
 
 export const images = {
   AMonthInTheCountry,
@@ -323,6 +326,9 @@ export const images = {
   LB1,
   LB2,
   LB3,
+  WN1,
+  WN2,
+  WN3,
 };
 
 export default images;

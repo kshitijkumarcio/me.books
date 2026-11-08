@@ -14,12 +14,12 @@ export const GenrePill = ({ genre, className, ...props }: GenrePillProps) => {
   return (
     <div
       className={cn(
-        "genre-pill inline-flex items-center justify-center rounded-lg bg-[#FEFEFE] px-[calc(14px*var(--book-scale))] py-[calc(8px*var(--book-scale))]  shadow-xs select-none whitespace-nowrap transition-transform duration-200 border",
+        "genre-pill inline-flex items-center justify-center rounded-lg border bg-[#FEFEFE] px-[calc(14px*var(--book-scale))] py-[calc(8px*var(--book-scale))] whitespace-nowrap shadow-xs transition-transform duration-200 select-none",
         className
       )}
       {...props}
     >
-      <span className="font-mona-sans text-[calc(11px*var(--book-scale))] font-semibold leading-none tracking-tight text-black antialiased">
+      <span className="font-mona-sans text-[calc(11px*var(--book-scale))] leading-none font-semibold tracking-tight text-black antialiased">
         {genre}
       </span>
     </div>

@@ -1638,7 +1638,7 @@ export const BooksRead: ReadBook[] = [
     status: "read",
     title: "Man's Search for Meaning",
     author: "Viktor E. Frankl",
-    position: "e2",
+    position: "e6",
     coverImage: images.MansSearchForMeaning,
     rating: 5,
     yearRead: 2023,
@@ -1752,7 +1752,7 @@ export const BooksRead: ReadBook[] = [
     status: "read",
     title: "The Old Man and the Sea",
     author: "Ernest Hemingway",
-    // position: "d5",
+    position: "e2",
     coverImage: images.OldManAndTheSea,
     rating: 5,
     yearRead: 2023,
@@ -2160,6 +2160,60 @@ export const BooksRead: ReadBook[] = [
   //     },
   //   ],
   // },
+  {
+    id: "r30",
+    status: "read",
+    title: "White Nights",
+    author: "Fyodor Dostoevsky",
+    coverImage: images.WhiteNights,
+    rating: 5,
+    yearRead: 2024,
+    genre: "Classic / Russian Literature",
+    format: "little-penguin-classic",
+    layout: [
+      {
+        type: "cover",
+        top: "top-cell-1.3",
+        left: "left-cell-2.95",
+        rotation: "rotate-0",
+        widthClass: "w-36",
+        format: "little-penguin-classic",
+        zIndex: 10,
+      },
+      {
+        type: "image",
+        top: "top-cell-2.8",
+        left: "left-cell-0.9",
+        src: images.WN3,
+        widthClass: "w-26",
+        alt: "painting of St. Petersburg bridge and ornate streetlamps over canal at night",
+      },
+      {
+        type: "image",
+        top: "top-cell-2.7",
+        left: "left-cell-5.7",
+        src: images.WN1,
+        widthClass: "w-26",
+        alt: "figures walking along misty embankment in St. Petersburg",
+      },
+      {
+        type: "image",
+        top: "top-cell-5.5",
+        left: "left-cell-2.65",
+        src: images.WN2,
+        widthClass: "w-24",
+        alt: "rainy city street at night with pedestrians, gas lamps, and clocktower",
+      },
+      {
+        type: "pill-message",
+        top: "top-cell-5.75",
+        left: "left-cell-4.95",
+        pill_classnames: "bg-[#111111]",
+        text: "+ what the fuck +",
+        text_classnames: "text-white font-medium",
+      },
+    ],
+  },
 ];
 
 export const wishlistBooks: WishlistBook[] = [
@@ -2169,6 +2223,7 @@ export const wishlistBooks: WishlistBook[] = [
     priority: "high",
     title: "A Moveable Feast",
     author: "Ernest Hemingway",
+    position: "A1",
     coverImage: images.AMoveableFeast,
     genre: "Memoir / Classic",
     format: "little-penguin-classic",
@@ -2178,7 +2233,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2210,7 +2265,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2242,7 +2297,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2274,7 +2329,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2305,7 +2360,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2336,7 +2391,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2368,7 +2423,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2400,7 +2455,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2432,7 +2487,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2464,7 +2519,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2496,7 +2551,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2527,7 +2582,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2559,7 +2614,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2590,7 +2645,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2622,7 +2677,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2654,7 +2709,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2685,7 +2740,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2716,7 +2771,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2748,7 +2803,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2780,7 +2835,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2812,7 +2867,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2843,7 +2898,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2875,7 +2930,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2906,7 +2961,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2937,7 +2992,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -2968,7 +3023,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -3000,7 +3055,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -3032,7 +3087,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -3064,7 +3119,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -3096,7 +3151,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -3128,7 +3183,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -3160,7 +3215,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -3192,7 +3247,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -3223,7 +3278,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -3255,7 +3310,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -3286,7 +3341,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -3317,7 +3372,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -3348,7 +3403,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
@@ -3357,38 +3412,6 @@ export const wishlistBooks: WishlistBook[] = [
         paperColor: "#F3F4F6",
         paperSeed: 89,
         tearStrength: 6,
-        bottom: "bottom-cell-0.5",
-        right: "right-cell-0.5",
-        rotation: "rotate-0",
-        zIndex: 20,
-      },
-    ],
-  },
-  {
-    id: "w39",
-    status: "wishlist",
-    priority: "high",
-    title: "White Nights",
-    author: "Fyodor Dostoevsky",
-    coverImage: images.WhiteNights,
-    genre: "Classic / Russian Literature",
-    format: "standard",
-    layout: [
-      {
-        type: "cover",
-        top: "top-cell-0.5",
-        left: "left-cell-0.5",
-        rotation: "rotate-0",
-        widthClass: "w-40",
-        zIndex: 10,
-      },
-      {
-        type: "quote",
-        quote:
-          "“A whole moment of happiness! Why, isn't that enormous for the whole of a human life?”",
-        paperColor: "#FFF8E1",
-        paperSeed: 99,
-        tearStrength: 7,
         bottom: "bottom-cell-0.5",
         right: "right-cell-0.5",
         rotation: "rotate-0",
@@ -3411,7 +3434,7 @@ export const wishlistBooks: WishlistBook[] = [
         top: "top-cell-0.5",
         left: "left-cell-0.5",
         rotation: "rotate-0",
-        widthClass: "w-40",
+        widthClass: "w-39",
         zIndex: 10,
       },
       {
