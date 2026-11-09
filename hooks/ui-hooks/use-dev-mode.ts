@@ -29,4 +29,3 @@ export function useDevMode(): boolean {
   const isDevEnvironment = process.env.NODE_ENV === "development";
   return isDevEnvironment || isDevParam;
 }
-

@@ -200,7 +200,9 @@ export const parseGridExplicitBooks = <T extends BookItem>(
         console.warn(
           `[${gridLabel} Collision] Position "${coordLabel}" was claimed by ${assignedBooks.length} books: ${assignedBooks
             .map((b) => `"${b.title || b.id}"`)
-            .join(", ")}. Book "${assignedBooks[0].title || assignedBooks[0].id}" was placed here; others were moved to unpositioned auto-flow.`
+            .join(
+              ", "
+            )}. Book "${assignedBooks[0].title || assignedBooks[0].id}" was placed here; others were moved to unpositioned auto-flow.`
         );
       }
       for (let i = 1; i < assignedBooks.length; i++) {
@@ -228,11 +230,17 @@ export const buildAlternatingGridSlots = <T extends BookItem>(
   unpositionedBooks: T[]
 ): Array<Array<{ coordinate: string; book?: T; isOccupied: boolean }>> => {
   let unpositionedIndex = 0;
-  const result: Array<Array<{ coordinate: string; book?: T; isOccupied: boolean }>> = [];
+  const result: Array<
+    Array<{ coordinate: string; book?: T; isOccupied: boolean }>
+  > = [];
 
   for (let r = 0; r < rows; r++) {
     const rowCapacity = r % 2 === 0 ? cols : Math.max(1, cols - 1);
-    const rowItems: Array<{ coordinate: string; book?: T; isOccupied: boolean }> = [];
+    const rowItems: Array<{
+      coordinate: string;
+      book?: T;
+      isOccupied: boolean;
+    }> = [];
 
     for (let c = 0; c < rowCapacity; c++) {
       const coord = formatGridPosition(r, c);
@@ -260,4 +268,3 @@ export const buildAlternatingGridSlots = <T extends BookItem>(
 
   return result;
 };
-

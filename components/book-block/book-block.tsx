@@ -1,15 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useState, useRef } from "react";
 import Image from "next/image";
 import type { StaticImageData } from "next/image";
-import type {
-  BookItem,
-  BlockLayoutElement,
-} from "@/books/books-index";
+import { AnimatePresence, useMotionValue, useSpring } from "motion/react";
+import type { BookItem, BlockLayoutElement } from "@/books/books-index";
 import BookCover from "./book-cover";
 import BookQuote from "./book-quote";
 import PillMessage from "./pill-message";
+import GenrePill from "@/components/current-reads/genres-pill";
+import ShelfBookHoverCard from "@/components/shelf-grid/shelf-book-hover-card";
 import { cn } from "@/lib/utils";
 import {
   parseCellUnit,
@@ -146,6 +146,19 @@ const renderLayoutElement = (
       break;
     }
 
+    case "genre-pill": {
+      node = (
+        <GenrePill
+          genre={
+            element.genre ||
+            (typeof element.text === "string" ? element.text : "")
+          }
+          className={element.className}
+        />
+      );
+      break;
+    }
+
     case "custom": {
       node = element.content;
       break;
@@ -173,20 +186,84 @@ const BookBlock = ({
   className,
 }: BookBlockProps) => {
   const book = item || propBook;
+  const [isHovered, setIsHovered] = useState(false);
+  const blockRef = useRef<HTMLDivElement>(null);
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const springX = useSpring(mouseX, {
+    damping: 60,
+    stiffness: 300,
+    mass: 0.5,
+  });
+  const springY = useSpring(mouseY, {
+    damping: 60,
+    stiffness: 300,
+    mass: 0.5,
+  });
+
+  const OFFSET_X = 40;
+  const OFFSET_Y = 40;
+
+  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (blockRef.current) {
+      const rect = blockRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left + OFFSET_X;
+      const y = e.clientY - rect.top + OFFSET_Y;
+      mouseX.set(x);
+      mouseY.set(y);
+      springX.jump(x);
+      springY.jump(y);
+    }
+    setIsHovered(true);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (blockRef.current) {
+      const rect = blockRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left + OFFSET_X;
+      const y = e.clientY - rect.top + OFFSET_Y;
+      if (!isHovered) {
+        mouseX.set(x);
+        mouseY.set(y);
+        springX.jump(x);
+        springY.jump(y);
+        setIsHovered(true);
+      } else {
+        mouseX.set(x);
+        mouseY.set(y);
+      }
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
   if (!book) return null;
 
   const elements = normalizeLayout(book, size);
 
   return (
     <div
+      ref={blockRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       className={cn(
         size === 6 ? "w-cell-6 h-cell-6" : "w-cell-8 h-cell-8",
         "relative aspect-square select-none",
-        // "border border-red-500/20",
+        isHovered && "z-50",
         className
       )}
     >
       {elements.map((el, i) => renderLayoutElement(el, book, i))}
+
+      <AnimatePresence>
+        {isHovered && (
+          <ShelfBookHoverCard book={book} x={springX} y={springY} />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

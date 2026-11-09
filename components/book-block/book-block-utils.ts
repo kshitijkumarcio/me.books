@@ -171,7 +171,10 @@ export const resolveElementPosition = (pos: ElementPosition) => {
 };
 
 /** Normalizes any layout representation into an element array */
-export const normalizeLayout = (book: BookItem, size: 8 | 6): BlockLayoutElement[] => {
+export const normalizeLayout = (
+  book: BookItem,
+  size: 8 | 6
+): BlockLayoutElement[] => {
   if (Array.isArray(book.layout) && book.layout.length > 0) {
     return book.layout;
   }
@@ -216,4 +219,3 @@ export const normalizeLayout = (book: BookItem, size: 8 | 6): BlockLayoutElement
     },
   ];
 };
-

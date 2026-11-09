@@ -1,7 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { useState, useEffect, useRef } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useSpring,
+} from "motion/react";
 import type {
   CurrentlyReadingBook,
   BookItem,
@@ -11,6 +16,7 @@ import BookCover from "@/components/book-block/book-cover";
 import PillMessage from "@/components/book-block/pill-message";
 import GenrePill from "./genres-pill";
 import ReadingProgressBar from "./reading-progress-bar";
+import CRBookHoverCard from "./cr-book-hover-card";
 import { cn } from "@/lib/utils";
 import {
   type ActivePillState,
@@ -29,6 +35,60 @@ export interface CRBlockProps {
 export const CRBlock = ({ book, className }: CRBlockProps) => {
   const { widthClass, rotation, cellWidth } = getCoverConfig(book);
   const { progress, totalPages } = getReadingProgress(book);
+
+  const [isCoverHovered, setIsCoverHovered] = useState(false);
+  const coverRef = useRef<HTMLDivElement>(null);
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const springX = useSpring(mouseX, {
+    damping: 60,
+    stiffness: 300,
+    mass: 0.5,
+  });
+  const springY = useSpring(mouseY, {
+    damping: 60,
+    stiffness: 300,
+    mass: 0.5,
+  });
+
+  const OFFSET_X = 40;
+  const OFFSET_Y = 40;
+
+  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (coverRef.current) {
+      const rect = coverRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left + OFFSET_X;
+      const y = e.clientY - rect.top + OFFSET_Y;
+      mouseX.set(x);
+      mouseY.set(y);
+      springX.jump(x);
+      springY.jump(y);
+    }
+    setIsCoverHovered(true);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (coverRef.current) {
+      const rect = coverRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left + OFFSET_X;
+      const y = e.clientY - rect.top + OFFSET_Y;
+      if (!isCoverHovered) {
+        mouseX.set(x);
+        mouseY.set(y);
+        springX.jump(x);
+        springY.jump(y);
+        setIsCoverHovered(true);
+      } else {
+        mouseX.set(x);
+        mouseY.set(y);
+      }
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsCoverHovered(false);
+  };
 
   // Extract review pills (3 pills) and genres (3 genres)
   const pills: CurrentlyReadingPill[] =
@@ -175,19 +235,44 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
   return (
     <div className={cn("w-cell-6 h-cell-6 relative select-none", className)}>
       {/* Central Unit: Anchored to a fixed bottom baseline with exact height container so all covers align */}
-      <div className="bottom-cell-[0.55] absolute left-1/2 z-10 flex -translate-x-1/2 flex-col items-center">
+      <div
+        className={cn(
+          "bottom-cell-[0.55] absolute left-1/2 z-10 flex -translate-x-1/2 flex-col items-center",
+          isCoverHovered && "z-50"
+        )}
+      >
         {/* Cover container with fixed height & items-end: locks the bottom of every cover to the exact same baseline */}
         <div
           className="flex items-end justify-center"
           style={{ height: "calc(var(--cell-size) * 3.8)" }}
         >
-          <BookCover
-            src={book.coverImage}
-            alt={book.title}
-            widthClass={widthClass}
-            format={book.format}
-            rotation={rotation}
-          />
+          <div
+            ref={coverRef}
+            onMouseEnter={handleMouseEnter}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            className="relative cursor-pointer"
+          >
+            <BookCover
+              src={book.coverImage}
+              alt={book.title}
+              widthClass={widthClass}
+              format={book.format}
+              rotation={rotation}
+            />
+
+            <AnimatePresence>
+              {isCoverHovered && (
+                <CRBookHoverCard
+                  book={book}
+                  progress={progress}
+                  totalPages={totalPages}
+                  x={springX}
+                  y={springY}
+                />
+              )}
+            </AnimatePresence>
+          </div>
         </div>
 
         <div

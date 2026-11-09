@@ -1,7 +1,4 @@
-import type {
-  CurrentlyReadingBook,
-  BookItem,
-} from "@/books/books-index";
+import type { CurrentlyReadingBook, BookItem } from "@/books/books-index";
 import { parseCellUnit } from "@/components/book-block/book-block";
 
 export interface PillCoord {
@@ -87,7 +84,9 @@ export function getCoverConfig(book?: CurrentlyReadingBook | BookItem | null) {
 /**
  * Safely extracts current pages read and total pages.
  */
-export function getReadingProgress(book?: CurrentlyReadingBook | BookItem | null) {
+export function getReadingProgress(
+  book?: CurrentlyReadingBook | BookItem | null
+) {
   if (!book) return { progress: 0, totalPages: 100 };
   const progress =
     "progress" in book && typeof book.progress === "number" ? book.progress : 0;
@@ -98,4 +97,3 @@ export function getReadingProgress(book?: CurrentlyReadingBook | BookItem | null
 
   return { progress, totalPages };
 }
-

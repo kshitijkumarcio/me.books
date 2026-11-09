@@ -65,6 +65,8 @@ import TheThingsWeNeverSay from "@/public/images/the-things-we-never-say.jpg";
 import WimmyRoadBoys from "@/public/images/wimmy-road-boys.jpg";
 import AngelDown from "@/public/images/angel-down.jpg";
 import James from "@/public/images/james.jpg";
+import DemonCopperhead from "@/public/images/demon-copperhead.jpg";
+import ShadowOfGods from "@/public/images/the-shadow-of-the-gods.jpg";
 
 import Kshitij from "@/public/images/kshitij.png";
 import AMITC1 from "@/public/images/amitc-img-1.png";
@@ -224,6 +226,8 @@ export const images = {
   WimmyRoadBoys,
   AngelDown,
   James,
+  DemonCopperhead,
+  ShadowOfGods,
   //
   Kshitij,
   //

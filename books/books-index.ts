@@ -85,6 +85,12 @@ export interface CustomLayoutElement extends BaseLayoutElement {
   content?: React.ReactNode;
 }
 
+export interface GenrePillLayoutElement extends BaseLayoutElement {
+  type: "genre-pill";
+  genre?: string;
+  text?: string;
+}
+
 export type BlockLayoutElement =
   | CoverLayoutElement
   | QuoteLayoutElement
@@ -92,6 +98,7 @@ export type BlockLayoutElement =
   | CodeLayoutElement
   | TagLayoutElement
   | PillMessageLayoutElement
+  | GenrePillLayoutElement
   | CustomLayoutElement;
 
 export type BookStatus = "reading" | "read" | "wishlist";
@@ -101,7 +108,7 @@ export interface BaseBookItem {
   title: string;
   author: string;
   coverImage: StaticImageData;
-  genre: string;
+  genre?: string;
   status: BookStatus;
   format: BookFormat;
   position?: string; // Grid position e.g. "A1", "A3", "B5"
@@ -130,6 +137,13 @@ export interface ReadBook extends BaseBookItem {
 
 export interface WishlistBook extends BaseBookItem {
   status: "wishlist";
+  amazonUrl?: string; // Direct Amazon product URL
+  price?: number | string; // e.g. 399, "₹399", or "₹400 - ₹500"
+  priority?: "top" | "high" | "normal" | ""; // "top" = Most Wanted / Top Pick
+  note?: string; // 1-line personal note on why you want this book
+  isbn?: string;
+  isClaimed?: boolean; // Set to true if someone has already gifted this book
+  genres?: string[];
 }
 
 export type BookItem = CurrentlyReadingBook | ReadBook | WishlistBook;
@@ -2053,9 +2067,15 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "A Moveable Feast",
     author: "Ernest Hemingway",
-    position: "A1",
+    position: "a2",
+    amazonUrl:
+      "https://www.amazon.in/dp/0099909405/?coliid=I1MK1GSQMMTXX&colid=12HOKZPESP747&psc=1",
+    price: 403,
+    priority: "",
+    note: "",
+    isbn: "",
     coverImage: images.AMoveableFeast,
-    genre: "Memoir / Classic",
+    genres: ["lost generation", "paris cafe", "pure nostalgia"],
     format: "little-penguin-classic",
     layout: [
       {
@@ -2068,32 +2088,46 @@ export const wishlistBooks: WishlistBook[] = [
       },
     ],
   },
-  {
-    id: "w02",
-    status: "wishlist",
-    title: "Babel",
-    author: "R.F. Kuang",
-    coverImage: images.Babel,
-    genre: "Historical Fantasy / Dark Academia",
-    format: "standard",
-    layout: [
-      {
-        type: "cover",
-        top: "top-cell-0.5",
-        left: "left-cell-0.5",
-        rotation: "rotate-0",
-        widthClass: "w-39",
-        zIndex: 10,
-      },
-    ],
-  },
+  // {
+  //   id: "w02",
+  //   status: "wishlist",
+  //   title: "Babel",
+  //   author: "R.F. Kuang",
+  //   position: "",
+  //   amazonUrl:
+  //     "https://www.amazon.in/Babel-SUNDAY-bestseller-anticipated-fantasy/dp/0008501858/ref=tmm_pap_swatch_0?_encoding=UTF8&sr=8-3",
+  //   price: 319,
+  //   priority: "",
+  //   note: "",
+  //   isbn: "",
+  //   coverImage: images.Babel,
+  //  //   genres: ["dark academia","linguistic magic","brutal revolution"],
+  //   format: "standard",
+  //   layout: [
+  //     {
+  //       type: "cover",
+  //       top: "top-cell-0.5",
+  //       left: "left-cell-0.5",
+  //       rotation: "rotate-0",
+  //       widthClass: "w-39",
+  //       zIndex: 10,
+  //     },
+  //   ],
+  // },
   {
     id: "w03",
     status: "wishlist",
     title: "Bad Words",
     author: "Ríoghnach Robinson",
+    position: "",
+    price: 458,
+    priority: "",
+    note: "",
+    isbn: "",
+    amazonUrl:
+      "https://www.amazon.in/Bad-Words-irresistible-once-lifetime/dp/0008865140/ref=tmm_pap_swatch_0?_encoding=UTF8&sr=8-1",
     coverImage: images.BadWords,
-    genre: "Fiction / Romantic Comedy",
+    genres: ["witty banter", "dictionary love", "laugh-out-loud"],
     format: "standard",
     layout: [
       {
@@ -2111,8 +2145,15 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "Crime and Punishment",
     author: "Fyodor Dostoevsky",
+    position: "",
+    amazonUrl:
+      "https://www.amazon.in/dp/0140449132/?coliid=IZ3T11IY9M8M4&colid=12HOKZPESP747&psc=1",
+    price: 299,
+    priority: "",
+    note: "",
+    isbn: "",
     coverImage: images.CrimeAndPunishment,
-    genre: "Classic / Psychological Fiction",
+    genres: ["moral fever", "deep guilt", "st. petersburg"],
     format: "standard",
     layout: [
       {
@@ -2130,8 +2171,15 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "Dubliners",
     author: "James Joyce",
+    position: "",
+    price: 585,
+    priority: "",
+    note: "",
+    isbn: "",
+    amazonUrl:
+      "https://www.amazon.in/Dubliners-Modern-Classics-James-Joyce/dp/0140186476/ref=sr_1_4?sr=8-4",
     coverImage: images.Dubliners,
-    genre: "Classic / Short Stories",
+    genres: ["quiet epiphanies", "dublin life", "poignant prose"],
     format: "little-penguin-classic",
     layout: [
       {
@@ -2144,32 +2192,46 @@ export const wishlistBooks: WishlistBook[] = [
       },
     ],
   },
-  {
-    id: "w06",
-    status: "wishlist",
-    title: "Fruit Fly",
-    author: "Josh Silver",
-    coverImage: images.FruitFly,
-    genre: "Fiction / Dark Comedy",
-    format: "standard",
-    layout: [
-      {
-        type: "cover",
-        top: "top-cell-0.5",
-        left: "left-cell-0.5",
-        rotation: "rotate-0",
-        widthClass: "w-39",
-        zIndex: 10,
-      },
-    ],
-  },
+  // {
+  //   id: "w06",
+  //   status: "wishlist",
+  //   title: "Fruit Fly",
+  //   author: "Josh Silver",
+  //   position: "",
+  //   price: 606,
+  //   priority: "",
+  //   note: "",
+  //   isbn: "",
+  //   amazonUrl:
+  //     "https://www.amazon.in/dp/1836432399/?coliid=I3X226J6EGKCA&colid=12HOKZPESP747&psc=1",
+  //   coverImage: images.FruitFly,
+  //  //   genres: ["wildly chaotic","dark humor","unhinged energy"],
+  //   format: "standard",
+  //   layout: [
+  //     {
+  //       type: "cover",
+  //       top: "top-cell-0.5",
+  //       left: "left-cell-0.5",
+  //       rotation: "rotate-0",
+  //       widthClass: "w-39",
+  //       zIndex: 10,
+  //     },
+  //   ],
+  // },
   {
     id: "w07",
     status: "wishlist",
     title: "Great Expectations",
     author: "Charles Dickens",
+    position: "",
+    amazonUrl:
+      "https://www.amazon.in/dp/0141439564/?coliid=I32IZIRQDU7S6L&colid=12HOKZPESP747&psc=1",
+    price: 213,
+    priority: "",
+    note: "",
+    isbn: "",
     coverImage: images.GreatExpectations,
-    genre: "Classic / Victorian Fiction",
+    genres: ["miss havisham", "gothic classic", "timeless journey"],
     format: "standard",
     layout: [
       {
@@ -2187,8 +2249,15 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "Jane Eyre",
     author: "Charlotte Brontë",
+    position: "",
+    amazonUrl:
+      "https://www.amazon.in/Jane-Penguin-Classics-Charlotte-Bront%C3%AB/dp/0141441143/ref=sr_1_3?sr=8-3",
+    price: 300,
+    priority: "",
+    note: "",
+    isbn: "",
     coverImage: images.JaneEyre,
-    genre: "Classic / Gothic Romance",
+    genres: ["fierce independence", "gothic mystery", "mr. rochester"],
     format: "standard",
     layout: [
       {
@@ -2201,108 +2270,150 @@ export const wishlistBooks: WishlistBook[] = [
       },
     ],
   },
-  {
-    id: "w09",
-    status: "wishlist",
-    title: "Martyr!",
-    author: "Kaveh Akbar",
-    coverImage: images.Martyr,
-    genre: "Literary Fiction / Poetry",
-    format: "standard",
-    layout: [
-      {
-        type: "cover",
-        top: "top-cell-0.5",
-        left: "left-cell-0.5",
-        rotation: "rotate-0",
-        widthClass: "w-39",
-        zIndex: 10,
-      },
-    ],
-  },
-  {
-    id: "w10",
-    status: "wishlist",
-    title: "Near to the Wild Heart",
-    author: "Clarice Lispector",
-    coverImage: images.NearToTheWildHeart,
-    genre: "Literary Fiction / Modernist",
-    format: "standard",
-    layout: [
-      {
-        type: "cover",
-        top: "top-cell-0.5",
-        left: "left-cell-0.5",
-        rotation: "rotate-0",
-        widthClass: "w-39",
-        zIndex: 10,
-      },
-    ],
-  },
-  {
-    id: "w11",
-    status: "wishlist",
-    title: "On the Genealogy of Morals",
-    author: "Friedrich Nietzsche",
-    coverImage: images.OnTheGenealogyOfMorals,
-    genre: "Philosophy",
-    format: "standard",
-    layout: [
-      {
-        type: "cover",
-        top: "top-cell-0.5",
-        left: "left-cell-0.5",
-        rotation: "rotate-0",
-        widthClass: "w-39",
-        zIndex: 10,
-      },
-    ],
-  },
-  {
-    id: "w12",
-    status: "wishlist",
-    title: "Several Short Sentences About Writing",
-    author: "Verlyn Klinkenborg",
-    coverImage: images.SeveralShortSentencesAboutWriting,
-    genre: "Writing / Essays",
-    format: "standard",
-    layout: [
-      {
-        type: "cover",
-        top: "top-cell-0.5",
-        left: "left-cell-0.5",
-        rotation: "rotate-0",
-        widthClass: "w-39",
-        zIndex: 10,
-      },
-    ],
-  },
-  {
-    id: "w13",
-    status: "wishlist",
-    title: "The Loneliness of Sonia and Sunny",
-    author: "Kiran Desai",
-    coverImage: images.SoniaAndSunny,
-    genre: "Fiction / Contemporary",
-    format: "standard",
-    layout: [
-      {
-        type: "cover",
-        top: "top-cell-0.5",
-        left: "left-cell-0.5",
-        rotation: "rotate-0",
-        widthClass: "w-39",
-        zIndex: 10,
-      },
-    ],
-  },
+  // {
+  //   id: "w09",
+  //   status: "wishlist",
+  //   title: "Martyr!",
+  //   author: "Kaveh Akbar",
+  //   position: "",
+  //   amazonUrl:
+  //     "https://www.amazon.in/dp/9361130641/?coliid=I1C20U8JQ92L18&colid=12HOKZPESP747&psc=1#",
+  //   price: 367,
+  //   priority: "",
+  //   note: "",
+  //   isbn: "",
+  //   coverImage: images.Martyr,
+  //  //   genres: ["dazzling voice","poetic grief","raw heart"],
+  //   format: "standard",
+  //   layout: [
+  //     {
+  //       type: "cover",
+  //       top: "top-cell-0.5",
+  //       left: "left-cell-0.5",
+  //       rotation: "rotate-0",
+  //       widthClass: "w-39",
+  //       zIndex: 10,
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: "w10",
+  //   status: "wishlist",
+  //   title: "Near to the Wild Heart",
+  //   author: "Clarice Lispector",
+  //   position: "",
+  //   amazonUrl:
+  //     "https://www.amazon.in/dp/014119734X/?coliid=I31ED3IYK8NFY1&colid=12HOKZPESP747&psc=1",
+  //   price: 401,
+  //   priority: "",
+  //   note: "",
+  //   isbn: "",
+  //   coverImage: images.NearToTheWildHeart,
+  //  //   genres: ["inner monologue","wild heart","fervent prose"],
+  //   format: "standard",
+  //   layout: [
+  //     {
+  //       type: "cover",
+  //       top: "top-cell-0.5",
+  //       left: "left-cell-0.5",
+  //       rotation: "rotate-0",
+  //       widthClass: "w-39",
+  //       zIndex: 10,
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: "w11",
+  //   status: "wishlist",
+  //   title: "On the Genealogy of Morals",
+  //   author: "Friedrich Nietzsche",
+  //   position: "",
+  //   amazonUrl:
+  //     "https://www.amazon.in/dp/0141195371/?coliid=ITU3IX47K0XM0&colid=12HOKZPESP747&psc=1",
+  //   price: 348,
+  //   priority: "",
+  //   note: "",
+  //   isbn: "",
+  //   coverImage: images.OnTheGenealogyOfMorals,
+  //  //   genres: ["radical critique","will to power","provocative thought"],
+  //   format: "standard",
+  //   layout: [
+  //     {
+  //       type: "cover",
+  //       top: "top-cell-0.5",
+  //       left: "left-cell-0.5",
+  //       rotation: "rotate-0",
+  //       widthClass: "w-39",
+  //       zIndex: 10,
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: "w12",
+  //   status: "wishlist",
+  //   title: "Several Short Sentences About Writing",
+  //   author: "Verlyn Klinkenborg",
+  //   position: "",
+  //   amazonUrl:
+  //     "https://www.amazon.in/dp/0307279413/?coliid=I8II3N0C7O3LJ&colid=12HOKZPESP747&psc=1",
+  //   price: 465,
+  //   priority: "",
+  //   note: "",
+  //   isbn: "",
+  //   coverImage: images.SeveralShortSentencesAboutWriting,
+  //  //   genres: ["craft wisdom","sentence rhythm","pure clarity"],
+  //   format: "standard",
+  //   layout: [
+  //     {
+  //       type: "cover",
+  //       top: "top-cell-0.5",
+  //       left: "left-cell-0.5",
+  //       rotation: "rotate-0",
+  //       widthClass: "w-39",
+  //       zIndex: 10,
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: "w13",
+  //   status: "wishlist",
+  //   title: "The Loneliness of Sonia and Sunny",
+  //   author: "Kiran Desai",
+  //   position: "",
+  //   price: 599,
+  //   priority: "",
+  //   note: "",
+  //   isbn: "",
+  //   amazonUrl:
+  //     "https://www.amazon.in/dp/067008557X/?coliid=I1R8KDH7QTIKHZ&colid=12HOKZPESP747&psc=1#",
+  //   coverImage: images.SoniaAndSunny,
+  //  //   genres: ["sharp diaspora","tender longing","rich texture"],
+  //   format: "standard",
+  //   layout: [
+  //     {
+  //       type: "cover",
+  //       top: "top-cell-0.5",
+  //       left: "left-cell-0.5",
+  //       rotation: "rotate-0",
+  //       widthClass: "w-39",
+  //       zIndex: 10,
+  //     },
+  //   ],
+  // },
   {
     id: "w14",
     status: "wishlist",
     title: "Stoner",
     author: "John Williams",
+    position: "",
+    amazonUrl:
+      "https://www.amazon.in/Stoner-Vintage-Classics-John-Williams/dp/0099561549/ref=sr_1_3?sr=8-3",
+    price: 430,
+    priority: "",
+    note: "",
+    isbn: "",
     coverImage: images.Stoner,
-    genre: "Literary Fiction / Classic",
+    genres: ["quiet tragedy", "stoic beauty", "sublime prose"],
     format: "standard",
     layout: [
       {
@@ -2320,8 +2431,15 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "Taiwan Travelogue",
     author: "Yang Shuang-zi",
+    position: "",
+    amazonUrl:
+      "https://www.amazon.in/Taiwan-Travelogue-Winner-International-Booker/dp/936113910X/ref=sr_1_1?sr=8-1",
+    price: 299,
+    priority: "",
+    note: "",
+    isbn: "",
     coverImage: images.TaiwanTravelogue,
-    genre: "Historical Fiction / Food",
+    genres: ["food history", "subtle bond", "colonial tale"],
     format: "standard",
     layout: [
       {
@@ -2339,8 +2457,15 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "The Correspondent",
     author: "Virginia Evans",
+    position: "",
+    amazonUrl:
+      "https://www.amazon.in/Correspondent-Exclusive-Hardcover-Collectors-Epistolary/dp/0241863368/ref=sr_1_3?s=books&sr=1-3#customerReviews",
+    price: 621,
+    priority: "",
+    note: "",
+    isbn: "",
     coverImage: images.TheCorrespondent,
-    genre: "Fiction / Journalism",
+    genres: ["war reporter", "frontline truth", "grit & courage"],
     format: "standard",
     layout: [
       {
@@ -2353,32 +2478,46 @@ export const wishlistBooks: WishlistBook[] = [
       },
     ],
   },
-  {
-    id: "w17",
-    status: "wishlist",
-    title: "The Goldfinch",
-    author: "Donna Tartt",
-    coverImage: images.TheGoldfinch,
-    genre: "Literary Fiction / Art",
-    format: "standard",
-    layout: [
-      {
-        type: "cover",
-        top: "top-cell-0.5",
-        left: "left-cell-0.5",
-        rotation: "rotate-0",
-        widthClass: "w-39",
-        zIndex: 10,
-      },
-    ],
-  },
+  // {
+  //   id: "w17",
+  //   status: "wishlist",
+  //   title: "The Goldfinch",
+  //   author: "Donna Tartt",
+  //   position: "",
+  //   amazonUrl:
+  //     "https://www.amazon.in/dp/0349139636/?coliid=I1ZZ0WHZ94EKSD&colid=12HOKZPESP747&psc=1",
+  //   price: 446,
+  //   priority: "",
+  //   note: "",
+  //   isbn: "",
+  //   coverImage: images.TheGoldfinch,
+  //  //   genres: ["secret art","epic journey","haunting loss"],
+  //   format: "standard",
+  //   layout: [
+  //     {
+  //       type: "cover",
+  //       top: "top-cell-0.5",
+  //       left: "left-cell-0.5",
+  //       rotation: "rotate-0",
+  //       widthClass: "w-39",
+  //       zIndex: 10,
+  //     },
+  //   ],
+  // },
   {
     id: "w18",
     status: "wishlist",
     title: "The Great Gatsby",
     author: "F. Scott Fitzgerald",
+    position: "",
+    price: 348,
+    priority: "",
+    note: "",
+    isbn: "",
+    amazonUrl:
+      "https://www.amazon.in/dp/0141182636/?coliid=I19J32CB4ADL5V&colid=12HOKZPESP747&psc=1",
     coverImage: images.TheGreatGatsby,
-    genre: "Classic / American Literature",
+    genres: ["jazz age", "green light", "tragic illusion"],
     format: "little-penguin-classic",
     layout: [
       {
@@ -2396,8 +2535,15 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "The Memory Police",
     author: "Yoko Ogawa",
+    position: "",
+    price: 438,
+    priority: "",
+    note: "",
+    isbn: "",
+    amazonUrl:
+      "https://www.amazon.in/dp/1784700444/?coliid=I28SX8L0IKIRR0&colid=12HOKZPESP747&psc=1",
     coverImage: images.TheMemoryPolice,
-    genre: "Dystopian / Japanese Fiction",
+    genres: ["lost memories", "quiet dystopia", "haunting chill"],
     format: "standard",
     layout: [
       {
@@ -2410,32 +2556,46 @@ export const wishlistBooks: WishlistBook[] = [
       },
     ],
   },
-  {
-    id: "w20",
-    status: "wishlist",
-    title: "The Paradise of Food",
-    author: "Khalid Jawed",
-    coverImage: images.TheParadiseOfFood,
-    genre: "Fiction / Translation",
-    format: "standard",
-    layout: [
-      {
-        type: "cover",
-        top: "top-cell-0.5",
-        left: "left-cell-0.5",
-        rotation: "rotate-0",
-        widthClass: "w-39",
-        zIndex: 10,
-      },
-    ],
-  },
+  // {
+  //   id: "w20",
+  //   status: "wishlist",
+  //   title: "The Paradise of Food",
+  //   author: "Khalid Jawed",
+  //   position: "",
+  //   amazonUrl:
+  //     "https://www.amazon.in/dp/9393986479/?coliid=IAA8CKW54L23B&colid=12HOKZPESP747&psc=1",
+  //   price: 483,
+  //   priority: "",
+  //   note: "",
+  //   isbn: "",
+  //   coverImage: images.TheParadiseOfFood,
+  //  //   genres: ["visceral feast","existential dread","darkly comic"],
+  //   format: "standard",
+  //   layout: [
+  //     {
+  //       type: "cover",
+  //       top: "top-cell-0.5",
+  //       left: "left-cell-0.5",
+  //       rotation: "rotate-0",
+  //       widthClass: "w-39",
+  //       zIndex: 10,
+  //     },
+  //   ],
+  // },
   {
     id: "w21",
     status: "wishlist",
     title: "The Stranger",
     author: "Albert Camus",
+    position: "",
+    amazonUrl:
+      "https://www.amazon.in/dp/0679720200/?coliid=I2NEEEW2R10VF9&colid=12HOKZPESP747&psc=1",
+    price: 338,
+    priority: "",
+    note: "",
+    isbn: "",
     coverImage: images.TheStranger,
-    genre: "Philosophical Fiction / Absurdism",
+    genres: ["blinding sun", "pure absurdism", "cool detachment"],
     format: "little-penguin-classic",
     layout: [
       {
@@ -2453,8 +2613,15 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "If on a winter's night a traveler",
     author: "Italo Calvino",
+    position: "",
+    amazonUrl:
+      "https://www.amazon.in/dp/0099430894/?coliid=I17G93XK2WM80K&colid=12HOKZPESP747&psc=1",
+    price: 382,
+    priority: "",
+    note: "",
+    isbn: "",
     coverImage: images.WinterNightATraveller,
-    genre: "Postmodern / Metafiction",
+    genres: ["reader's maze", "metafiction magic", "pure ingenuity"],
     format: "little-penguin-classic",
     layout: [
       {
@@ -2472,8 +2639,15 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "Everything was Beautiful and Nothing Hurt",
     author: "Ben Reeves",
+    position: "",
+    amazonUrl:
+      "https://www.amazon.in/Everything-was-Beautiful-Nothing-Hurt/dp/1805465805/ref=tmm_pap_swatch_0",
+    price: 599,
+    priority: "",
+    note: "",
+    isbn: "",
     coverImage: images.EverythingWasBeautiful,
-    genre: "Contemporary Fantasy / Literary Fiction",
+    genres: ["tender sorrow", "poetic dream", "quiet hope"],
     format: "standard",
     layout: [
       {
@@ -2491,8 +2665,15 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "May We Feed The King",
     author: "Rebecca Perry",
+    position: "b6",
+    amazonUrl:
+      "https://www.amazon.in/May-We-Feed-King-Shortlisted/dp/1803515279/ref=tmm_pap_swatch_0?_encoding=UTF8&sr=1-2",
+    price: 438,
+    priority: "",
+    note: "",
+    isbn: "",
     coverImage: images.MayWeFeedTheKing,
-    genre: "Historical Fiction / Literary Fiction",
+    genres: ["dark folklore", "strange ritual", "eerie beauty"],
     format: "standard",
     layout: [
       {
@@ -2510,8 +2691,15 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "The Sun Also Rises",
     author: "Ernest Hemingway",
+    position: "",
+    amazonUrl:
+      "https://www.amazon.in/sun-also-Rises-Ernest-Hemingway/dp/935527131X/ref=monarch_sidesheet_title",
+    price: 213,
+    priority: "",
+    note: "",
+    isbn: "",
     coverImage: images.TheSunAlsoRises,
-    genre: "Classic / Modernist Fiction",
+    genres: ["pamplona fiesta", "unspoken wounds", "lost generation"],
     format: "standard",
     layout: [
       {
@@ -2527,10 +2715,17 @@ export const wishlistBooks: WishlistBook[] = [
   {
     id: "w26",
     status: "wishlist",
-    title: "She Who Remains",
-    author: "Rene Karabash",
-    coverImage: images.SheWhoRemains,
-    genre: "Literary Fiction / Translation",
+    title: "Demon Copperhead",
+    author: "Barbara Kingsolver",
+    position: "",
+    amazonUrl:
+      "https://www.amazon.in/Demon-Copperhead-Without-doubt-Atkinson/dp/0571376487/ref=sr_1_1?sr=8-1#",
+    price: 499,
+    priority: "",
+    note: "",
+    isbn: "",
+    coverImage: images.DemonCopperhead,
+    genres: ["appalachian heart", "fierce survival", "pulitzer winner"],
     format: "standard",
     layout: [
       {
@@ -2548,8 +2743,15 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "Simple Passion",
     author: "Annie Ernaux",
+    position: "",
+    amazonUrl:
+      "https://www.amazon.in/Simple-Passion-Annie-Ernaux/dp/1644213575/ref=sr_1_1?sr=8-1",
+    price: 257,
+    priority: "",
+    note: "",
+    isbn: "",
     coverImage: images.SimplePassion,
-    genre: "Memoir / Autofiction",
+    genres: ["raw obsession", "brutal honesty", "autofiction gem"],
     format: "standard",
     layout: [
       {
@@ -2567,8 +2769,15 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "John of John",
     author: "Douglas Stuart",
+    position: "c2",
+    amazonUrl:
+      "https://www.amazon.in/John-extraordinary-Booker-Prize-winning-Shuggie/dp/1035086964/ref=sr_1_1?sr=8-1",
+    price: 714,
+    priority: "",
+    note: "",
+    isbn: "",
     coverImage: images.JohnOfJohn,
-    genre: "Literary Fiction / Scottish Literature",
+    genres: ["tender grit", "glasgow soul", "poignant bond"],
     format: "standard",
     layout: [
       {
@@ -2586,8 +2795,15 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "Small Things Like These",
     author: "Claire Keegan",
+    position: "a9",
+    amazonUrl:
+      "https://www.amazon.in/Small-Things-Like-These-Shortlisted/dp/0571368700/ref=sr_1_1?sr=8-1",
+    price: 281,
+    priority: "",
+    note: "",
+    isbn: "",
     coverImage: images.SmallThingsLikeThese,
-    genre: "Historical Fiction / Irish Literature",
+    genres: ["quiet courage", "irish winter", "pure perfection"],
     format: "standard",
     layout: [
       {
@@ -2605,8 +2821,15 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "The Road to Tender Hearts",
     author: "Annie Hartnett",
+    position: "a5",
+    amazonUrl:
+      "https://www.amazon.in/Road-Tender-Hearts-hopeful-uplifting/dp/1035447045/ref=sr_1_2?s=books&sr=1-2",
+    price: 454,
+    priority: "",
+    note: "",
+    isbn: "",
     coverImage: images.TheRoadToTenderHearts,
-    genre: "Fiction / Contemporary",
+    genres: ["quirky warmth", "grief healing", "big heart"],
     format: "standard",
     layout: [
       {
@@ -2624,8 +2847,15 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "The Things We Never Say",
     author: "Elizabeth Strout",
+    position: "",
+    amazonUrl:
+      "https://www.amazon.in/Things-Never-Say-bestselling-prize-winning/dp/0241814308/ref=tmm_hrd_swatch_0?_encoding=UTF8&sr=1-3",
+    price: 745,
+    priority: "",
+    note: "",
+    isbn: "",
     coverImage: images.TheThingsWeNeverSay,
-    genre: "Literary Fiction / Contemporary",
+    genres: ["unspoken truth", "small town", "deep empathy"],
     format: "standard",
     layout: [
       {
@@ -2643,8 +2873,15 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "Wimmy Road Boyz",
     author: "Sufiyaan Salam",
+    position: "",
+    amazonUrl:
+      "https://www.amazon.in/dp/1529952646/?bestFormat=true&k=wimmy%20road%20boyz",
+    price: 1199,
+    priority: "",
+    note: "",
+    isbn: "",
     coverImage: images.WimmyRoadBoys,
-    genre: "Fiction / Coming-of-Age",
+    genres: ["brotherhood bond", "curry mile", "raw hustle"],
     format: "standard",
     layout: [
       {
@@ -2662,8 +2899,15 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "Angel Down",
     author: "Daniel Kraus",
+    position: "b5",
+    amazonUrl:
+      "https://www.amazon.in/Angel-Down-Daniel-Kraus/dp/1835415385/ref=tmm_pap_swatch_0?_encoding=UTF8&sr=8-1",
+    price: 611,
+    priority: "",
+    note: "",
+    isbn: "",
     coverImage: images.AngelDown,
-    genre: "Horror / Thriller",
+    genres: ["dark terror", "cold fury", "relentless pace"],
     format: "standard",
     layout: [
       {
@@ -2681,8 +2925,41 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "James",
     author: "Percival Everett",
+    position: "b7",
+    price: 499,
+    priority: "",
+    note: "",
+    isbn: "",
+    amazonUrl:
+      "https://www.amazon.in/dp/1035031248/?coliid=IUDFK0SST7HH8&colid=12HOKZPESP747&psc=1",
     coverImage: images.James,
-    genre: "Historical Fiction / Literary Fiction",
+    genres: ["subversive voice", "literary genius", "freedom song"],
+    format: "standard",
+    layout: [
+      {
+        type: "cover",
+        top: "top-cell-0.5",
+        left: "left-cell-0.5",
+        rotation: "rotate-0",
+        widthClass: "w-39",
+        zIndex: 10,
+      },
+    ],
+  },
+  {
+    id: "w35",
+    status: "wishlist",
+    title: "The Shadow of the Gods",
+    author: "John Gwynne",
+    position: "",
+    price: 499,
+    priority: "",
+    note: "",
+    isbn: "",
+    amazonUrl:
+      "https://www.amazon.in/THE-SHADOW-OF-GODS/dp/0356514218/ref=tmm_pap_swatch_0",
+    coverImage: images.ShadowOfGods,
+    genres: ["High fantasy", "Norse myth", "Dragons"],
     format: "standard",
     layout: [
       {
