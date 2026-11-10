@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import {
   motion,
   AnimatePresence,
@@ -10,6 +10,10 @@ import {
 import type { WishlistBook, BookItem } from "@/books/books-index";
 import BookCover from "@/components/book-block/book-cover";
 import GenrePill from "@/components/current-reads/genres-pill";
+import {
+  getRandomSidePosition,
+  type PillCoord,
+} from "@/components/current-reads/cr-block-geometry";
 import WishlistHoverCard from "./wishlist-hover-card";
 import { cn } from "@/lib/utils";
 
@@ -19,30 +23,11 @@ export interface WishListBlockProps {
   className?: string;
 }
 
-// Balanced natural positions around the cover in a 6x6 block
-const PILL_POSITIONS_A = [
-  { top: "calc(var(--cell-size) * 0.6)", left: "calc(var(--cell-size) * 0.5)" },
-  {
-    top: "calc(var(--cell-size) * 1.4)",
-    right: "calc(var(--cell-size) * 0.5)",
-  },
-  {
-    bottom: "calc(var(--cell-size) * 0.6)",
-    right: "calc(var(--cell-size) * 0.6)",
-  },
-];
-
-const PILL_POSITIONS_B = [
-  {
-    top: "calc(var(--cell-size) * 0.6)",
-    right: "calc(var(--cell-size) * 0.5)",
-  },
-  { top: "calc(var(--cell-size) * 1.4)", left: "calc(var(--cell-size) * 0.5)" },
-  {
-    bottom: "calc(var(--cell-size) * 0.6)",
-    left: "calc(var(--cell-size) * 0.6)",
-  },
-];
+interface ActiveWishlistPill {
+  genre: string;
+  coord: PillCoord;
+  key: string;
+}
 
 export const WishListBlock = ({
   book,
@@ -50,6 +35,8 @@ export const WishListBlock = ({
   className,
 }: WishListBlockProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [leftPill, setLeftPill] = useState<ActiveWishlistPill | null>(null);
+  const [rightPill, setRightPill] = useState<ActiveWishlistPill | null>(null);
   const blockRef = useRef<HTMLDivElement>(null);
 
   const mouseX = useMotionValue(0);
@@ -66,24 +53,111 @@ export const WishListBlock = ({
     mass: 0.5,
   });
 
-  if (!book) return null;
-
-  const isWishlist = book.status === "wishlist";
-  const coverElement = book.layout?.find((el) => el.type === "cover");
+  const isWishlist = book?.status === "wishlist";
+  const coverElement = book?.layout?.find((el) => el.type === "cover");
   const widthClass = coverElement?.widthClass || "w-40";
   const rotation = coverElement?.rotation || "rotate-0";
 
-  const genres: string[] =
-    book &&
-    "genres" in book &&
-    Array.isArray(book.genres) &&
-    book.genres.length > 0
-      ? book.genres
-      : [];
+  const availableGenres = useMemo(() => {
+    if (
+      book &&
+      "genres" in book &&
+      Array.isArray(book.genres) &&
+      book.genres.length > 0
+    ) {
+      return book.genres;
+    }
+    if (book?.genre) {
+      const parts = book.genre
+        .split("/")
+        .map((s) => s.trim().toLowerCase())
+        .filter(Boolean);
+      if (parts.length >= 2) return parts;
+      if (parts.length === 1) return [parts[0], "wishlist"];
+    }
+    return ["must read", "wishlist"];
+  }, [book]);
 
-  const bookNum =
-    parseInt(book?.id ? book.id.replace(/\D/g, "") : "1", 10) || 1;
-  const pillPositions = bookNum % 2 === 1 ? PILL_POSITIONS_A : PILL_POSITIONS_B;
+  const spawnHoverPills = useCallback(() => {
+    if (availableGenres.length === 0) return;
+
+    // Pick two distinct genre indices
+    const idx1 = Math.floor(Math.random() * availableGenres.length);
+    let idx2 = Math.floor(Math.random() * (availableGenres.length - 1));
+    if (idx2 >= idx1) idx2 = (idx2 + 1) % availableGenres.length;
+
+    // Side position ranges: vertically 0.6 to 3.8 cells, flanking either side
+    const leftCoord = getRandomSidePosition("left", undefined, 0.6, 3.8);
+    let rightCoord = getRandomSidePosition("right", undefined, 0.6, 3.8);
+
+    // Stagger heights so both sides are not at the same vertical level
+    let attempts = 0;
+    while (Math.abs(leftCoord.y - rightCoord.y) < 0.7 && attempts < 5) {
+      rightCoord = getRandomSidePosition("right", undefined, 0.6, 3.8);
+      attempts++;
+    }
+
+    const stamp = Date.now();
+    setLeftPill({
+      genre: availableGenres[idx1],
+      coord: leftCoord,
+      key: `left-${stamp}`,
+    });
+    setRightPill({
+      genre: availableGenres[idx2],
+      coord: rightCoord,
+      key: `right-${stamp}`,
+    });
+  }, [availableGenres]);
+
+  // Periodically cycle one pill if user stays hovered and there are 3+ genres
+  useEffect(() => {
+    if (!isHovered || availableGenres.length <= 2) return;
+
+    let activeSide: "left" | "right" = "left";
+    const interval = setInterval(() => {
+      const sideToUpdate = activeSide;
+      activeSide = activeSide === "left" ? "right" : "left";
+
+      if (sideToUpdate === "left") {
+        setLeftPill((current) => {
+          const currentGenre = current?.genre;
+          const otherGenre = rightPill?.genre;
+          const candidates = availableGenres.filter(
+            (g) => g !== currentGenre && g !== otherGenre
+          );
+          const nextGenre =
+            candidates[Math.floor(Math.random() * candidates.length)] ||
+            availableGenres[0];
+          return {
+            genre: nextGenre,
+            coord: getRandomSidePosition("left", undefined, 0.6, 3.8),
+            key: `left-${Date.now()}`,
+          };
+        });
+      } else {
+        setRightPill((current) => {
+          const currentGenre = current?.genre;
+          const otherGenre = leftPill?.genre;
+          const candidates = availableGenres.filter(
+            (g) => g !== currentGenre && g !== otherGenre
+          );
+          const nextGenre =
+            candidates[Math.floor(Math.random() * candidates.length)] ||
+            availableGenres[1 % availableGenres.length];
+          return {
+            genre: nextGenre,
+            coord: getRandomSidePosition("right", undefined, 0.6, 3.8),
+            key: `right-${Date.now()}`,
+          };
+        });
+      }
+    }, 4500);
+
+    return () => clearInterval(interval);
+  }, [isHovered, availableGenres, leftPill?.genre, rightPill?.genre]);
+
+  if (!book) return null;
 
   const OFFSET_X = 20;
   const OFFSET_Y = 20;
@@ -98,6 +172,7 @@ export const WishListBlock = ({
       springX.jump(x);
       springY.jump(y);
     }
+    spawnHoverPills();
     setIsHovered(true);
   };
 
@@ -111,6 +186,7 @@ export const WishListBlock = ({
         mouseY.set(y);
         springX.jump(x);
         springY.jump(y);
+        spawnHoverPills();
         setIsHovered(true);
       } else {
         mouseX.set(x);
@@ -174,34 +250,51 @@ export const WishListBlock = ({
           )}
         </div>
 
-        {/* Hover elements: Genre Pills & Floating Cursor Card */}
+        {/* Hover elements: Genre Pills (one on each side) & Floating Cursor Card */}
         {isWishlist && (
           <AnimatePresence>
-            {isHovered && (
-              <>
-                {genres.map((g, i) => {
-                  const pos = pillPositions[i] || pillPositions[0];
-                  return (
-                    <motion.div
-                      key={`wishlist-genre-${book.id}-${i}`}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 0.25, ease: "easeOut" }}
-                      style={pos}
-                      className="pointer-events-none absolute z-20"
-                    >
-                      <GenrePill genre={g} />
-                    </motion.div>
-                  );
-                })}
+            {isHovered && leftPill && (
+              <motion.div
+                key={`wishlist-left-${book.id}-${leftPill.key}`}
+                initial={{ opacity: 0, scale: 0.88 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.88 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                style={{
+                  top: leftPill.coord.top,
+                  right: leftPill.coord.right,
+                  transform: leftPill.coord.transform,
+                }}
+                className="pointer-events-none absolute z-20"
+              >
+                <GenrePill genre={leftPill.genre} />
+              </motion.div>
+            )}
 
-                <WishlistHoverCard
-                  book={book as WishlistBook}
-                  x={springX}
-                  y={springY}
-                />
-              </>
+            {isHovered && rightPill && (
+              <motion.div
+                key={`wishlist-right-${book.id}-${rightPill.key}`}
+                initial={{ opacity: 0, scale: 0.88 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.88 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                style={{
+                  top: rightPill.coord.top,
+                  left: rightPill.coord.left,
+                  transform: rightPill.coord.transform,
+                }}
+                className="pointer-events-none absolute z-20"
+              >
+                <GenrePill genre={rightPill.genre} />
+              </motion.div>
+            )}
+
+            {isHovered && (
+              <WishlistHoverCard
+                book={book as WishlistBook}
+                x={springX}
+                y={springY}
+              />
             )}
           </AnimatePresence>
         )}

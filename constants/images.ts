@@ -66,7 +66,7 @@ import WimmyRoadBoys from "@/public/images/wimmy-road-boys.jpg";
 import AngelDown from "@/public/images/angel-down.jpg";
 import James from "@/public/images/james.jpg";
 import DemonCopperhead from "@/public/images/demon-copperhead.jpg";
-import ShadowOfGods from "@/public/images/the-shadow-of-the-gods.jpg";
+import MyFriends from "@/public/images/my-friends.jpg";
 
 import Kshitij from "@/public/images/kshitij.png";
 import AMITC1 from "@/public/images/amitc-img-1.png";
@@ -227,7 +227,7 @@ export const images = {
   AngelDown,
   James,
   DemonCopperhead,
-  ShadowOfGods,
+  MyFriends,
   //
   Kshitij,
   //

@@ -24,17 +24,18 @@ export interface ActivePillState {
  */
 export function getRandomSidePosition(
   side: "left" | "right",
-  customRand?: () => number
+  customRand?: () => number,
+  minY = 0.45,
+  maxY = 3.9,
+  minOffset = 3.85,
+  maxOffsetDelta = 0.6
 ): PillCoord {
   const rand = customRand || Math.random;
-  const MIN_Y = 0.45;
-  const MAX_Y = 3.9;
-
-  const bestY = MIN_Y + rand() * (MAX_Y - MIN_Y);
+  const bestY = minY + rand() * (maxY - minY);
   const rotation = (rand() - 0.5) * 3;
 
   if (side === "left") {
-    const rightOffset = 3.85 + rand() * 0.6;
+    const rightOffset = minOffset + rand() * maxOffsetDelta;
     return {
       top: `calc(var(--cell-size) * ${bestY.toFixed(2)})`,
       right: `calc(var(--cell-size) * ${rightOffset.toFixed(2)})`,
@@ -42,7 +43,7 @@ export function getRandomSidePosition(
       y: bestY,
     };
   } else {
-    const leftOffset = 3.85 + rand() * 0.6;
+    const leftOffset = minOffset + rand() * maxOffsetDelta;
     return {
       top: `calc(var(--cell-size) * ${bestY.toFixed(2)})`,
       left: `calc(var(--cell-size) * ${leftOffset.toFixed(2)})`,
