@@ -43,14 +43,14 @@ export const BookShelfAnimator = ({
         variants={{
           opened: {
             y: "-100dvh",
-            transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] },
+            transition: { duration: 1.2, ease: [0.76, 0, 0.24, 1] },
           },
           closed: {
             y: 0,
             x: 0,
             scale: 1,
             rotate: 0,
-            transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] },
+            transition: { duration: 1.2, ease: [0.76, 0, 0.24, 1] },
           },
         }}
         className={cn(

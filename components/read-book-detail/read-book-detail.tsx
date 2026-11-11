@@ -107,7 +107,7 @@ export const ReadBookDetail = ({
           ? "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)"
           : "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
         transition: {
-          duration: 0.8,
+          duration: 1.2,
           ease: [0.76, 0, 0.24, 1],
         },
       }}
