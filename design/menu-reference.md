@@ -79,7 +79,7 @@ export default MenuAnimator;
 return (
   <motion.div
     initial={{
-      y: isMobile === true ? "-94dvh" : "-80dvh",
+      y: "-100dvh",
       clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)",
     }}
     animate={{
@@ -92,7 +92,7 @@ return (
       },
     }}
     exit={{
-      y: isMobile === true ? "-50dvh" : "-80dvh",
+      y: "-100dvh",
       scale: 1,
       clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
       transition: {

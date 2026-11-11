@@ -50,9 +50,7 @@ const renderLayoutElement = (
           widthClass={element.widthClass}
           rotation={element.rotation || "rotate-0"}
           className={element.className}
-          href={
-            book.status === "read" ? `/read/${book.id}` : undefined
-          }
+          href={book.status === "read" ? `/read/${book.id}` : undefined}
         />
       );
       break;

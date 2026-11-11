@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 export interface GridCursorHighlighterProps {
@@ -20,26 +20,37 @@ export const GridCursorHighlighter = ({
   const trailPoolRef = useRef<HTMLDivElement[]>([]);
   const poolIndexRef = useRef(0);
   const lastCellRef = useRef<{ x: number; y: number } | null>(null);
+  const cellSizeRef = useRef<number>(60);
+  const rafIdRef = useRef<number | null>(null);
+  const latestEventRef = useRef<PointerEvent | null>(null);
 
-  // Read current --cell-size in pixels
-  const getCellSize = useCallback(() => {
-    if (typeof window === "undefined") return 60;
-    const raw = getComputedStyle(document.documentElement).getPropertyValue(
-      "--cell-size"
-    );
-    const parsed = parseFloat(raw);
-    return !isNaN(parsed) && parsed > 0
-      ? parsed
-      : window.innerWidth < 768
-        ? 40
-        : 60;
+  // Cache current --cell-size in pixels on mount and window resize
+  useEffect(() => {
+    const updateCellSize = () => {
+      const raw = getComputedStyle(document.documentElement).getPropertyValue(
+        "--cell-size"
+      );
+      const parsed = parseFloat(raw);
+      cellSizeRef.current =
+        !isNaN(parsed) && parsed > 0
+          ? parsed
+          : window.innerWidth < 768
+            ? 40
+            : 60;
+    };
+
+    updateCellSize();
+    window.addEventListener("resize", updateCellSize, { passive: true });
+    return () => window.removeEventListener("resize", updateCellSize);
   }, []);
 
-  // Pointer movement listener
+  // Pointer movement listener with RAF throttling to prevent layout thrashing
   useEffect(() => {
-    const handlePointerMove = (e: PointerEvent) => {
+    const processPointerMove = () => {
+      rafIdRef.current = null;
+      const e = latestEventRef.current;
       const container = containerRef.current;
-      if (!container) return;
+      if (!e || !container) return;
 
       const rect = container.getBoundingClientRect();
       const rawX = e.clientX - rect.left;
@@ -50,7 +61,7 @@ export const GridCursorHighlighter = ({
         return;
       }
 
-      const cellSize = getCellSize();
+      const cellSize = cellSizeRef.current;
       const snappedX = Math.floor(rawX / cellSize) * cellSize;
       const snappedY = Math.floor(rawY / cellSize) * cellSize;
 
@@ -81,8 +92,19 @@ export const GridCursorHighlighter = ({
       }
     };
 
+    const handlePointerMove = (e: PointerEvent) => {
+      latestEventRef.current = e;
+      if (rafIdRef.current === null) {
+        rafIdRef.current = requestAnimationFrame(processPointerMove);
+      }
+    };
+
     const handlePointerLeave = () => {
       lastCellRef.current = null;
+      if (rafIdRef.current !== null) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
     };
 
     window.addEventListener("pointermove", handlePointerMove, {
@@ -93,8 +115,11 @@ export const GridCursorHighlighter = ({
     return () => {
       window.removeEventListener("pointermove", handlePointerMove);
       document.removeEventListener("pointerleave", handlePointerLeave);
+      if (rafIdRef.current !== null) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
     };
-  }, [getCellSize, fadeDurationMs]);
+  }, [fadeDurationMs]);
 
   return (
     <div

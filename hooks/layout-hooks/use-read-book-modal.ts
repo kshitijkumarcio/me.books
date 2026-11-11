@@ -2,6 +2,10 @@
 
 import { create } from "zustand";
 
+export const READ_BOOK_TRANSITION_DURATION = 0.9;
+export const READ_BOOK_TRANSITION_DURATION_MS = 900;
+export const READ_BOOK_TRANSITION_EASE = [0.76, 0, 0.24, 1] as const;
+
 interface ReadBookModalState {
   isClosing: boolean;
   setIsClosing: (isClosing: boolean) => void;
@@ -13,10 +17,14 @@ export const useReadBookModal = create<ReadBookModalState>((set) => ({
   setIsClosing: (isClosing) => set({ isClosing }),
   triggerClose: (onCloseComplete) => {
     set({ isClosing: true });
-    // Duration matches the motion transition (0.8s)
+    // Match the exact motion transition duration (1s)
     setTimeout(() => {
       onCloseComplete();
+    }, READ_BOOK_TRANSITION_DURATION_MS);
+
+    // Safety fallback to ensure isClosing is reset even if route change fails
+    setTimeout(() => {
       set({ isClosing: false });
-    }, 800);
+    }, READ_BOOK_TRANSITION_DURATION_MS + 400);
   },
 }));

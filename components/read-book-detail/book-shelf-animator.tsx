@@ -1,10 +1,14 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
-import { useReadBookModal } from "@/hooks/layout-hooks/use-read-book-modal";
+import {
+  useReadBookModal,
+  READ_BOOK_TRANSITION_DURATION,
+  READ_BOOK_TRANSITION_EASE,
+} from "@/hooks/layout-hooks/use-read-book-modal";
 
 interface BookShelfAnimatorProps {
   children: React.ReactNode;
@@ -16,10 +20,17 @@ export const BookShelfAnimator = ({
   modal,
 }: BookShelfAnimatorProps) => {
   const pathname = usePathname();
-  const { isClosing } = useReadBookModal();
+  const { isClosing, setIsClosing } = useReadBookModal();
 
   // Route matches a read book detail view
   const isReadBookRoute = Boolean(pathname?.includes("/read/"));
+
+  // Reset isClosing once the route has actually navigated away from /read/
+  useEffect(() => {
+    if (!isReadBookRoute && isClosing) {
+      setIsClosing(false);
+    }
+  }, [isReadBookRoute, isClosing, setIsClosing]);
 
   // An intercepted navigation has both the route match AND the modal slot populated
   const isInterceptedModal = Boolean(isReadBookRoute && modal);
@@ -42,15 +53,18 @@ export const BookShelfAnimator = ({
         }}
         variants={{
           opened: {
-            y: "-100dvh",
-            transition: { duration: 1.2, ease: [0.76, 0, 0.24, 1] },
+            y: "-70%",
+            transition: {
+              duration: READ_BOOK_TRANSITION_DURATION,
+              ease: READ_BOOK_TRANSITION_EASE,
+            },
           },
           closed: {
-            y: 0,
-            x: 0,
-            scale: 1,
-            rotate: 0,
-            transition: { duration: 1.2, ease: [0.76, 0, 0.24, 1] },
+            y: "0%",
+            transition: {
+              duration: READ_BOOK_TRANSITION_DURATION,
+              ease: READ_BOOK_TRANSITION_EASE,
+            },
           },
         }}
         className={cn(

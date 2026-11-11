@@ -5,7 +5,11 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import type { ReadBook } from "@/books/books-index";
-import { useReadBookModal } from "@/hooks/layout-hooks/use-read-book-modal";
+import {
+  useReadBookModal,
+  READ_BOOK_TRANSITION_DURATION,
+  READ_BOOK_TRANSITION_EASE,
+} from "@/hooks/layout-hooks/use-read-book-modal";
 
 interface ReadBookDetailProps {
   book: ReadBook;
@@ -92,27 +96,26 @@ export const ReadBookDetail = ({
       initial={
         isIntercepted
           ? {
-              y: "100dvh",
+              y: "100%",
               clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
             }
           : {
-              y: 0,
+              y: "0%",
               clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
             }
       }
       animate={{
-        scale: 1,
-        y: isClosing ? "100dvh" : 0,
+        y: isClosing ? "100%" : "0%",
         clipPath: isClosing
           ? "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)"
           : "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
         transition: {
-          duration: 1.2,
-          ease: [0.76, 0, 0.24, 1],
+          duration: READ_BOOK_TRANSITION_DURATION,
+          ease: READ_BOOK_TRANSITION_EASE,
         },
       }}
       style={{
-        transformOrigin: isClosing ? "top" : "bottom",
+        transformOrigin: "top",
         willChange: "transform, clip-path",
         transform: "translateZ(0)",
         WebkitTransform: "translateZ(0)",

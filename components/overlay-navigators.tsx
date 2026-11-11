@@ -47,9 +47,10 @@ const ViewDotsIcon = ({
 const OverlayNavigators = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const { triggerClose } = useReadBookModal();
+  const { isClosing, triggerClose } = useReadBookModal();
 
   const isReadBookRoute = Boolean(pathname?.includes("/read/"));
+  const isShowingBookControls = isReadBookRoute && !isClosing;
 
   // Retrieve current book metadata based on URL if on a read book route
   let currentBook = undefined;
@@ -120,7 +121,7 @@ const OverlayNavigators = () => {
 
         <div className="pointer-events-auto flex items-center gap-x-6">
           <AnimatePresence mode="wait">
-            {isReadBookRoute ? (
+            {isShowingBookControls ? (
               <motion.div
                 key="esc-button"
                 initial={{ opacity: 0, y: -6, scale: 0.95 }}
@@ -182,7 +183,7 @@ const OverlayNavigators = () => {
           </AnimatePresence>
 
           {/* mobile dot pattern button (without text, hidden during read book route) */}
-          {!isReadBookRoute && (
+          {!isShowingBookControls && (
             <div
               onClick={() => {
                 setPageView(pageView === "moodboard" ? "index" : "moodboard");
@@ -200,7 +201,7 @@ const OverlayNavigators = () => {
 
       {/* Top Center Moodboard Toggle (Smoothly animated out during read book route) */}
       <AnimatePresence>
-        {!isReadBookRoute && (
+        {!isShowingBookControls && (
           <motion.div
             key="moodboard-toggle"
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
@@ -246,7 +247,7 @@ const OverlayNavigators = () => {
       {/* bottom buttons */}
       <div className="relative flex items-center justify-center">
         <AnimatePresence mode="wait">
-          {!isReadBookRoute ? (
+          {!isShowingBookControls ? (
             <motion.div
               key="main-bottom-buttons"
               initial={{ opacity: 0, y: 15, scale: 0.96 }}

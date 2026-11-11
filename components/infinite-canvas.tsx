@@ -214,7 +214,10 @@ const InfiniteCanvas = ({
     p.current.rawX = startX;
     p.current.rawY = startY;
 
-    // 2. Dual-axis Lenis instances (Automatically inherits scrollAnimOptions)
+    // 2. Dual-axis Lenis instances
+    // Note: For wheel scrolling, Lenis performs best with exponential damping (lerp)
+    // rather than duration-based easing, ensuring continuous momentum without stuttering between wheel notches.
+    // Programmatic `panTo` continues to use `scrollAnimOptions` (bezier glide).
     const baseLenisOptions = {
       wrapper,
       content,
@@ -225,6 +228,9 @@ const InfiniteCanvas = ({
       touchMultiplier: 1,
       autoRaf: false,
       wheelMultiplier: cfg.wheelMultiplier,
+      lerp: cfg.lerp ?? 0.08,
+      duration: undefined,
+      easing: undefined,
       virtualScroll: (data: { event: Event }) => {
         // Prevent Lenis's stopPropagation check from swallowing the event for the
         // sibling axis. On non-window wrappers, Lenis sets `event.lenisStopPropagation = true`,
@@ -234,7 +240,6 @@ const InfiniteCanvas = ({
         ).lenisStopPropagation = false;
         return true;
       },
-      ...scrollAnimOptions,
     };
 
     const lenisY = new Lenis({
@@ -280,7 +285,8 @@ const InfiniteCanvas = ({
     };
 
     gsap.ticker.add(update);
-    gsap.ticker.lagSmoothing(0);
+    // Smooth out frame drops / CPU spikes so frames don't drop abruptly
+    gsap.ticker.lagSmoothing(500, 33);
 
     return () => {
       gsap.ticker.remove(update);
@@ -450,7 +456,7 @@ const InfiniteCanvas = ({
       <div
         ref={contentRef}
         className={cn(
-          "relative h-max min-h-full w-max min-w-full",
+          "relative h-max min-h-full w-max min-w-full transform-gpu will-change-transform",
           contentClassName
         )}
       >
