@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { monaSans } from "@/providers/font-provider";
 import OverlayNavigators from "@/components/overlay-navigators";
+import BookShelfAnimator from "@/components/read-book-detail/book-shelf-animator";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://kshitijkumar.me/book-shelf"),
@@ -22,7 +23,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+  modal,
+}: {
+  children: React.ReactNode;
+  modal?: React.ReactNode;
+}) {
   return (
     <html lang="en" className={`${monaSans.variable} no-scrollbar antialiased`}>
       <body
@@ -30,7 +37,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         className="no-scrollbar selection:bg-neon/80 bg-neon/80 min-h-screen selection:text-black"
       >
         <OverlayNavigators />
-        {children}
+        <BookShelfAnimator modal={modal}>{children}</BookShelfAnimator>
       </body>
     </html>
   );

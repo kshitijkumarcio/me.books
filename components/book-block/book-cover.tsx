@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import type { StaticImageData } from "next/image";
 import { cn } from "@/lib/utils";
 import { parseCellUnit } from "./book-block";
@@ -15,6 +16,7 @@ interface BookCoverProps {
   widthClass?: string;
   format?: BookFormat;
   id?: string;
+  href?: string;
 }
 
 const BookCover = ({
@@ -24,13 +26,14 @@ const BookCover = ({
   rotation = "rotate-0",
   widthClass = "w-40",
   format = "standard",
+  href,
 }: BookCoverProps) => {
   if (!src) return null;
   const effectiveWidthClass =
     widthClass || COVER_FORMAT_SIZES[format] || "w-40";
   const cellWidth = parseCellUnit(effectiveWidthClass);
 
-  return (
+  const content = (
     <div
       className={cn(
         "group/cover relative cursor-pointer transition-all duration-500 ease-out",
@@ -60,6 +63,16 @@ const BookCover = ({
       </div>
     </div>
   );
+
+  if (href) {
+    return (
+      <Link href={href} scroll={false} className="inline-block">
+        {content}
+      </Link>
+    );
+  }
+
+  return content;
 };
 
 export default BookCover;

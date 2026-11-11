@@ -133,6 +133,11 @@ export interface ReadBook extends BaseBookItem {
   status: "read";
   rating: number;
   yearRead: number;
+  genres?: string[];
+  synopsis?: string | string[];
+  goodreadsUrl?: string;
+  borrowUrl?: string;
+  borrowMessage?: string;
 }
 
 export interface WishlistBook extends BaseBookItem {
@@ -395,9 +400,19 @@ export const BooksRead: ReadBook[] = [
     author: "Sabahattin Ali",
     coverImage: images.Madonna,
     position: "A4",
-    rating: 5,
+    rating: 3,
     yearRead: 2024,
     genre: "Classic / Literary Fiction",
+    genres: ["Fiction", "Romance", "Turkish Classic"],
+    synopsis: [
+      "For twenty years, Sciona has devoted every waking moment to the study of magic.",
+      "When she finally achieves her ambition to become the first woman admitted to the High Magistry at the University of Magics and Industry, she finds herself undermined at every turn.",
+      "Instead of a lab assistant, she's paired with a janitor, putting her crucial research at risk.",
+    ],
+    goodreadsUrl:
+      "https://www.goodreads.com/book/show/29864273-madonna-in-a-fur-coat",
+    borrowMessage:
+      "Hey Kshitij, I'd love to borrow Madonna in a Fur Coat from your shelf!",
     format: "standard",
     layout: [
       {
@@ -2975,3 +2990,15 @@ export const wishlistBooks: WishlistBook[] = [
 ];
 
 export const allBooks: BookItem[] = [...BooksRead];
+
+export function getReadBookById(idOrSlug: string): ReadBook | undefined {
+  const decoded = decodeURIComponent(idOrSlug).toLowerCase().trim();
+  return BooksRead.find((b) => {
+    const slug = b.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    return (
+      b.id.toLowerCase() === decoded ||
+      b.id.toLowerCase() === decoded.replace(/^r-?/, "r") ||
+      slug === decoded
+    );
+  });
+}

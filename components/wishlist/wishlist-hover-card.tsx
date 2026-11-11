@@ -34,7 +34,7 @@ export const WishlistHoverCard = ({
     if (manualPrice || !book.isbn) return;
 
     let isMounted = true;
-    fetch(`/api/book-price?isbn=${encodeURIComponent(book.isbn)}`)
+    fetch(`/book-shelf/api/book-price?isbn=${encodeURIComponent(book.isbn)}`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (isMounted && data?.price) {

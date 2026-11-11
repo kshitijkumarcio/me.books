@@ -129,6 +129,13 @@
     background-size: var(--cell-size) var(--cell-size);
   }
 
+  .bg-grid-dashed-accurate {
+    background-color: white;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60' preserveAspectRatio='none'%3E%3Cpath d='M 60 0 L 0 0 0 60' fill='none' stroke='black' stroke-opacity='0.75' stroke-width='1' stroke-dasharray='6 6'/%3E%3C/svg%3E");
+    background-repeat: round;
+    background-size: var(--cell-size) var(--cell-size);
+  }
+
   .no-scrollbar,
   html:has(.no-scrollbar),
   body:has(.no-scrollbar),
