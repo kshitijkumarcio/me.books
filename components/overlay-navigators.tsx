@@ -71,14 +71,15 @@ const OverlayNavigators = () => {
   const defaultBorrowMsg =
     currentBook?.borrowMessage ||
     (currentBook
-      ? `Hey Kshitij, I'd love to borrow "${currentBook.title}" from your shelf!`
-      : "Hey Kshitij, I'd love to borrow this book from your shelf!");
+      ? `hey Kshitij! Can I borrow ${currentBook.title} by ${currentBook.author} from you?`
+      : "hey Kshitij! Can I borrow this book from you?");
   const borrowUrl =
     currentBook?.borrowUrl ||
-    `https://wa.me/?text=${encodeURIComponent(defaultBorrowMsg)}`;
+    `https://wa.me/918208377317?text=${encodeURIComponent(defaultBorrowMsg)}`;
 
   const goodreadsUrl =
     currentBook?.goodreadsUrl ||
+    (currentBook as any)?.goodreads ||
     (currentBook
       ? `https://www.goodreads.com/search?q=${encodeURIComponent(
           `${currentBook.title} ${currentBook.author}`

@@ -53,7 +53,7 @@ export const BookShelfAnimator = ({
         }}
         variants={{
           opened: {
-            y: "-70%",
+            y: "-55%",
             transition: {
               duration: READ_BOOK_TRANSITION_DURATION,
               ease: READ_BOOK_TRANSITION_EASE,

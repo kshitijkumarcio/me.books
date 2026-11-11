@@ -2,8 +2,8 @@
 
 import { create } from "zustand";
 
-export const READ_BOOK_TRANSITION_DURATION = 0.9;
-export const READ_BOOK_TRANSITION_DURATION_MS = 900;
+export const READ_BOOK_TRANSITION_DURATION = 0.8;
+export const READ_BOOK_TRANSITION_DURATION_MS = 800;
 export const READ_BOOK_TRANSITION_EASE = [0.76, 0, 0.24, 1] as const;
 
 interface ReadBookModalState {

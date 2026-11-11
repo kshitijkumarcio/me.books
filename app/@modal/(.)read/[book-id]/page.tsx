@@ -7,8 +7,6 @@ interface PageProps {
   params: Promise<{ "book-id": string }>;
 }
 
-export const instant = false;
-
 export function generateStaticParams() {
   return BooksRead.map((book) => ({
     "book-id": book.id,

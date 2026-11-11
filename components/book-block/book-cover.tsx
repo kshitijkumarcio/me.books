@@ -66,7 +66,12 @@ const BookCover = ({
 
   if (href) {
     return (
-      <Link href={href} scroll={false} className="inline-block">
+      <Link
+        href={href}
+        scroll={false}
+        prefetch={true}
+        className="inline-block"
+      >
         {content}
       </Link>
     );
