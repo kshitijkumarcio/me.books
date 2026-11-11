@@ -171,7 +171,7 @@ export const currentReads: CurrentlyReadingBook[] = [
     genre: "Psychological Thriller",
     genres: ["Psychological Thriller", "Crime Fiction", "Mystery Suspense"],
     status: "reading",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/36509935-the-kind-worth-killing",
     format: "standard",
     layout: [
       {
@@ -207,7 +207,7 @@ export const currentReads: CurrentlyReadingBook[] = [
     genre: "Young Adult",
     genres: ["Young Adult", "Contemporary Fiction", "Mental Health"],
     status: "reading",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/242805141-the-ocean-would-paint-me-blue",
     format: "standard",
     layout: [
       {
@@ -243,7 +243,7 @@ export const currentReads: CurrentlyReadingBook[] = [
     genre: "Philosophy",
     genres: ["Philosophy", "Business & Finance", "Psychology"],
     status: "reading",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/245544703-poor-charlie-s-almanack",
     format: "standard",
     layout: [
       {
@@ -279,7 +279,7 @@ export const currentReads: CurrentlyReadingBook[] = [
     genre: "Short Stories",
     genres: ["Short Stories", "Literary Fiction", "Feminist Literature"],
     status: "reading",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/232645727-heart-lamp",
     format: "standard",
     layout: [
       {
@@ -315,7 +315,7 @@ export const currentReads: CurrentlyReadingBook[] = [
     genre: "Stoicism",
     genres: ["Stoicism", "Self Improvement", "Philosophy"],
     status: "reading",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/60018575-discipline-is-destiny",
     format: "standard",
     layout: [
       {
@@ -354,7 +354,8 @@ export const BooksRead: ReadBook[] = [
     rating: 5,
     yearRead: 2024,
     genre: "Essays / Poetry",
-    goodreadsUrl: "",
+    goodreadsUrl:
+      "https://www.goodreads.com/book/show/29491487-letters-to-a-young-poet",
     format: "little-penguin-classic",
     layout: [
       {
@@ -413,7 +414,7 @@ export const BooksRead: ReadBook[] = [
     author: "Sabahattin Ali",
     coverImage: images.Madonna,
     position: "A4",
-    rating: 3,
+    rating: 4.5,
     yearRead: 2024,
     genre: "Classic / Literary Fiction",
     genres: ["Fiction", "Romance", "Turkish Classic"],
@@ -423,9 +424,8 @@ export const BooksRead: ReadBook[] = [
       "Instead of a lab assistant, she's paired with a janitor, putting her crucial research at risk.",
     ],
     goodreadsUrl:
-      "https://www.goodreads.com/book/show/29864273-madonna-in-a-fur-coat",
-    borrowMessage:
-      "hey Kshitij! Can I borrow Madonna in a Fur Coat from you?",
+      "https://www.goodreads.com/book/show/52379413-madonna-in-a-fur-coat",
+    borrowMessage: "hey Kshitij! Can I borrow Madonna in a Fur Coat from you?",
     format: "standard",
     layout: [
       {
@@ -484,10 +484,10 @@ export const BooksRead: ReadBook[] = [
     title: "Animal Farm",
     author: "George Orwell",
     coverImage: images.AnimalFarm,
-    rating: 5,
+    rating: 3.8,
     yearRead: 2023,
     genre: "Classic / Political Satire",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/14060211-animal-farm",
     format: "standard",
     layout: [
       {
@@ -539,10 +539,11 @@ export const BooksRead: ReadBook[] = [
     author: "Zoulfa Katouh",
     position: "c5",
     coverImage: images.AsLongAsTheLemonTreesGrow,
-    rating: 5,
+    rating: 3.75,
     yearRead: 2024,
     genre: "YA Fiction / Contemporary",
-    goodreadsUrl: "",
+    goodreadsUrl:
+      "https://www.goodreads.com/book/show/57390604-as-long-as-the-lemon-trees-grow",
     format: "standard",
     layout: [
       {
@@ -600,11 +601,12 @@ export const BooksRead: ReadBook[] = [
     title: "A Month In The Country",
     author: "J.L. Carr",
     coverImage: images.AMonthInTheCountry,
-    rating: 5,
+    rating: 4.3,
     position: "A5",
     yearRead: 2024,
     genre: "Historical Fiction / Classic",
-    goodreadsUrl: "",
+    goodreadsUrl:
+      "https://www.goodreads.com/book/show/609478.A_Month_in_the_Country",
     format: "standard",
     layout: [
       {
@@ -659,10 +661,10 @@ export const BooksRead: ReadBook[] = [
     position: "a6",
     author: "Emily Henry",
     coverImage: images.BeachRead,
-    rating: 4,
+    rating: 3.4,
     yearRead: 2023,
     genre: "Romance / Contemporary",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/52867387-beach-read",
     format: "standard",
     layout: [
       {
@@ -714,10 +716,11 @@ export const BooksRead: ReadBook[] = [
     author: "M.L. Wang",
     position: "b4",
     coverImage: images.BloodOverBrightHaven,
-    rating: 5,
+    rating: 3.7,
     yearRead: 2024,
     genre: "Dark Fantasy / Dark Academia",
-    goodreadsUrl: "",
+    goodreadsUrl:
+      "https://www.goodreads.com/book/show/208430658-blood-over-bright-haven",
     format: "standard",
     layout: [
       {
@@ -770,10 +773,11 @@ export const BooksRead: ReadBook[] = [
     author: "Andy Weir",
     position: "c4",
     coverImage: images.ProjectHailMary,
-    rating: 5,
+    rating: 4.2,
     yearRead: 2024,
     genre: "Sci-Fi",
-    goodreadsUrl: "",
+    goodreadsUrl:
+      "https://www.goodreads.com/book/show/54493401-project-hail-mary",
     format: "standard",
     layout: [
       {
@@ -824,10 +828,11 @@ export const BooksRead: ReadBook[] = [
     title: "Captains Courageous",
     author: "Rudyard Kipling",
     coverImage: images.CaptainsCourageous,
-    rating: 4,
+    rating: 3.3,
     yearRead: 2022,
     genre: "Adventure / Classic",
-    goodreadsUrl: "",
+    goodreadsUrl:
+      "https://www.goodreads.com/book/show/941781.Captains_Courageous",
     format: "standard",
     layout: [
       {
@@ -879,10 +884,10 @@ export const BooksRead: ReadBook[] = [
     author: "Madeline Miller",
     position: "b5",
     coverImage: images.Circe,
-    rating: 5,
+    rating: 4.3,
     yearRead: 2024,
     genre: "Mythological Fiction / Fantasy",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/35959740-circe",
     format: "standard",
     layout: [
       {
@@ -941,10 +946,10 @@ export const BooksRead: ReadBook[] = [
     author: "Pierce Brown",
     coverImage: images.RedRising,
     position: "A3",
-    rating: 5,
+    rating: 4.2,
     yearRead: 2023,
     genre: "Sci-Fi / Dystopian",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/15839976-red-rising",
     format: "standard",
     layout: [
       {
@@ -1020,10 +1025,10 @@ export const BooksRead: ReadBook[] = [
     author: "Pierce Brown",
     position: "A2",
     coverImage: images.GoldenSon,
-    rating: 5,
+    rating: 4.4,
     yearRead: 2023,
     genre: "Sci-Fi / Space Opera",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/18966819-golden-son",
     format: "standard",
     layout: [
       {
@@ -1082,10 +1087,10 @@ export const BooksRead: ReadBook[] = [
     author: "Pierce Brown",
     position: "b1",
     coverImage: images.MorningStar,
-    rating: 5,
+    rating: 4.3,
     yearRead: 2023,
     genre: "Sci-Fi / Space Opera",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/18966806-morning-star",
     format: "standard",
     layout: [
       {
@@ -1158,10 +1163,10 @@ export const BooksRead: ReadBook[] = [
     author: "Pierce Brown",
     position: "a1",
     coverImage: images.IronGold,
-    rating: 5,
+    rating: 3.75,
     yearRead: 2024,
     genre: "Sci-Fi / Space Opera",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/33257757-iron-gold",
     format: "standard",
     layout: [
       {
@@ -1236,10 +1241,10 @@ export const BooksRead: ReadBook[] = [
     author: "Pierce Brown",
     position: "B2",
     coverImage: images.DarkAge,
-    rating: 5,
+    rating: 4.25,
     yearRead: 2024,
     genre: "Sci-Fi / Space Opera",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/29226553-dark-age",
     format: "standard",
     layout: [
       {
@@ -1311,10 +1316,10 @@ export const BooksRead: ReadBook[] = [
     author: "Pierce Brown",
     coverImage: images.LightBringer,
     position: "b3",
-    rating: 5,
+    rating: 4.9,
     yearRead: 2024,
     genre: "Sci-Fi / Space Opera",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/29227774-light-bringer",
     format: "standard",
     layout: [
       {
@@ -1386,10 +1391,10 @@ export const BooksRead: ReadBook[] = [
     author: "Rebecca Yarros",
     position: "d2",
     coverImage: images.FourthWing,
-    rating: 5,
+    rating: 3.75,
     yearRead: 2024,
     genre: "Fantasy / Romance",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/61431922-fourth-wing",
     format: "standard",
     layout: [
       {
@@ -1472,10 +1477,10 @@ export const BooksRead: ReadBook[] = [
     author: "Rebecca Yarros",
     position: "d3",
     coverImage: images.IronFlame,
-    rating: 4,
+    rating: 3.1,
     yearRead: 2024,
     genre: "Fantasy / Romance",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/90202302-iron-flame",
     format: "standard",
     layout: [
       {
@@ -1535,10 +1540,10 @@ export const BooksRead: ReadBook[] = [
     author: "John Green",
     position: "c1",
     coverImage: images.LookingForAlaska,
-    rating: 5,
+    rating: 3.8,
     yearRead: 2022,
     genre: "YA Fiction / Coming-of-Age",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/99561.Looking_for_Alaska",
     format: "standard",
     layout: [
       {
@@ -1597,10 +1602,10 @@ export const BooksRead: ReadBook[] = [
     author: "Viktor E. Frankl",
     position: "e6",
     coverImage: images.MansSearchForMeaning,
-    rating: 5,
+    rating: 4.4,
     yearRead: 2023,
     genre: "Psychology / Memoir",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/4069.Man_s_Search_for_Meaning",
     format: "standard",
     layout: [
       {
@@ -1658,10 +1663,10 @@ export const BooksRead: ReadBook[] = [
     position: "d4",
     author: "Ria Chopra",
     coverImage: images.NeverLoggedOut,
-    rating: 4,
+    rating: 3.9,
     yearRead: 2024,
     genre: "Essays / Technology",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/244484834-never-logged-out",
     format: "standard",
     layout: [
       {
@@ -1713,10 +1718,10 @@ export const BooksRead: ReadBook[] = [
     author: "Ernest Hemingway",
     position: "e2",
     coverImage: images.OldManAndTheSea,
-    rating: 5,
+    rating: 3.8,
     yearRead: 2023,
     genre: "Classic / Literary Fiction",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/61130.The_Old_Man_and_the_Sea",
     format: "little-penguin-classic",
     layout: [
       {
@@ -1776,10 +1781,10 @@ export const BooksRead: ReadBook[] = [
     author: "Rashmi Bansal & Deepak Gandhi",
     coverImage: images.PoorLittleRichSlum,
     position: "e1",
-    rating: 4,
+    rating: 3.6,
     yearRead: 2023,
     genre: "Business / Inspiration",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/13647127-poor-little-rich-slum",
     format: "standard",
     layout: [
       {
@@ -1831,10 +1836,10 @@ export const BooksRead: ReadBook[] = [
     author: "Oscar Wilde",
     position: "e5",
     coverImage: images.OnlyDullPeople,
-    rating: 4,
+    rating: 4.1,
     yearRead: 2022,
     genre: "Classic / Essays & Aphorisms",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/29081916-only-dull-people-are-brilliant-at-breakfast",
     format: "little-penguin-classic",
     layout: [
       {
@@ -1892,10 +1897,10 @@ export const BooksRead: ReadBook[] = [
     author: "Holly Black",
     position: "c6",
     coverImage: images.TheCruelPrince,
-    rating: 5,
+    rating: 3.75,
     yearRead: 2024,
     genre: "YA Fantasy",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/26032825-the-cruel-prince",
     format: "standard",
     layout: [
       {
@@ -1950,7 +1955,7 @@ export const BooksRead: ReadBook[] = [
     rating: 4,
     yearRead: 2023,
     genre: "History / Environment",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/57356486-the-last-tree-on-easter-island",
     format: "little-penguin-classic",
     layout: [
       {
@@ -2002,11 +2007,11 @@ export const BooksRead: ReadBook[] = [
     title: "We Should All Be Feminists",
     author: "Chimamanda Ngozi Adichie",
     coverImage: images.WeShouldAllBeFeminists,
-    rating: 5,
+    rating: 4.2,
     position: "d1",
     yearRead: 2023,
     genre: "Essays / Non-Fiction",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/22738563-we-should-all-be-feminists",
     format: "standard",
     layout: [
       {
@@ -2064,10 +2069,10 @@ export const BooksRead: ReadBook[] = [
     title: "White Nights",
     author: "Fyodor Dostoevsky",
     coverImage: images.WhiteNights,
-    rating: 5,
+    rating: 4.1,
     yearRead: 2024,
     genre: "Classic / Russian Literature",
-    goodreadsUrl: "",
+    goodreadsUrl: "https://www.goodreads.com/book/show/29610266-white-nights",
     format: "little-penguin-classic",
     layout: [
       {
@@ -2129,8 +2134,8 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     isbn: "",
     coverImage: images.AMoveableFeast,
-    genres: ["lost generation", "paris cafe", "pure nostalgia"],
-    goodreadsUrl: "",
+    genres: ["Lost Generation", "Paris Cafe", "Pure Nostalgia", "Memoir"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/831287.A_Moveable_Feast",
     format: "little-penguin-classic",
     layout: [
       {
@@ -2156,7 +2161,7 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.Babel,
-  //  //   genres: ["dark academia","linguistic magic","brutal revolution"],
+  //  //   genres: ["Dark Academia","Linguistic Magic","Brutal Revolution"],
   //   goodreadsUrl: "",
   //   format: "standard",
   //   layout: [
@@ -2183,8 +2188,8 @@ export const wishlistBooks: WishlistBook[] = [
     amazonUrl:
       "https://www.amazon.in/Bad-Words-irresistible-once-lifetime/dp/0008865140/ref=tmm_pap_swatch_0?_encoding=UTF8&sr=8-1",
     coverImage: images.BadWords,
-    genres: ["witty banter", "dictionary love", "laugh-out-loud"],
-    goodreadsUrl: "",
+    genres: ["Contemporary", "Enemies-To-Lovers", "Laugh-Out-Loud", "Romance"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/241344658-bad-words",
     format: "standard",
     layout: [
       {
@@ -2210,8 +2215,8 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     isbn: "",
     coverImage: images.CrimeAndPunishment,
-    genres: ["moral fever", "deep guilt", "st. petersburg"],
-    goodreadsUrl: "",
+    genres: ["Moral Fever", "Guilt", "Russia", "Philosophy"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/181309.Crime_and_Punishment",
     format: "standard",
     layout: [
       {
@@ -2237,8 +2242,8 @@ export const wishlistBooks: WishlistBook[] = [
     amazonUrl:
       "https://www.amazon.in/Dubliners-Modern-Classics-James-Joyce/dp/0140186476/ref=sr_1_4?sr=8-4",
     coverImage: images.Dubliners,
-    genres: ["quiet epiphanies", "dublin life", "poignant prose"],
-    goodreadsUrl: "",
+    genres: ["Quiet Epiphanies", "Dublin Life", "Poignant Prose", "Short Stories"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/764450.Dubliners",
     format: "little-penguin-classic",
     layout: [
       {
@@ -2264,7 +2269,7 @@ export const wishlistBooks: WishlistBook[] = [
   //   amazonUrl:
   //     "https://www.amazon.in/dp/1836432399/?coliid=I3X226J6EGKCA&colid=12HOKZPESP747&psc=1",
   //   coverImage: images.FruitFly,
-  //  //   genres: ["wildly chaotic","dark humor","unhinged energy"],
+  //  //   genres: ["Wildly Chaotic","Dark Humor","Unhinged Energy"],
   //   goodreadsUrl: "",
   //   format: "standard",
   //   layout: [
@@ -2291,8 +2296,8 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     isbn: "",
     coverImage: images.GreatExpectations,
-    genres: ["miss havisham", "gothic classic", "timeless journey"],
-    goodreadsUrl: "",
+    genres: ["19th Century", "Gothic Classic", "Victorian"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/13641547-great-expectations",
     format: "standard",
     layout: [
       {
@@ -2318,8 +2323,8 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     isbn: "",
     coverImage: images.JaneEyre,
-    genres: ["fierce independence", "gothic mystery", "mr. rochester"],
-    goodreadsUrl: "",
+    genres: ["Literary Fiction", "Gothic Mystery", "Romance"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/11016.Jane_Eyre",
     format: "standard",
     layout: [
       {
@@ -2345,7 +2350,7 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.Martyr,
-  //  //   genres: ["dazzling voice","poetic grief","raw heart"],
+  //  //   genres: ["Dazzling Voice","Poetic Grief","Raw Heart"],
   //   goodreadsUrl: "",
   //   format: "standard",
   //   layout: [
@@ -2372,7 +2377,7 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.NearToTheWildHeart,
-  //  //   genres: ["inner monologue","wild heart","fervent prose"],
+  //  //   genres: ["Inner Monologue","Wild Heart","Fervent Prose"],
   //   goodreadsUrl: "",
   //   format: "standard",
   //   layout: [
@@ -2399,7 +2404,7 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.OnTheGenealogyOfMorals,
-  //  //   genres: ["radical critique","will to power","provocative thought"],
+  //  //   genres: ["Radical Critique","Will To Power","Provocative Thought"],
   //   goodreadsUrl: "",
   //   format: "standard",
   //   layout: [
@@ -2426,7 +2431,7 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.SeveralShortSentencesAboutWriting,
-  //  //   genres: ["craft wisdom","sentence rhythm","pure clarity"],
+  //  //   genres: ["Craft Wisdom","Sentence Rhythm","Pure Clarity"],
   //   goodreadsUrl: "",
   //   format: "standard",
   //   layout: [
@@ -2453,7 +2458,7 @@ export const wishlistBooks: WishlistBook[] = [
   //   amazonUrl:
   //     "https://www.amazon.in/dp/067008557X/?coliid=I1R8KDH7QTIKHZ&colid=12HOKZPESP747&psc=1#",
   //   coverImage: images.SoniaAndSunny,
-  //  //   genres: ["sharp diaspora","tender longing","rich texture"],
+  //  //   genres: ["Sharp Diaspora","Tender Longing","Rich Texture"],
   //   goodreadsUrl: "",
   //   format: "standard",
   //   layout: [
@@ -2480,8 +2485,8 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     isbn: "",
     coverImage: images.Stoner,
-    genres: ["quiet tragedy", "stoic beauty", "sublime prose"],
-    goodreadsUrl: "",
+    genres: ["Quiet Tragedy", "Stoic Beauty", "Sublime Prose"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/216281031-stoner",
     format: "standard",
     layout: [
       {
@@ -2507,8 +2512,8 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     isbn: "",
     coverImage: images.TaiwanTravelogue,
-    genres: ["food history", "subtle bond", "colonial tale"],
-    goodreadsUrl: "",
+    genres: ["Food History", "Subtle Bond", "Colonial Tale"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/205363984-taiwan-travelogue",
     format: "standard",
     layout: [
       {
@@ -2534,8 +2539,8 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     isbn: "",
     coverImage: images.TheCorrespondent,
-    genres: ["war reporter", "frontline truth", "grit & courage"],
-    goodreadsUrl: "",
+    genres: ["Contemporary", "Letters", "Literary Fiction"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/236717594-the-correspondent",
     format: "standard",
     layout: [
       {
@@ -2561,7 +2566,7 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.TheGoldfinch,
-  //  //   genres: ["secret art","epic journey","haunting loss"],
+  //  //   genres: ["Secret Art","Epic Journey","Haunting Loss"],
   //   goodreadsUrl: "",
   //   format: "standard",
   //   layout: [
@@ -2588,8 +2593,8 @@ export const wishlistBooks: WishlistBook[] = [
     amazonUrl:
       "https://www.amazon.in/dp/0141182636/?coliid=I19J32CB4ADL5V&colid=12HOKZPESP747&psc=1",
     coverImage: images.TheGreatGatsby,
-    genres: ["jazz age", "green light", "tragic illusion"],
-    goodreadsUrl: "",
+    genres: ["Jazz Age", "Literature", "Classics"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/396094.The_Great_Gatsby",
     format: "little-penguin-classic",
     layout: [
       {
@@ -2615,8 +2620,8 @@ export const wishlistBooks: WishlistBook[] = [
     amazonUrl:
       "https://www.amazon.in/dp/1784700444/?coliid=I28SX8L0IKIRR0&colid=12HOKZPESP747&psc=1",
     coverImage: images.TheMemoryPolice,
-    genres: ["lost memories", "quiet dystopia", "haunting chill"],
-    goodreadsUrl: "",
+    genres: ["Sci-Fi", "Dystopia", "Japan"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/37004370-the-memory-police",
     format: "standard",
     layout: [
       {
@@ -2642,7 +2647,7 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.TheParadiseOfFood,
-  //  //   genres: ["visceral feast","existential dread","darkly comic"],
+  //  //   genres: ["Visceral Feast","Existential Dread","Darkly Comic"],
   //   goodreadsUrl: "",
   //   format: "standard",
   //   layout: [
@@ -2669,8 +2674,8 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     isbn: "",
     coverImage: images.TheStranger,
-    genres: ["blinding sun", "pure absurdism", "cool detachment"],
-    goodreadsUrl: "",
+    genres: ["Philosophy", "Absurdism", "Detachment"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/49552.The_Stranger",
     format: "little-penguin-classic",
     layout: [
       {
@@ -2696,8 +2701,8 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     isbn: "",
     coverImage: images.WinterNightATraveller,
-    genres: ["reader's maze", "metafiction magic", "pure ingenuity"],
-    goodreadsUrl: "",
+    genres: ["Reader's Maze", "Metafiction Magic", "Pure Ingenuity"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/204813048-if-on-a-winter-s-night-a-traveler",
     format: "little-penguin-classic",
     layout: [
       {
@@ -2723,8 +2728,8 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     isbn: "",
     coverImage: images.EverythingWasBeautiful,
-    genres: ["tender sorrow", "poetic dream", "quiet hope"],
-    goodreadsUrl: "",
+    genres: ["Tender Sorrow", "Poetic Dream", "Quiet Hope"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/242975495-everything-was-beautiful-and-nothing-hurt",
     format: "standard",
     layout: [
       {
@@ -2750,8 +2755,8 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     isbn: "",
     coverImage: images.MayWeFeedTheKing,
-    genres: ["dark folklore", "strange ritual", "eerie beauty"],
-    goodreadsUrl: "",
+    genres: ["Dark Folklore", "Strange Ritual", "Eerie Beauty"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/242252419-may-we-feed-the-king",
     format: "standard",
     layout: [
       {
@@ -2777,8 +2782,8 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     isbn: "",
     coverImage: images.TheSunAlsoRises,
-    genres: ["pamplona fiesta", "unspoken wounds", "lost generation"],
-    goodreadsUrl: "",
+    genres: ["Pamplona Fiesta", "Unspoken Wounds", "Lost Generation"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/266466.Fiesta",
     format: "standard",
     layout: [
       {
@@ -2804,8 +2809,8 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     isbn: "",
     coverImage: images.DemonCopperhead,
-    genres: ["appalachian heart", "fierce survival", "pulitzer winner"],
-    goodreadsUrl: "",
+    genres: ["Appalachia", "Fierce Survival", "Pulitzer Winner"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/60194162-demon-copperhead",
     format: "standard",
     layout: [
       {
@@ -2831,8 +2836,8 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     isbn: "",
     coverImage: images.SimplePassion,
-    genres: ["raw obsession", "brutal honesty", "autofiction gem"],
-    goodreadsUrl: "",
+    genres: ["French Lit", "Romance", "Contemporary"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/58678702-simple-passion",
     format: "standard",
     layout: [
       {
@@ -2858,8 +2863,8 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     isbn: "",
     coverImage: images.JohnOfJohn,
-    genres: ["tender grit", "glasgow soul", "poignant bond"],
-    goodreadsUrl: "",
+    genres: ["Literary Fiction", "Scotland", "Queer"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/235260861-john-of-john",
     format: "standard",
     layout: [
       {
@@ -2885,8 +2890,8 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     isbn: "",
     coverImage: images.SmallThingsLikeThese,
-    genres: ["quiet courage", "irish winter", "pure perfection"],
-    goodreadsUrl: "",
+    genres: ["Historical Fiction", "Irish Winter", "Christmas"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/59733531-small-things-like-these",
     format: "standard",
     layout: [
       {
@@ -2912,8 +2917,8 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     isbn: "",
     coverImage: images.TheRoadToTenderHearts,
-    genres: ["quirky warmth", "grief healing", "big heart"],
-    goodreadsUrl: "",
+    genres: ["Quirky Warmth", "Grief Healing", "Big Heart"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/218460347-the-road-to-tender-hearts",
     format: "standard",
     layout: [
       {
@@ -2939,8 +2944,8 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     isbn: "",
     coverImage: images.TheThingsWeNeverSay,
-    genres: ["unspoken truth", "small town", "deep empathy"],
-    goodreadsUrl: "",
+    genres: ["Unspoken Truth", "Small Town", "Deep Empathy"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/242082631-the-things-we-never-say",
     format: "standard",
     layout: [
       {
@@ -2966,8 +2971,8 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     isbn: "",
     coverImage: images.WimmyRoadBoys,
-    genres: ["brotherhood bond", "curry mile", "raw hustle"],
-    goodreadsUrl: "",
+    genres: ["Brotherhood Bond", "Curry Mile", "Raw Hustle"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/241174585-wimmy-road-boyz",
     format: "standard",
     layout: [
       {
@@ -2993,8 +2998,8 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     isbn: "",
     coverImage: images.AngelDown,
-    genres: ["dark terror", "cold fury", "relentless pace"],
-    goodreadsUrl: "",
+    genres: ["Horror", "Myth", "Fantasy"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/220160849-angel-down",
     format: "standard",
     layout: [
       {
@@ -3020,8 +3025,8 @@ export const wishlistBooks: WishlistBook[] = [
     amazonUrl:
       "https://www.amazon.in/dp/1035031248/?coliid=IUDFK0SST7HH8&colid=12HOKZPESP747&psc=1",
     coverImage: images.James,
-    genres: ["subversive voice", "literary genius", "freedom song"],
-    goodreadsUrl: "",
+    genres: ["Historical Fiction", "Race", "African American"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/211137743-james",
     format: "standard",
     layout: [
       {
@@ -3047,8 +3052,8 @@ export const wishlistBooks: WishlistBook[] = [
     amazonUrl:
       "https://www.amazon.in/My-Friends-Fredrik-Backman/dp/1398516406/ref=monarch_sidesheet_title",
     coverImage: images.MyFriends,
-    genres: ["High fantasy", "Norse myth", "Dragons"],
-    goodreadsUrl: "",
+    genres: ["Summer", "Coming Of Age", "Friendship"],
+    goodreadsUrl: "https://www.goodreads.com/book/show/217163697-my-friends",
     format: "standard",
     layout: [
       {

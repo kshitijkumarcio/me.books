@@ -47,7 +47,7 @@ const ViewDotsIcon = ({
 const OverlayNavigators = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const { isClosing, triggerClose } = useReadBookModal();
+  const { isClosing, triggerClose, isInterceptedOpen } = useReadBookModal();
 
   const isReadBookRoute = Boolean(pathname?.includes("/read/"));
   const isShowingBookControls = isReadBookRoute && !isClosing;
@@ -64,7 +64,11 @@ const OverlayNavigators = () => {
 
   const handleCloseBook = () => {
     triggerClose(() => {
-      router.back();
+      if (isInterceptedOpen) {
+        router.back();
+      } else {
+        router.push("/");
+      }
     });
   };
 
@@ -79,7 +83,7 @@ const OverlayNavigators = () => {
 
   const goodreadsUrl =
     currentBook?.goodreadsUrl ||
-    (currentBook as any)?.goodreads ||
+    (currentBook as { goodreads?: string } | undefined)?.goodreads ||
     (currentBook
       ? `https://www.goodreads.com/search?q=${encodeURIComponent(
           `${currentBook.title} ${currentBook.author}`

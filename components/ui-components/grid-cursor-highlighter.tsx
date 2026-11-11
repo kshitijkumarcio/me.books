@@ -1,48 +1,96 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { cn } from "@/lib/utils";
 
 export interface GridCursorHighlighterProps {
+  /** Maximum number of simultaneous trailing cells in trail mode */
   trailCount?: number;
+  /** Duration of the phosphor trail decay in milliseconds */
   fadeDurationMs?: number;
   className?: string;
+  /**
+   * When true, dynamically calculates cell width and height using the same
+   * rounding algorithm as CSS `background-repeat: round` so that tiles and trail
+   * match perfectly on dynamic-grid surfaces like `.bg-grid-dashed-accurate`.
+   */
+  dynamicGrid?: boolean;
 }
 
 export const GridCursorHighlighter = ({
   trailCount = 24,
   fadeDurationMs = 600,
   className,
+  dynamicGrid = false,
 }: GridCursorHighlighterProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Pool of cell elements for the phosphor trail
   const trailPoolRef = useRef<HTMLDivElement[]>([]);
   const poolIndexRef = useRef(0);
-  const lastCellRef = useRef<{ x: number; y: number } | null>(null);
+  const lastCellRef = useRef<{ col: number; row: number } | null>(null);
   const cellSizeRef = useRef<number>(60);
+  const dynamicCellSizeRef = useRef<{ cellWidth: number; cellHeight: number }>({
+    cellWidth: 60,
+    cellHeight: 60,
+  });
   const rafIdRef = useRef<number | null>(null);
   const latestEventRef = useRef<PointerEvent | null>(null);
 
   // Cache current --cell-size in pixels on mount and window resize
+  const updateBaseCellSize = useCallback(() => {
+    if (typeof window === "undefined") return;
+    const raw = getComputedStyle(document.documentElement).getPropertyValue(
+      "--cell-size"
+    );
+    const parsed = parseFloat(raw);
+    cellSizeRef.current =
+      !isNaN(parsed) && parsed > 0
+        ? parsed
+        : window.innerWidth < 768
+          ? 40
+          : 60;
+  }, []);
+
   useEffect(() => {
-    const updateCellSize = () => {
-      const raw = getComputedStyle(document.documentElement).getPropertyValue(
-        "--cell-size"
-      );
-      const parsed = parseFloat(raw);
-      cellSizeRef.current =
-        !isNaN(parsed) && parsed > 0
-          ? parsed
-          : window.innerWidth < 768
-            ? 40
-            : 60;
+    updateBaseCellSize();
+    window.addEventListener("resize", updateBaseCellSize, { passive: true });
+    return () => window.removeEventListener("resize", updateBaseCellSize);
+  }, [updateBaseCellSize]);
+
+  // If dynamicGrid is enabled, track container dimensions to match `background-repeat: round`
+  useEffect(() => {
+    if (!dynamicGrid) return;
+    const container = containerRef.current;
+    if (!container) return;
+
+    const updateDynamicSize = () => {
+      const rect = container.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return;
+
+      const base = cellSizeRef.current;
+      const cols = Math.max(1, Math.round(rect.width / base));
+      const rows = Math.max(1, Math.round(rect.height / base));
+      const cellW = rect.width / cols;
+      const cellH = rect.height / rows;
+
+      dynamicCellSizeRef.current = { cellWidth: cellW, cellHeight: cellH };
+
+      // Pre-apply dimensions to pool elements
+      trailPoolRef.current.forEach((el) => {
+        if (el) {
+          el.style.width = `${cellW}px`;
+          el.style.height = `${cellH}px`;
+        }
+      });
     };
 
-    updateCellSize();
-    window.addEventListener("resize", updateCellSize, { passive: true });
-    return () => window.removeEventListener("resize", updateCellSize);
-  }, []);
+    updateDynamicSize();
+
+    const ro = new ResizeObserver(updateDynamicSize);
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, [dynamicGrid]);
 
   // Pointer movement listener with RAF throttling to prevent layout thrashing
   useEffect(() => {
@@ -61,20 +109,36 @@ export const GridCursorHighlighter = ({
         return;
       }
 
-      const cellSize = cellSizeRef.current;
-      const snappedX = Math.floor(rawX / cellSize) * cellSize;
-      const snappedY = Math.floor(rawY / cellSize) * cellSize;
+      let cellW: number;
+      let cellH: number;
+
+      if (dynamicGrid) {
+        const base = cellSizeRef.current;
+        const cols = Math.max(1, Math.round(rect.width / base));
+        const rows = Math.max(1, Math.round(rect.height / base));
+        cellW = rect.width / cols;
+        cellH = rect.height / rows;
+        dynamicCellSizeRef.current = { cellWidth: cellW, cellHeight: cellH };
+      } else {
+        cellW = cellSizeRef.current;
+        cellH = cellSizeRef.current;
+      }
+
+      const col = Math.floor(rawX / cellW);
+      const row = Math.floor(rawY / cellH);
+      const snappedX = col * cellW;
+      const snappedY = row * cellH;
 
       // Avoid re-triggering for the same grid cell
       if (
         lastCellRef.current &&
-        lastCellRef.current.x === snappedX &&
-        lastCellRef.current.y === snappedY
+        lastCellRef.current.col === col &&
+        lastCellRef.current.row === row
       ) {
         return;
       }
 
-      lastCellRef.current = { x: snappedX, y: snappedY };
+      lastCellRef.current = { col, row };
 
       const pool = trailPoolRef.current;
       if (pool.length === 0) return;
@@ -83,6 +147,10 @@ export const GridCursorHighlighter = ({
       poolIndexRef.current++;
 
       if (cellEl) {
+        if (dynamicGrid) {
+          cellEl.style.width = `${cellW}px`;
+          cellEl.style.height = `${cellH}px`;
+        }
         cellEl.style.transform = `translate3d(${snappedX}px, ${snappedY}px, 0)`;
         cellEl.animate([{ opacity: 0.95 }, { opacity: 0 }], {
           duration: fadeDurationMs,
@@ -119,7 +187,7 @@ export const GridCursorHighlighter = ({
         cancelAnimationFrame(rafIdRef.current);
       }
     };
-  }, [fadeDurationMs]);
+  }, [dynamicGrid, fadeDurationMs]);
 
   return (
     <div

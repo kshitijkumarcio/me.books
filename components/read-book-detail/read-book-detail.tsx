@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useId } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import type { ReadBook } from "@/books/books-index";
+import GridCursorHighlighter from "@/components/ui-components/grid-cursor-highlighter";
 import {
   useReadBookModal,
   READ_BOOK_TRANSITION_DURATION,
@@ -17,25 +18,88 @@ interface ReadBookDetailProps {
   isIntercepted?: boolean;
 }
 
-// Star Icon component
+const STAR_POINTS =
+  "12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2";
+
+// Star Icon component supporting fractional / partial star ratings up to 2 decimal places
 const StarRating = ({ rating = 4.5 }: { rating: number }) => {
+  const baseId = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const stars = [1, 2, 3, 4, 5];
+
   return (
-    <div className="flex items-center justify-center gap-1.5 select-none">
+    <div
+      className="flex items-center justify-center gap-1.5 select-none"
+      aria-label={`Rating: ${rating} out of 5 stars`}
+    >
       {stars.map((star) => {
-        const isFilled = star <= rating;
+        // Calculate fill fraction for this specific star (0 to 1)
+        // e.g. for star 4 with rating 3.68 -> (3.68 - 3) = 0.68 (68% width)
+        const fillFraction = Math.max(0, Math.min(1, rating - (star - 1)));
+        // Round to 2 decimal places to avoid floating point imprecision
+        const roundedFraction = Math.round(fillFraction * 100) / 100;
+
+        if (roundedFraction >= 1) {
+          // Fully filled star
+          return (
+            <svg
+              key={star}
+              className="h-5 w-5 transition-transform hover:scale-110 sm:h-6 sm:w-6"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polygon points={STAR_POINTS} />
+            </svg>
+          );
+        }
+
+        if (roundedFraction <= 0) {
+          // Fully empty star
+          return (
+            <svg
+              key={star}
+              className="h-5 w-5 transition-transform hover:scale-110 sm:h-6 sm:w-6"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polygon points={STAR_POINTS} />
+            </svg>
+          );
+        }
+
+        // Partially filled star (e.g. 0.68 width for rating 3.68)
+        const clipId = `star-clip-${baseId}-${star}`;
         return (
           <svg
             key={star}
             className="h-5 w-5 transition-transform hover:scale-110 sm:h-6 sm:w-6"
             viewBox="0 0 24 24"
-            fill={isFilled ? "currentColor" : "none"}
             stroke="currentColor"
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            <defs>
+              <clipPath id={clipId} clipPathUnits="objectBoundingBox">
+                <rect x="0" y="0" width={roundedFraction} height="1" />
+              </clipPath>
+            </defs>
+            {/* Clipped filled portion of the star */}
+            <polygon
+              points={STAR_POINTS}
+              fill="currentColor"
+              stroke="none"
+              clipPath={`url(#${clipId})`}
+            />
+            {/* Full outline of the star */}
+            <polygon points={STAR_POINTS} fill="none" />
           </svg>
         );
       })}
@@ -48,16 +112,27 @@ export const ReadBookDetail = ({
   isIntercepted = true,
 }: ReadBookDetailProps) => {
   const router = useRouter();
-  const { isClosing, triggerClose } = useReadBookModal();
+  const { isClosing, triggerClose, setIsInterceptedOpen } = useReadBookModal();
+
+  useEffect(() => {
+    if (isIntercepted) {
+      setIsInterceptedOpen(true);
+      return () => {
+        setIsInterceptedOpen(false);
+      };
+    } else {
+      setIsInterceptedOpen(false);
+    }
+  }, [isIntercepted, setIsInterceptedOpen]);
 
   const handleClose = useCallback(() => {
-    if (isIntercepted) {
-      triggerClose(() => {
+    triggerClose(() => {
+      if (isIntercepted) {
         router.back();
-      });
-    } else {
-      router.push("/");
-    }
+      } else {
+        router.push("/");
+      }
+    });
   }, [isIntercepted, triggerClose, router]);
 
   // Handle ESC key press
@@ -122,11 +197,13 @@ export const ReadBookDetail = ({
         backfaceVisibility: "hidden",
         WebkitBackfaceVisibility: "hidden",
       }}
-      className="bg-grid-dashed-accurate no-scrollbar fixed inset-0 isolate z-50 flex h-dvh w-dvw origin-top border-2 border-neon transform-gpu flex-col overflow-x-clip overflow-y-auto text-black will-change-[transform,clip-path] backface-hidden"
+      className="bg-grid-dashed-accurate no-scrollbar fixed inset-0 isolate z-50 flex h-dvh w-dvw origin-top transform-gpu flex-col overflow-x-clip overflow-y-auto text-black will-change-[transform,clip-path] backface-hidden"
     >
+      <GridCursorHighlighter dynamicGrid className="fixed inset-0" />
+
       {/* Main Content Area - padded to clear the fixed overlay navigators */}
       <main className="flex min-h-full flex-1 flex-col items-center justify-center px-4 pt-24 pb-28 sm:px-8 sm:pt-28 sm:pb-32">
-        <div className="flex w-full max-w-6xl flex-col items-center">
+        <div className="flex w-full h-full max-w-6xl flex-col items-center">
           {/* Title and Author Header */}
           <div className="mb-8 text-center sm:mb-12">
             <h1 className="font-mona-sans text-3xl font-bold tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl">
