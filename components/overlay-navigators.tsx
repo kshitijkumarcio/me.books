@@ -8,7 +8,7 @@ import { AnimatePresence, motion, type Transition } from "motion/react";
 
 // local imports
 import { cn } from "@/lib/utils";
-import { dotRows, dotVariants, easing016 } from "@/constants";
+import { dotRows, dotVariants, easing016, easing065 } from "@/constants";
 import icons from "@/constants/icons";
 import { getReadBookById } from "@/books/books-index";
 import FlipTextButton from "./ui-components/flip-text-button";
@@ -125,67 +125,69 @@ const OverlayNavigators = () => {
         </div>
 
         <div className="pointer-events-auto flex items-center gap-x-6">
-          <AnimatePresence mode="wait">
-            {isShowingBookControls ? (
-              <motion.div
-                key="esc-button"
-                initial={{ opacity: 0, y: -6, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -6, scale: 0.95 }}
-                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                className="flex items-center"
-              >
-                <button
-                  onClick={handleCloseBook}
-                  type="button"
-                  aria-label="Close book view"
-                  className="group flex cursor-pointer items-center gap-1.5 transition-opacity hover:opacity-70 focus:outline-none"
+          <div className="overflow-hidden">
+            <AnimatePresence mode="wait" initial={false}>
+              {isShowingBookControls ? (
+                <motion.div
+                  key="esc-button"
+                  initial={{ y: "110%" }}
+                  animate={{ y: 0 }}
+                  exit={{ y: "110%" }}
+                  transition={{ duration: 0.45, ease: easing065 }}
+                  className="flex items-center"
                 >
-                  <span className="font-mona-sans text-[13px] font-semibold text-black sm:text-[14px]">
-                    Esc
-                  </span>
-                </button>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="main-nav-buttons"
-                initial={{ opacity: 0, y: -6, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -6, scale: 0.95 }}
-                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                className="hidden gap-x-6 lg:flex"
-              >
-                <div
-                  onClick={() => toggleAbout()}
-                  className={cn("cursor-pointer")}
+                  <button
+                    onClick={handleCloseBook}
+                    type="button"
+                    aria-label="Close book view"
+                    className="group flex cursor-pointer items-center transition-opacity hover:opacity-70 focus:outline-none"
+                  >
+                    <span className="font-mona-sans text-[13px] font-semibold text-black sm:text-[14px]">
+                      Esc
+                    </span>
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="main-nav-buttons"
+                  initial={{ y: "-110%" }}
+                  animate={{ y: 0 }}
+                  exit={{ y: "-110%" }}
+                  transition={{ duration: 0.45, ease: easing065 }}
+                  className="hidden gap-x-6 lg:flex"
                 >
-                  <FlipTextButton>
-                    <p
-                      className={cn(
-                        "font-mona-sans relative py-2 text-[14px] font-semibold"
-                      )}
-                    >
-                      about.
-                    </p>
-                  </FlipTextButton>
-                </div>
-                <div
-                  className={cn("cursor-pointer")}
-                  onClick={() => toggleUseCase()}
-                >
-                  <FlipTextButton>
-                    <p
-                      className={cn(
-                        "font-mona-sans relative py-2 text-[14px] font-semibold"
-                      )}
-                    >
-                      use case.
-                    </p>
-                  </FlipTextButton>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  <div
+                    onClick={() => toggleAbout()}
+                    className={cn("cursor-pointer")}
+                  >
+                    <FlipTextButton>
+                      <p
+                        className={cn(
+                          "font-mona-sans relative text-[14px] font-semibold"
+                        )}
+                      >
+                        about.
+                      </p>
+                    </FlipTextButton>
+                  </div>
+                  <div
+                    className={cn("cursor-pointer")}
+                    onClick={() => toggleUseCase()}
+                  >
+                    <FlipTextButton>
+                      <p
+                        className={cn(
+                          "font-mona-sans relative text-[14px] font-semibold"
+                        )}
+                      >
+                        use case.
+                      </p>
+                    </FlipTextButton>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
           {/* mobile dot pattern button (without text, hidden during read book route) */}
           {!isShowingBookControls && (
@@ -205,14 +207,19 @@ const OverlayNavigators = () => {
       </div>
 
       {/* Top Center Moodboard Toggle (Smoothly animated out during read book route) */}
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {!isShowingBookControls && (
           <motion.div
             key="moodboard-toggle"
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0 }}
+            animate={{
+              opacity: 1,
+              transition: { duration: 1, delay: 0.5, ease: easing016 },
+            }}
+            exit={{
+              opacity: 0,
+              transition: { duration: 0.4, ease: easing016 },
+            }}
             onPointerEnter={() => {
               setIsMoodboardClickLocked(false);
               setIsMoodboardHovered(true);
@@ -251,14 +258,20 @@ const OverlayNavigators = () => {
 
       {/* bottom buttons */}
       <div className="relative flex items-center justify-center">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" initial={false}>
           {!isShowingBookControls ? (
             <motion.div
               key="main-bottom-buttons"
-              initial={{ opacity: 0, y: 15, scale: 0.96 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 15, scale: 0.96 }}
-              transition={{ duration: 0.35, ease: [0.76, 0, 0.24, 1] }}
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: 1,
+                transition: { duration: 0.4, delay: 0.1, ease: easing016 },
+              }}
+              exit={{
+                opacity: 0,
+                transition: { duration: 0.4, delay: 0.2, ease: easing016 },
+              }}
+
               className="flex items-center justify-center gap-x-3"
             >
               {/* Chapters Dropdown Popup */}
@@ -267,7 +280,7 @@ const OverlayNavigators = () => {
                   initial={{ opacity: 0, y: 10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                   className="pointer-events-auto absolute bottom-14 z-50 mb-2 flex min-w-64 flex-col gap-1 rounded-md border border-black bg-white p-2 shadow-2xl"
                 >
                   <div className="px-2.5 py-1 text-[10px] font-bold tracking-wider text-neutral-400 uppercase">
@@ -382,10 +395,16 @@ const OverlayNavigators = () => {
           ) : (
             <motion.div
               key="book-bottom-buttons"
-              initial={{ opacity: 0, y: 15, scale: 0.96 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 15, scale: 0.96 }}
-              transition={{ duration: 0.35, ease: [0.76, 0, 0.24, 1] }}
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: 1,
+                transition: { duration: 0.3, ease: easing016 },
+              }}
+              exit={{
+                opacity: 0,
+                transition: { duration: 0.3, delay: 0.2, ease: easing016 },
+              }}
+
               className="flex items-center justify-center gap-x-3"
             >
               {/* first button: borrow this book */}

@@ -14,6 +14,7 @@ export const linkUnderlineAfterBlack =
 
 export const easing016: Easing = [0.16, 1, 0.3, 1];
 export const easing022: Easing = [0.22, 1, 0.36, 1];
+export const easing065: Easing = [0.65, 0, 0.35, 1];
 
 // 9 dots morphing between a 3x3 grid (9 dots) and a 7-dot flower/hexagon (1 center + 6 outer dots, 2 hidden)
 export const dotVariants = [

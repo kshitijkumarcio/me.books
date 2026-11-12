@@ -12,6 +12,7 @@ import Lenis from "lenis";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { cn } from "@/lib/utils";
+import { useCanvasNavigation } from "@/hooks/layout-hooks/usecanvasnavigation";
 
 // ============================================================================
 // SINGLE SOURCE OF TRUTH: CANVAS PHYSICS & EASING CONFIGURATION
@@ -54,6 +55,12 @@ export interface InfiniteCanvasProps {
   /** Optional overrides if you ever want a specific page to deviate from CANVAS_PHYSICS */
   physicsOverride?: Partial<typeof CANVAS_PHYSICS>;
   onPanToReady?: (panTo: (x: number, y: number) => void) => void;
+  onScrollToReady?: (
+    scrollToTarget: (
+      target: string | HTMLElement,
+      options?: { lerp?: number; duration?: number; offset?: number }
+    ) => void
+  ) => void;
 }
 
 function subscribeTouch(onChange: () => void) {
@@ -90,6 +97,7 @@ const InfiniteCanvas = ({
   initialCenter = true,
   physicsOverride,
   onPanToReady,
+  onScrollToReady,
 }: InfiniteCanvasProps) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -134,6 +142,53 @@ const InfiniteCanvas = ({
       lenisYRef.current?.scrollTo(y, scrollAnimOptions);
     },
     [scrollAnimOptions]
+  );
+
+  /** Smoothly scroll vertically to an element/selector using Lenis and simulated scroll lerp */
+  const scrollToTarget = useCallback(
+    (
+      target: string | HTMLElement,
+      options?: { lerp?: number; duration?: number; offset?: number }
+    ) => {
+      const lenisY = lenisYRef.current;
+      if (!lenisY) {
+        if (typeof document !== "undefined") {
+          const el =
+            typeof target === "string"
+              ? target.startsWith("#")
+                ? document.getElementById(target.slice(1))
+                : document.querySelector(target)
+              : target;
+          el?.scrollIntoView({ behavior: "smooth" });
+        }
+        return;
+      }
+
+      const node =
+        typeof target === "string"
+          ? target.startsWith("#")
+            ? document.getElementById(target.slice(1))
+            : document.querySelector(target)
+          : target;
+
+      if (!node) {
+        console.warn(
+          `[InfiniteCanvas] scrollToTarget: element not found:`,
+          target
+        );
+        return;
+      }
+
+      // Use the exact exponential damping lerp configured for simulated scrolling
+      const targetLerp = options?.lerp ?? cfg.lerp ?? 0.08;
+
+      lenisY.scrollTo(node, {
+        lerp: options?.duration ? undefined : targetLerp,
+        duration: options?.duration,
+        offset: options?.offset ?? 0,
+      });
+    },
+    [cfg.lerp]
   );
 
   /** Standard iOS-style rubber-band resistance for elastic boundary drag */
@@ -257,8 +312,22 @@ const InfiniteCanvas = ({
     lenisXRef.current = lenisX;
     lenisYRef.current = lenisY;
 
-    // Expose panTo to parent or canvas navigation store
+    // Expose panTo & scrollToTarget to parent and canvas navigation store
     onPanToReady?.(panTo);
+    onScrollToReady?.(scrollToTarget);
+
+    const navStore = useCanvasNavigation.getState();
+    navStore.setPanToFn(panTo);
+    navStore.setScrollToTargetFn(scrollToTarget);
+
+    // Ensure clean URL without lingering hash fragments on page load
+    if (typeof window !== "undefined" && window.location.hash) {
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + window.location.search
+      );
+    }
 
     // 3. Unified Ticker: Lenis ALWAYS runs and interpolates both wheel & drag!
     const update = (time: number, deltaTime: number) => {
@@ -294,6 +363,7 @@ const InfiniteCanvas = ({
       lenisX.destroy();
       lenisXRef.current = null;
       lenisYRef.current = null;
+      useCanvasNavigation.getState().setScrollToTargetFn(null);
     };
   }, [initialCenter, cfg.wheelMultiplier, cfg.lerp, scrollAnimOptions, getMax]);
 

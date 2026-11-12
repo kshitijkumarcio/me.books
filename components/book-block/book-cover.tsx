@@ -70,7 +70,7 @@ const BookCover = ({
         href={href}
         scroll={false}
         prefetch={true}
-        className="inline-block"
+        className="inline-block ring-transparent outline-none focus:ring-0 focus:ring-transparent focus:outline-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:outline-none"
       >
         {content}
       </Link>

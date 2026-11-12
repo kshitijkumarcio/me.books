@@ -1,8 +1,59 @@
+"use client";
+
 import { images } from "@/constants";
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 import FlipTextButton from "../ui-components/flip-text-button";
+import { useCanvasNavigation } from "@/hooks/layout-hooks/usecanvasnavigation";
+import { cn } from "@/lib/utils";
+
+export interface NavButtonProps {
+  title?: string;
+  targetId: string;
+  duration?: number;
+  lerp?: number;
+  offset?: number;
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export type LinkNavProps = NavButtonProps;
+
+export const NavButton = ({
+  title,
+  targetId,
+  duration,
+  lerp,
+  offset,
+  className,
+  children,
+}: NavButtonProps) => {
+  const { scrollToTarget } = useCanvasNavigation();
+
+  const handleClick = () => {
+    scrollToTarget(targetId, { duration, lerp, offset });
+  };
+
+  return (
+    <div className={cn("pointer-events-auto", className)}>
+      <button
+        type="button"
+        onClick={handleClick}
+        className="block cursor-pointer border-none bg-transparent p-0 text-left outline-none select-none focus:outline-none focus-visible:outline-none"
+      >
+        <FlipTextButton>
+          {children || (
+            <p className="font-mona-sans relative text-[14px] font-semibold">
+              {title}
+            </p>
+          )}
+        </FlipTextButton>
+      </button>
+    </div>
+  );
+};
+
+export const LinkNav = NavButton;
 
 const Introduction = () => {
   return (
@@ -67,30 +118,26 @@ const Introduction = () => {
           </div>
 
           <div className="mt-cell-[0.4] relative flex items-start justify-between px-4 lg:px-6">
-            <div className="pointer-events-auto">
-              <Link href={"#current-reads"} className="block cursor-pointer">
-                <FlipTextButton>
-                  <p className="font-mona-sans relative text-[14px] font-semibold">
-                    (current reads)
-                  </p>
-                </FlipTextButton>
-              </Link>
-            </div>
+            <NavButton
+              title="(current reads)"
+              targetId="#current-reads"
+              duration={2}
+              lerp={1}
+              offset={-72}
+            />
             <div className="absolute left-1/2 flex max-w-120 -translate-x-1/2 items-center justify-center">
               <p className="font-mona-sans relative pl-1.5 text-[14px] font-semibold">
                 My small collection of books. Feel free to explore and borrow
                 whatever sparks your curiosity! [Some might not be up for swap!]
               </p>
             </div>
-            <div className="pointer-events-auto">
-              <Link href={"#wishlist"} className="block cursor-pointer">
-                <FlipTextButton>
-                  <p className="font-mona-sans relative text-[14px] font-semibold">
-                    (wishlist)
-                  </p>
-                </FlipTextButton>
-              </Link>
-            </div>
+            <NavButton
+              title="(wishlist)"
+              targetId="#wishlist"
+              duration={2.5}
+              lerp={1.5}
+              offset={-72}
+            />
           </div>
         </div>
       </div>

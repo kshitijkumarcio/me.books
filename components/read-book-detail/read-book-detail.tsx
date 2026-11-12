@@ -1,9 +1,14 @@
 "use client";
 
-import React, { useEffect, useCallback, useId } from "react";
+import React, { useEffect, useCallback, useId, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { motion } from "motion/react";
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useSpring,
+} from "motion/react";
 import type { ReadBook } from "@/books/books-index";
 import GridCursorHighlighter from "@/components/ui-components/grid-cursor-highlighter";
 import {
@@ -25,84 +30,173 @@ const STAR_POINTS =
 const StarRating = ({ rating = 4.5 }: { rating: number }) => {
   const baseId = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const stars = [1, 2, 3, 4, 5];
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const springX = useSpring(mouseX, {
+    damping: 60,
+    stiffness: 300,
+    mass: 0.5,
+  });
+  const springY = useSpring(mouseY, {
+    damping: 60,
+    stiffness: 300,
+    mass: 0.5,
+  });
+
+  const OFFSET_X = 20;
+  const OFFSET_Y = 20;
+
+  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left + OFFSET_X;
+      const y = e.clientY - rect.top + OFFSET_Y;
+      mouseX.set(x);
+      mouseY.set(y);
+      springX.jump(x);
+      springY.jump(y);
+    }
+    setIsHovered(true);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left + OFFSET_X;
+      const y = e.clientY - rect.top + OFFSET_Y;
+      if (!isHovered) {
+        mouseX.set(x);
+        mouseY.set(y);
+        springX.jump(x);
+        springY.jump(y);
+        setIsHovered(true);
+      } else {
+        mouseX.set(x);
+        mouseY.set(y);
+      }
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+  // Format rating in digits and decimals (e.g. 3.8, 4.25, or 5.0 for integers)
+  const formattedRating = Number.isInteger(rating)
+    ? rating.toFixed(1)
+    : `${Math.round(rating * 100) / 100}`;
 
   return (
     <div
-      className="flex items-center justify-center gap-1.5 select-none"
+      ref={containerRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="relative inline-flex cursor-default flex-col items-center justify-center select-none"
       aria-label={`Rating: ${rating} out of 5 stars`}
     >
-      {stars.map((star) => {
-        // Calculate fill fraction for this specific star (0 to 1)
-        // e.g. for star 4 with rating 3.68 -> (3.68 - 3) = 0.68 (68% width)
-        const fillFraction = Math.max(0, Math.min(1, rating - (star - 1)));
-        // Round to 2 decimal places to avoid floating point imprecision
-        const roundedFraction = Math.round(fillFraction * 100) / 100;
+      {/* Stars row */}
+      <div className="flex items-center justify-center gap-1.5">
+        {stars.map((star) => {
+          // Calculate fill fraction for this specific star (0 to 1)
+          // e.g. for star 4 with rating 3.68 -> (3.68 - 3) = 0.68 (68% width)
+          const fillFraction = Math.max(0, Math.min(1, rating - (star - 1)));
+          // Round to 2 decimal places to avoid floating point imprecision
+          const roundedFraction = Math.round(fillFraction * 100) / 100;
 
-        if (roundedFraction >= 1) {
-          // Fully filled star
+          if (roundedFraction >= 1) {
+            // Fully filled star
+            return (
+              <svg
+                key={star}
+                className="h-5 w-5 transition-transform hover:scale-110 sm:h-6 sm:w-6"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polygon points={STAR_POINTS} />
+              </svg>
+            );
+          }
+
+          if (roundedFraction <= 0) {
+            // Fully empty star
+            return (
+              <svg
+                key={star}
+                className="h-5 w-5 transition-transform hover:scale-110 sm:h-6 sm:w-6"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polygon points={STAR_POINTS} />
+              </svg>
+            );
+          }
+
+          // Partially filled star (e.g. 0.68 width for rating 3.68)
+          const clipId = `star-clip-${baseId}-${star}`;
           return (
             <svg
               key={star}
               className="h-5 w-5 transition-transform hover:scale-110 sm:h-6 sm:w-6"
               viewBox="0 0 24 24"
-              fill="currentColor"
               stroke="currentColor"
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <polygon points={STAR_POINTS} />
+              <defs>
+                <clipPath id={clipId} clipPathUnits="objectBoundingBox">
+                  <rect x="0" y="0" width={roundedFraction} height="1" />
+                </clipPath>
+              </defs>
+              {/* Clipped filled portion of the star */}
+              <polygon
+                points={STAR_POINTS}
+                fill="currentColor"
+                stroke="none"
+                clipPath={`url(#${clipId})`}
+              />
+              {/* Full outline of the star */}
+              <polygon points={STAR_POINTS} fill="none" />
             </svg>
           );
-        }
+        })}
+      </div>
 
-        if (roundedFraction <= 0) {
-          // Fully empty star
-          return (
-            <svg
-              key={star}
-              className="h-5 w-5 transition-transform hover:scale-110 sm:h-6 sm:w-6"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polygon points={STAR_POINTS} />
-            </svg>
-          );
-        }
-
-        // Partially filled star (e.g. 0.68 width for rating 3.68)
-        const clipId = `star-clip-${baseId}-${star}`;
-        return (
-          <svg
-            key={star}
-            className="h-5 w-5 transition-transform hover:scale-110 sm:h-6 sm:w-6"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+      {/* Floating cursor-following rating label */}
+      <AnimatePresence>
+        {isHovered && (
+          <motion.div
+            style={{ x: springX, y: springY }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="pointer-events-none absolute top-0 left-0 z-50 select-none"
           >
-            <defs>
-              <clipPath id={clipId} clipPathUnits="objectBoundingBox">
-                <rect x="0" y="0" width={roundedFraction} height="1" />
-              </clipPath>
-            </defs>
-            {/* Clipped filled portion of the star */}
-            <polygon
-              points={STAR_POINTS}
-              fill="currentColor"
-              stroke="none"
-              clipPath={`url(#${clipId})`}
-            />
-            {/* Full outline of the star */}
-            <polygon points={STAR_POINTS} fill="none" />
-          </svg>
-        );
-      })}
+            <div className="bg-neon flex items-center gap-2 rounded-lg border border-neutral-600 px-2 py-1.5 whitespace-nowrap">
+              <div className="flex items-center gap-1.5 leading-none">
+                <div className="font-mona-sans flex items-center gap-1.5 text-[14px] leading-none font-semibold text-black">
+                  <p className="text-[16px] leading-none font-medium">+</p>
+                  <p>{formattedRating}</p>
+                  <p className="text-[16px] leading-none font-medium">+</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -203,7 +297,7 @@ export const ReadBookDetail = ({
 
       {/* Main Content Area - padded to clear the fixed overlay navigators */}
       <main className="flex min-h-full flex-1 flex-col items-center justify-center px-4 pt-24 pb-28 sm:px-8 sm:pt-28 sm:pb-32">
-        <div className="flex w-full h-full max-w-6xl flex-col items-center">
+        <div className="flex h-full w-full max-w-6xl flex-col items-center">
           {/* Title and Author Header */}
           <div className="mb-8 text-center sm:mb-12">
             <h1 className="font-mona-sans text-3xl font-bold tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl">
@@ -265,7 +359,7 @@ export const ReadBookDetail = ({
               </div>
 
               {/* Star Rating */}
-              <div className="mt-4 sm:mt-5">
+              <div className="mt-4 sm:mt-8">
                 <StarRating rating={book.rating ?? 5} />
               </div>
             </div>

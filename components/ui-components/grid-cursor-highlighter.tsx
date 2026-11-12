@@ -45,11 +45,7 @@ export const GridCursorHighlighter = ({
     );
     const parsed = parseFloat(raw);
     cellSizeRef.current =
-      !isNaN(parsed) && parsed > 0
-        ? parsed
-        : window.innerWidth < 768
-          ? 40
-          : 60;
+      !isNaN(parsed) && parsed > 0 ? parsed : window.innerWidth < 768 ? 40 : 60;
   }, []);
 
   useEffect(() => {

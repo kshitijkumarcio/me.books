@@ -212,6 +212,7 @@ const ShelfGrid = ({
 
   return (
     <div
+      id="books-read"
       className={cn(
         "px-cell relative flex flex-col items-center select-none",
         className

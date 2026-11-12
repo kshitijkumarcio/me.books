@@ -34,7 +34,7 @@ export default function RootLayout({
     <html lang="en" className={`${monaSans.variable} no-scrollbar antialiased`}>
       <body
         suppressHydrationWarning
-        className="no-scrollbar selection:bg-neon/80 bg-neon/80 min-h-screen selection:text-black"
+        className="no-scrollbar selection:bg-neon/80 bg-neon/90 min-h-screen selection:text-black"
       >
         <OverlayNavigators />
         <BookShelfAnimator modal={modal}>{children}</BookShelfAnimator>
