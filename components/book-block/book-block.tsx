@@ -203,8 +203,8 @@ const BookBlock = ({
     mass: 0.5,
   });
 
-  const OFFSET_X = 40;
-  const OFFSET_Y = 40;
+  const OFFSET_X = 32;
+  const OFFSET_Y = 32;
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
     if (blockRef.current) {

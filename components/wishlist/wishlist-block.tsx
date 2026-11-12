@@ -159,8 +159,8 @@ export const WishListBlock = ({
 
   if (!book) return null;
 
-  const OFFSET_X = 20;
-  const OFFSET_Y = 20;
+  const OFFSET_X = 24;
+  const OFFSET_Y = 24;
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
     if (blockRef.current) {

@@ -123,7 +123,7 @@ const Introduction = () => {
               targetId="#current-reads"
               duration={2}
               lerp={1}
-              offset={-72}
+              offset={-42}
             />
             <div className="absolute left-1/2 flex max-w-120 -translate-x-1/2 items-center justify-center">
               <p className="font-mona-sans relative pl-1.5 text-[14px] font-semibold">
@@ -136,7 +136,7 @@ const Introduction = () => {
               targetId="#wishlist"
               duration={2.5}
               lerp={1.5}
-              offset={-72}
+              offset={-42}
             />
           </div>
         </div>
