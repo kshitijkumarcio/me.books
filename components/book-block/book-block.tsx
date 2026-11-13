@@ -10,6 +10,7 @@ import BookQuote from "./book-quote";
 import PillMessage from "./pill-message";
 import GenrePill from "@/components/current-reads/genres-pill";
 import ShelfBookHoverCard from "@/components/shelf-grid/shelf-book-hover-card";
+import { calculateHoverCardPosition } from "@/lib/hover-card-utils";
 import { cn } from "@/lib/utils";
 import {
   parseCellUnit,
@@ -203,14 +204,10 @@ const BookBlock = ({
     mass: 0.5,
   });
 
-  const OFFSET_X = 32;
-  const OFFSET_Y = 32;
-
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
     if (blockRef.current) {
       const rect = blockRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left + OFFSET_X;
-      const y = e.clientY - rect.top + OFFSET_Y;
+      const { x, y } = calculateHoverCardPosition(e.clientX, e.clientY, rect);
       mouseX.set(x);
       mouseY.set(y);
       springX.jump(x);
@@ -222,8 +219,7 @@ const BookBlock = ({
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (blockRef.current) {
       const rect = blockRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left + OFFSET_X;
-      const y = e.clientY - rect.top + OFFSET_Y;
+      const { x, y } = calculateHoverCardPosition(e.clientX, e.clientY, rect);
       if (!isHovered) {
         mouseX.set(x);
         mouseY.set(y);

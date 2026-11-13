@@ -72,7 +72,10 @@ interface CanvasNavigationState {
   setActiveZoneId: (id: string) => void;
   toggleChaptersMenu: () => void;
   closeChaptersMenu: () => void;
-  goToZone: (zoneId: string) => void;
+  goToZone: (
+    zoneId: string,
+    options?: { lerp?: number; duration?: number; offset?: number }
+  ) => void;
   scrollToTarget: (
     target:
       | string
@@ -130,12 +133,20 @@ export const useCanvasNavigation = create<CanvasNavigationState>(
       }
     },
 
-    goToZone: (zoneId: string) => {
+    goToZone: (zoneId: string, options?: { lerp?: number; duration?: number; offset?: number }) => {
       const { scrollToTargetFn, panToFn } = get();
       if (typeof document !== "undefined") {
         const el = document.getElementById(zoneId);
-        if (el && scrollToTargetFn) {
-          scrollToTargetFn(el);
+        if (el) {
+          if (scrollToTargetFn) {
+            scrollToTargetFn(el, {
+              duration: options?.duration ?? 2,
+              offset: options?.offset ?? -42,
+              lerp: options?.lerp ?? 1,
+            });
+          } else {
+            el.scrollIntoView({ behavior: "smooth" });
+          }
           set({ activeZoneId: zoneId, isChaptersMenuOpen: false });
           return;
         }

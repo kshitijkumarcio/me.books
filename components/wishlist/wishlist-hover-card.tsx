@@ -8,7 +8,7 @@ import { images } from "@/constants/images";
 import { cn } from "@/lib/utils";
 
 export interface WishlistHoverCardProps {
-  book: WishlistBook | BookItem;
+  book: WishlistBook ;
   x: MotionValue<number>;
   y: MotionValue<number>;
   className?: string;
@@ -114,13 +114,7 @@ export const WishlistHoverCard = ({
 
   const displayPrice = manualPrice || livePrice || "₹499";
 
-  const isPriority =
-    "priority" in book &&
-    typeof book.priority === "string" &&
-    book.priority.trim().length > 0 &&
-    book.priority.toLowerCase() !== "normal";
-
-  const displayTag = isPriority ? "Need this." : "Seems cool.";
+  const displayTag = book.priority === "top" ? "Need this." : "Seems cool.";
 
   return (
     <motion.div
@@ -134,10 +128,10 @@ export const WishlistHoverCard = ({
       {/* Outer Ticket Container with Paper-cut Perforated Holes */}
       <div
         style={TICKET_MASK_STYLE}
-        className={cn("bg-neon w-52 p-2", className)}
+        className={cn("bg-[#F1F1F1] w-52 p-2", className)}
       >
         {/* Inner Grid Box with crisp black outline */}
-        <div className="bg-neon flex flex-col overflow-hidden border border-black">
+        <div className=" flex flex-col overflow-hidden border border-black">
           {/* Top Row: Wishlist. */}
           <div className="flex h-5 items-center border-b border-black px-1">
             <span className="font-mona-sans text-[10px] font-bold tracking-tight text-black">
@@ -150,7 +144,7 @@ export const WishlistHoverCard = ({
             {/* Left Column */}
             <div className="flex w-16 shrink-0 flex-col border-r border-black">
               {/* Ticket Image */}
-              <div className="bg-neon relative h-14.5 w-full overflow-hidden">
+              <div className=" relative h-14.5 w-full overflow-hidden">
                 <Image
                   src={ticketImage}
                   alt={title}

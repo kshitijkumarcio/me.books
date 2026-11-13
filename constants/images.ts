@@ -68,6 +68,13 @@ import James from "@/public/images/james.jpg";
 import DemonCopperhead from "@/public/images/demon-copperhead.jpg";
 import MyFriends from "@/public/images/my-friends.jpg";
 
+import chapter1a from "@/public/images/chapters-popup-1a.png";
+import chapter1b from "@/public/images/chapters-popup-1b.png";
+import chapter2a from "@/public/images/chapters-popup-2a.png";
+import chapter2b from "@/public/images/chapters-popup-2b.png";
+import chapter3a from "@/public/images/chapters-popup-3a.png";
+import chapter3b from "@/public/images/chapters-popup-3b.png";
+
 import Kshitij from "@/public/images/kshitij.png";
 import AMITC1 from "@/public/images/amitc-img-1.png";
 import AMITC2 from "@/public/images/amitc-img-2.png";
@@ -319,6 +326,12 @@ export const images = {
   WN1,
   WN2,
   WN3,
+  chapter1a,
+  chapter1b,
+  chapter2a,
+  chapter2b,
+  chapter3a,
+  chapter3b,
 };
 
 export default images;

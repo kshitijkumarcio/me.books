@@ -197,14 +197,14 @@ export const ShelfBookHoverCard = ({
       {/* Outer Ticket Container with Paper-cut Perforated Holes */}
       <div
         style={TICKET_MASK_STYLE}
-        className={cn("bg-neon w-52 p-2", className)}
+        className={cn("w-52 bg-[#F1F1F1] p-2", className)}
       >
         {/* Inner Grid Box with crisp black outline */}
-        <div className="bg-neon flex flex-col overflow-hidden border border-black">
+        <div className="flex flex-col overflow-hidden border border-black">
           {/* Top Marquee Row (Genres) */}
           <div className="flex h-5 items-center border-b border-black px-1">
             <span className="font-mona-sans truncate text-[9.5px] font-bold tracking-tight text-black">
-              Available for swap
+              Available for borrowing
             </span>
           </div>
 
@@ -213,7 +213,7 @@ export const ShelfBookHoverCard = ({
             {/* Left Column */}
             <div className="flex w-16 shrink-0 flex-col border-r border-black">
               {/* Ticket Image */}
-              <div className="bg-neon relative h-14.5 w-full overflow-hidden">
+              <div className=" relative h-14.5 w-full overflow-hidden">
                 <Image
                   src={ticketImage}
                   alt={title}

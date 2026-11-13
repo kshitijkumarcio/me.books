@@ -120,6 +120,7 @@ export interface BaseBookItem {
   country?: string;
   publishedYear?: number;
   firstPublishedYear?: number;
+  synopsis?: string | string[];
 }
 
 export interface CurrentlyReadingPill {
@@ -147,7 +148,6 @@ export interface ReadBook extends BaseBookItem {
   firstPublishedYear?: number;
   ticketImage?: StaticImageData;
   genres?: string[];
-  synopsis?: string | string[];
   goodreadsUrl?: string;
   goodreads?: string;
   borrowUrl?: string;
@@ -2952,8 +2952,8 @@ export const wishlistBooks: WishlistBook[] = [
     position: "b6",
     amazonUrl:
       "https://www.amazon.in/May-We-Feed-King-Shortlisted/dp/1803515279/ref=tmm_pap_swatch_0?_encoding=UTF8&sr=1-2",
-    price: 499,
-    priority: "",
+    price: 499, 
+    priority: "top",
     note: "",
     country: "UK",
     publishedYear: 2026,
@@ -3321,6 +3321,34 @@ export function getReadBookById(idOrSlug: string): ReadBook | undefined {
     return (
       b.id.toLowerCase() === decoded ||
       b.id.toLowerCase() === decoded.replace(/^r-?/, "r") ||
+      slug === decoded
+    );
+  });
+}
+
+export function getCurrentReadBookById(
+  idOrSlug: string
+): CurrentlyReadingBook | undefined {
+  const decoded = decodeURIComponent(idOrSlug).toLowerCase().trim();
+  return currentReads.find((b) => {
+    const slug = b.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    return (
+      b.id.toLowerCase() === decoded ||
+      b.id.toLowerCase() === decoded.replace(/^cr-?/, "cr-") ||
+      slug === decoded
+    );
+  });
+}
+
+export function getWishlistBookById(
+  idOrSlug: string
+): WishlistBook | undefined {
+  const decoded = decodeURIComponent(idOrSlug).toLowerCase().trim();
+  return wishlistBooks.find((b) => {
+    const slug = b.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    return (
+      b.id.toLowerCase() === decoded ||
+      b.id.toLowerCase() === decoded.replace(/^w-?/, "w") ||
       slug === decoded
     );
   });

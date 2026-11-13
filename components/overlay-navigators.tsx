@@ -10,13 +10,14 @@ import { AnimatePresence, motion, type Transition } from "motion/react";
 import { cn } from "@/lib/utils";
 import { dotRows, dotVariants, easing016, easing065 } from "@/constants";
 import icons from "@/constants/icons";
-import { getReadBookById } from "@/books/books-index";
+import {
+  getReadBookById,
+  getCurrentReadBookById,
+  getWishlistBookById,
+} from "@/books/books-index";
 import FlipTextButton from "./ui-components/flip-text-button";
 import { useOverlayButtons } from "@/hooks/layout-hooks/useoverlaybuttons";
-import {
-  useCanvasNavigation,
-  CANVAS_ZONES,
-} from "@/hooks/layout-hooks/usecanvasnavigation";
+import { useCanvasNavigation } from "@/hooks/layout-hooks/usecanvasnavigation";
 import { useReadBookModal } from "@/hooks/layout-hooks/use-read-book-modal";
 
 const ViewDotsIcon = ({
@@ -44,21 +45,55 @@ const ViewDotsIcon = ({
   </div>
 );
 
+const AmazonIcon = ({ className }: { className?: string }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
+    <path d="M13.91 16.59c-3.23 2.38-7.85 3.65-11.91 1.05-.59-.38-.07-.94.49-.69 3.49 1.54 8.01 1.76 11.02-.36.46-.33.9.27.4.7z" />
+    <path d="M14.92 15.54c-.41-.53-2.73-.25-3.77-.13-.31.04-.36-.23-.08-.43 1.83-1.32 4.83-.94 5.19-.48.36.46-.1 3.47-1.84 4.93-.27.23-.52.1-.4-.2.4-.98.9-3.69-.3-4.32z" />
+    <path d="M14.39 12.35c-.09.7-.15 1.54-.73 2.01-.52.42-1.22.49-1.86.49-1.21 0-2.4-.49-2.58-1.86-.19-1.46.88-2.31 2.09-2.52.92-.16 2.22-.19 2.97-.24l.11 2.12zm1.88 4.22c-.17.18-.42.23-.63.14-.85-.36-1.02-1.24-1.07-2.1l-.05-.88c-.68.04-1.55.08-2.22.21-1.72.33-3.32 1.39-3.05 3.51.23 1.82 1.83 2.68 3.43 2.68 1.48 0 2.59-.57 3.25-1.57.06.33.09.68.14 1.02.04.28.24.49.52.49h1.49c.28 0 .49-.22.46-.5l-.75-4.43c-.15-.88-.16-1.95-.73-2.67-.85-1.07-2.18-1.37-3.48-1.37-2.21 0-4.18.99-4.57 3.32-.05.28.16.52.45.54l1.65.12c.24.02.46-.16.5-.4.23-1.27 1.15-1.82 2.22-1.82.91 0 1.83.33 2.08 1.29.17.65.1 1.34.1 2.02l-.01.85z" />
+  </svg>
+);
+
 const OverlayNavigators = () => {
   const pathname = usePathname();
   const router = useRouter();
   const { isClosing, triggerClose, isInterceptedOpen } = useReadBookModal();
 
   const isReadBookRoute = Boolean(pathname?.includes("/read/"));
-  const isShowingBookControls = isReadBookRoute && !isClosing;
+  const isReadingRoute = Boolean(pathname?.includes("/reading/"));
+  const isWishlistRoute = Boolean(pathname?.includes("/wishlist/"));
+  const isAnyModalRoute = isReadBookRoute || isReadingRoute || isWishlistRoute;
+  const isShowingBookControls = isAnyModalRoute && !isClosing;
 
-  // Retrieve current book metadata based on URL if on a read book route
-  let currentBook = undefined;
+  // Retrieve current book metadata based on URL
+  let currentReadBook = undefined;
   if (isReadBookRoute && pathname) {
     const parts = pathname.split("/read/");
     const idSegment = parts[1]?.split("/")[0]?.split("?")[0];
     if (idSegment) {
-      currentBook = getReadBookById(decodeURIComponent(idSegment));
+      currentReadBook = getReadBookById(decodeURIComponent(idSegment));
+    }
+  }
+
+  let currentCRBook = undefined;
+  if (isReadingRoute && pathname) {
+    const parts = pathname.split("/reading/");
+    const idSegment = parts[1]?.split("/")[0]?.split("?")[0];
+    if (idSegment) {
+      currentCRBook = getCurrentReadBookById(decodeURIComponent(idSegment));
+    }
+  }
+
+  let currentWishlistBook = undefined;
+  if (isWishlistRoute && pathname) {
+    const parts = pathname.split("/wishlist/");
+    const idSegment = parts[1]?.split("/")[0]?.split("?")[0];
+    if (idSegment) {
+      currentWishlistBook = getWishlistBookById(decodeURIComponent(idSegment));
     }
   }
 
@@ -73,27 +108,52 @@ const OverlayNavigators = () => {
   };
 
   const defaultBorrowMsg =
-    currentBook?.borrowMessage ||
-    (currentBook
-      ? `hey Kshitij! Can I borrow ${currentBook.title} by ${currentBook.author} from you?`
+    currentReadBook?.borrowMessage ||
+    (currentReadBook
+      ? `hey Kshitij! Can I borrow ${currentReadBook.title} by ${currentReadBook.author} from you?`
       : "hey Kshitij! Can I borrow this book from you?");
   const borrowUrl =
-    currentBook?.borrowUrl ||
+    currentReadBook?.borrowUrl ||
     `https://wa.me/918208377317?text=${encodeURIComponent(defaultBorrowMsg)}`;
 
-  const goodreadsUrl =
-    currentBook?.goodreadsUrl ||
-    (currentBook as { goodreads?: string } | undefined)?.goodreads ||
-    (currentBook
+  const readGoodreadsUrl =
+    currentReadBook?.goodreadsUrl ||
+    (currentReadBook as { goodreads?: string } | undefined)?.goodreads ||
+    (currentReadBook
       ? `https://www.goodreads.com/search?q=${encodeURIComponent(
-          `${currentBook.title} ${currentBook.author}`
+          `${currentReadBook.title} ${currentReadBook.author}`
+        )}`
+      : "https://www.goodreads.com");
+
+  const crGoodreadsUrl =
+    currentCRBook?.goodreadsUrl ||
+    (currentCRBook as { goodreads?: string } | undefined)?.goodreads ||
+    (currentCRBook
+      ? `https://www.goodreads.com/search?q=${encodeURIComponent(
+          `${currentCRBook.title} ${currentCRBook.author}`
+        )}`
+      : "https://www.goodreads.com");
+
+  const wishlistAmazonUrl =
+    currentWishlistBook?.amazonUrl?.trim() ||
+    (currentWishlistBook
+      ? `https://www.amazon.in/s?k=${encodeURIComponent(
+          `${currentWishlistBook.title} ${currentWishlistBook.author} book`
+        )}`
+      : "https://www.amazon.in");
+
+  const wishlistGoodreadsUrl =
+    currentWishlistBook?.goodreadsUrl ||
+    (currentWishlistBook as { goodreads?: string } | undefined)?.goodreads ||
+    (currentWishlistBook
+      ? `https://www.goodreads.com/search?q=${encodeURIComponent(
+          `${currentWishlistBook.title} ${currentWishlistBook.author}`
         )}`
       : "https://www.goodreads.com");
 
   const { toggleUseCase, toggleAbout, pageView, setPageView } =
     useOverlayButtons();
-  const { isChaptersMenuOpen, toggleChaptersMenu, goToZone, activeZoneId } =
-    useCanvasNavigation();
+  const { toggleChaptersMenu } = useCanvasNavigation();
 
   const [isMoodboardHovered, setIsMoodboardHovered] = useState<boolean>(false);
   const [isMoodboardClickLocked, setIsMoodboardClickLocked] =
@@ -274,60 +334,6 @@ const OverlayNavigators = () => {
 
               className="flex items-center justify-center gap-x-3"
             >
-              {/* Chapters Dropdown Popup */}
-              {isChaptersMenuOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                  className="pointer-events-auto absolute bottom-14 z-50 mb-2 flex min-w-64 flex-col gap-1 rounded-md border border-black bg-white p-2 shadow-2xl"
-                >
-                  <div className="px-2.5 py-1 text-[10px] font-bold tracking-wider text-neutral-400 uppercase">
-                    Jump to Chapter
-                  </div>
-                  {CANVAS_ZONES.map((zone) => {
-                    const isActive = activeZoneId === zone.id;
-                    return (
-                      <button
-                        key={zone.id}
-                        onClick={() => goToZone(zone.id)}
-                        className={cn(
-                          "flex cursor-pointer items-center gap-3 rounded px-2.5 py-2 text-left transition-colors",
-                          isActive
-                            ? "bg-black text-white"
-                            : "hover:bg-neon text-neutral-900"
-                        )}
-                      >
-                        <span
-                          className={cn(
-                            "flex h-5 w-5 items-center justify-center rounded-xs font-mono text-[11px] font-bold",
-                            isActive
-                              ? "bg-white text-black"
-                              : "bg-neutral-200 text-neutral-700"
-                          )}
-                        >
-                          {zone.number}
-                        </span>
-                        <div>
-                          <p className="font-mona-sans text-[13px] leading-tight font-semibold">
-                            {zone.title}
-                          </p>
-                          <p
-                            className={cn(
-                              "font-mona-sans text-[10px]",
-                              isActive ? "text-neutral-300" : "text-neutral-500"
-                            )}
-                          >
-                            {zone.subtitle}
-                          </p>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </motion.div>
-              )}
-
               {/* first button: chapters */}
               <div
                 onClick={toggleChaptersMenu}
@@ -392,6 +398,103 @@ const OverlayNavigators = () => {
                 </div>
               </div>
             </motion.div>
+          ) : isWishlistRoute ? (
+            <motion.div
+              key="wishlist-bottom-buttons"
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: 1,
+                transition: { duration: 0.3, ease: easing016 },
+              }}
+              exit={{
+                opacity: 0,
+                transition: { duration: 0.3, delay: 0.2, ease: easing016 },
+              }}
+              className="flex items-center justify-center gap-x-3"
+            >
+              {/* first button: Amazon */}
+              <a
+                href={wishlistAmazonUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/ab pointer-events-auto flex cursor-pointer gap-x-1"
+              >
+                <div className="flex aspect-square w-10 items-center justify-center rounded-sm bg-black">
+                  <AmazonIcon className="h-4.5 w-4.5 text-white" />
+                </div>
+                <div className="flex h-10 items-center justify-center rounded-sm bg-black px-4">
+                  <FlipTextButton>
+                    <p className="font-mona-sans text-[14px] font-semibold text-white">
+                      Amazon
+                    </p>
+                  </FlipTextButton>
+                </div>
+              </a>
+
+              {/* second button: Goodreads */}
+              <a
+                href={wishlistGoodreadsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/gb pointer-events-auto flex cursor-pointer gap-x-1"
+              >
+                <div className="group-hover/gb:bg-neon flex aspect-square w-10 items-center justify-center rounded-sm border border-black bg-white transition-colors duration-200">
+                  <Image
+                    src={icons.GoodreadsIcon}
+                    alt="goodreads"
+                    width={20}
+                    height={20}
+                    className="h-4.5 w-4.5 object-contain"
+                  />
+                </div>
+                <div className="group-hover/gb:bg-neon flex h-10 items-center justify-center rounded-sm border border-black bg-white px-4 transition-colors duration-200">
+                  <FlipTextButton>
+                    <p className="font-mona-sans text-[14px] font-semibold text-black">
+                      Goodreads
+                    </p>
+                  </FlipTextButton>
+                </div>
+              </a>
+            </motion.div>
+          ) : isReadingRoute ? (
+            <motion.div
+              key="cr-bottom-buttons"
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: 1,
+                transition: { duration: 0.3, ease: easing016 },
+              }}
+              exit={{
+                opacity: 0,
+                transition: { duration: 0.3, delay: 0.2, ease: easing016 },
+              }}
+              className="flex items-center justify-center gap-x-3"
+            >
+              {/* Single button: Goodreads */}
+              <a
+                href={crGoodreadsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/gb pointer-events-auto flex cursor-pointer gap-x-1"
+              >
+                <div className="group-hover/gb:bg-neon flex aspect-square w-10 items-center justify-center rounded-sm border border-black bg-white transition-colors duration-200">
+                  <Image
+                    src={icons.GoodreadsIcon}
+                    alt="goodreads"
+                    width={20}
+                    height={20}
+                    className="h-4.5 w-4.5 object-contain"
+                  />
+                </div>
+                <div className="group-hover/gb:bg-neon flex h-10 items-center justify-center rounded-sm border border-black bg-white px-4 transition-colors duration-200">
+                  <FlipTextButton>
+                    <p className="font-mona-sans text-[14px] font-semibold text-black">
+                      Goodreads
+                    </p>
+                  </FlipTextButton>
+                </div>
+              </a>
+            </motion.div>
           ) : (
             <motion.div
               key="book-bottom-buttons"
@@ -404,7 +507,6 @@ const OverlayNavigators = () => {
                 opacity: 0,
                 transition: { duration: 0.3, delay: 0.2, ease: easing016 },
               }}
-
               className="flex items-center justify-center gap-x-3"
             >
               {/* first button: borrow this book */}
@@ -434,7 +536,7 @@ const OverlayNavigators = () => {
 
               {/* second button: Goodreads */}
               <a
-                href={goodreadsUrl}
+                href={readGoodreadsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group/gb pointer-events-auto flex cursor-pointer gap-x-1"

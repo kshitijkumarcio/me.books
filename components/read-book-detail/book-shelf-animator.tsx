@@ -22,18 +22,21 @@ export const BookShelfAnimator = ({
   const pathname = usePathname();
   const { isClosing, setIsClosing, isInterceptedOpen } = useReadBookModal();
 
-  // Route matches a read book detail view
+  // Route matches any intercepted detail view (/read/, /reading/, /wishlist/)
   const isReadBookRoute = Boolean(pathname?.includes("/read/"));
+  const isReadingRoute = Boolean(pathname?.includes("/reading/"));
+  const isWishlistRoute = Boolean(pathname?.includes("/wishlist/"));
+  const isModalRoute = isReadBookRoute || isReadingRoute || isWishlistRoute;
 
-  // Reset isClosing once the route has actually navigated away from /read/
+  // Reset isClosing once the route has actually navigated away from modal views
   useEffect(() => {
-    if (!isReadBookRoute && isClosing) {
+    if (!isModalRoute && isClosing) {
       setIsClosing(false);
     }
-  }, [isReadBookRoute, isClosing, setIsClosing]);
+  }, [isModalRoute, isClosing, setIsClosing]);
 
   // The main page should shift up only when an intercepted modal is open and not in the middle of closing
-  const shouldShiftUp = isReadBookRoute && isInterceptedOpen && !isClosing;
+  const shouldShiftUp = isModalRoute && isInterceptedOpen && !isClosing;
 
   return (
     <div className="relative isolate min-h-screen w-full overflow-hidden">

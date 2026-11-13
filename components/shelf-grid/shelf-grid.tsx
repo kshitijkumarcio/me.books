@@ -233,7 +233,7 @@ const ShelfGrid = ({
           explicitBooksCount={explicitMap.size}
           unpositionedBooksCount={unpositionedBooks.length}
           isCoordinatesVisible={isCoordinatesVisible}
-          onToggleCoordinates={() => setLocalShowCoordinates((prev) => !prev)}
+          onToggleCoordinates={() => setLocalShowCoordinates((prev) => !prev)} 
           enableGridSizeDisplay={shouldShowGridSizeIndicator}
         />
       )}

@@ -15,6 +15,7 @@ import {
   type PillCoord,
 } from "@/components/current-reads/cr-block-geometry";
 import WishlistHoverCard from "./wishlist-hover-card";
+import { calculateHoverCardPosition } from "@/lib/hover-card-utils";
 import { cn } from "@/lib/utils";
 
 export interface WishListBlockProps {
@@ -159,14 +160,10 @@ export const WishListBlock = ({
 
   if (!book) return null;
 
-  const OFFSET_X = 24;
-  const OFFSET_Y = 24;
-
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
     if (blockRef.current) {
       const rect = blockRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left + OFFSET_X;
-      const y = e.clientY - rect.top + OFFSET_Y;
+      const { x, y } = calculateHoverCardPosition(e.clientX, e.clientY, rect);
       mouseX.set(x);
       mouseY.set(y);
       springX.jump(x);
@@ -179,8 +176,7 @@ export const WishListBlock = ({
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (blockRef.current) {
       const rect = blockRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left + OFFSET_X;
-      const y = e.clientY - rect.top + OFFSET_Y;
+      const { x, y } = calculateHoverCardPosition(e.clientX, e.clientY, rect);
       if (!isHovered) {
         mouseX.set(x);
         mouseY.set(y);
@@ -198,11 +194,6 @@ export const WishListBlock = ({
   const handleMouseLeave = () => {
     setIsHovered(false);
   };
-
-  const amazonUrl = isWishlist
-    ? (book as WishlistBook).amazonUrl?.trim() ||
-      `https://www.amazon.in/s?k=${encodeURIComponent(`${book.title} ${book.author} book`)}`
-    : undefined;
 
   return (
     <div
@@ -224,30 +215,14 @@ export const WishListBlock = ({
       <div className="relative h-full w-full">
         {/* Book Cover Container */}
         <div className="bottom-cell-[1.05] absolute left-1/2 -translate-x-1/2">
-          {isWishlist && amazonUrl ? (
-            <a
-              href={amazonUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block cursor-pointer ring-transparent outline-none focus:ring-0 focus:ring-transparent focus:outline-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:outline-none"
-            >
-              <BookCover
-                src={book.coverImage}
-                alt={book.title}
-                widthClass={widthClass}
-                format={book.format}
-                rotation={rotation}
-              />
-            </a>
-          ) : (
-            <BookCover
-              src={book.coverImage}
-              alt={book.title}
-              widthClass={widthClass}
-              format={book.format}
-              rotation={rotation}
-            />
-          )}
+          <BookCover
+            src={book.coverImage}
+            alt={book.title}
+            widthClass={widthClass}
+            format={book.format}
+            rotation={rotation}
+            href={`/wishlist/${book.id}`}
+          />
         </div>
 
         {/* Hover elements: Genre Pills (one on each side) & Floating Cursor Card */}

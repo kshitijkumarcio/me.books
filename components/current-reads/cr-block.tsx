@@ -17,6 +17,7 @@ import PillMessage from "@/components/book-block/pill-message";
 import GenrePill from "./genres-pill";
 import ReadingProgressBar from "./reading-progress-bar";
 import CRBookHoverCard from "./cr-book-hover-card";
+import { calculateHoverCardPosition } from "@/lib/hover-card-utils";
 import { cn } from "@/lib/utils";
 import {
   type ActivePillState,
@@ -52,14 +53,10 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
     mass: 0.5,
   });
 
-  const OFFSET_X = 40;
-  const OFFSET_Y = 40;
-
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
     if (coverRef.current) {
       const rect = coverRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left + OFFSET_X;
-      const y = e.clientY - rect.top + OFFSET_Y;
+      const { x, y } = calculateHoverCardPosition(e.clientX, e.clientY, rect);
       mouseX.set(x);
       mouseY.set(y);
       springX.jump(x);
@@ -71,8 +68,7 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (coverRef.current) {
       const rect = coverRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left + OFFSET_X;
-      const y = e.clientY - rect.top + OFFSET_Y;
+      const { x, y } = calculateHoverCardPosition(e.clientX, e.clientY, rect);
       if (!isCoverHovered) {
         mouseX.set(x);
         mouseY.set(y);
@@ -259,6 +255,7 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
               widthClass={widthClass}
               format={book.format}
               rotation={rotation}
+              href={`/reading/${book.id}`}
             />
 
             <AnimatePresence>

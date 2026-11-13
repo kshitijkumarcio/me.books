@@ -210,12 +210,12 @@ export const ShelfBookHoverCard = ({
       {/* Outer Ticket Container (reduced by ~25% from 276px to 210px) */}
       <div
         className={cn(
-          "w-52  bg-neon p-1.5",
+          "w-52  bg-white p-1.5",
           className
         )}
       >
         {/* Inner Grid Box with crisp black outline */}
-        <div className="flex flex-col overflow-hidden border border-black bg-neon">
+        <div className="flex flex-col overflow-hidden border border-black bg-white">
           {/* Top Marquee Row (Genres) */}
           <div className="flex h-5 items-center border-b border-black px-2">
             <GenresMarquee genres={genresList} />
@@ -226,7 +226,7 @@ export const ShelfBookHoverCard = ({
             {/* Left Column */}
             <div className="flex w-16 shrink-0 flex-col border-r border-black">
               {/* Ticket Image */}
-              <div className="relative h-14.5 w-full overflow-hidden bg-neon">
+              <div className="relative h-14.5 w-full overflow-hidden bg-white">
                 <Image
                   src={ticketImage}
                   alt={title}
