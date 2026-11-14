@@ -15,7 +15,7 @@ import { useRegisterGrid } from "@/components/shelf-grid/grid-registry";
 import { useDevMode } from "@/hooks/ui-hooks/use-dev-mode";
 import WishListBlock from "./wishlist-block";
 
-export const WishListBlockSize = 6;
+export const WishListBlockSize = 5.5;
 
 export interface WishlistProps {
   books?: WishlistBook[];
@@ -258,7 +258,7 @@ const Wishlist = ({
       <div className="pointer-events-auto">
         {/* Wishlist Alternating Brick Grid matching BooksRead page width */}
         <div
-          className="mt-cell-[1.3] relative flex flex-col items-center select-none"
+          className="mt-cell-2 relative flex flex-col items-center select-none"
           style={{
             rowGap: `calc(var(--cell-size) * ${verticalGap})`,
           }}
@@ -286,7 +286,7 @@ const Wishlist = ({
                     />
                   )}
 
-                  {/* Coordinate badge for occupied wishlist book blocks */}
+                  {/* Co-ordinates badge for occupied wishlist book blocks */}
                   {isCoordinatesVisible && item.book && (
                     <div className="pointer-events-none absolute top-2 left-2 z-40 rounded bg-black/80 px-1.5 py-0.5 font-mono text-[10px] font-bold text-white shadow backdrop-blur-xs select-none">
                       {item.coordinate}

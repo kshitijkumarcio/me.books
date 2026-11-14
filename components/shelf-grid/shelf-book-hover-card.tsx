@@ -172,19 +172,6 @@ export const ShelfBookHoverCard = ({
     ("coverImage" in book && book.coverImage) ||
     images.MIAFC1;
 
-  const genresList: string[] =
-    book &&
-    "genres" in book &&
-    Array.isArray(book.genres) &&
-    book.genres.length > 0
-      ? book.genres
-      : book?.genre
-        ? book.genre
-            .split("/")
-            .map((g) => g.trim())
-            .filter(Boolean)
-        : ["Fiction"];
-
   return (
     <motion.div
       style={{ x, y }}

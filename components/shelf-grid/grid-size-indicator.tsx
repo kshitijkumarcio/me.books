@@ -8,14 +8,16 @@ import React, {
   useId,
   useSyncExternalStore,
 } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
 import { rowIndexToLetters } from "./grid-utils";
 import { useGridRegistry, gridRegistry } from "./grid-registry";
 import { useDevMode } from "@/hooks/ui-hooks/use-dev-mode";
 
-let activeMasterId: string | null = null;
+const mountedInstances = new Set<string>();
 const masterChangeListeners = new Set<() => void>();
+const emptySubscribe = () => () => {};
 
 function subscribeMaster(cb: () => void) {
   masterChangeListeners.add(cb);
@@ -23,7 +25,8 @@ function subscribeMaster(cb: () => void) {
 }
 
 function getMasterSnapshot(): string | null {
-  return activeMasterId;
+  const first = mountedInstances.values().next();
+  return first.done ? null : first.value;
 }
 
 function getServerMasterSnapshot(): string | null {
@@ -60,24 +63,27 @@ export const GridSizeIndicator = ({
   enableGridSizeDisplay,
 }: GridSizeIndicatorProps) => {
   const instanceId = useId();
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
+
+  useEffect(() => {
+    mountedInstances.add(instanceId);
+    masterChangeListeners.forEach((l) => l());
+
+    return () => {
+      mountedInstances.delete(instanceId);
+      masterChangeListeners.forEach((l) => l());
+    };
+  }, [instanceId]);
+
   const currentMasterId = useSyncExternalStore(
     subscribeMaster,
     getMasterSnapshot,
     getServerMasterSnapshot
   );
-
-  useEffect(() => {
-    if (!activeMasterId) {
-      activeMasterId = instanceId;
-      masterChangeListeners.forEach((l) => l());
-    }
-    return () => {
-      if (activeMasterId === instanceId) {
-        activeMasterId = null;
-        masterChangeListeners.forEach((l) => l());
-      }
-    };
-  }, [instanceId]);
 
   const [isInspectorOpen, setIsInspectorOpen] = useState(false);
   const [displayOrder, setDisplayOrder] = useState<"colsXrows" | "rowsXcols">(
@@ -223,7 +229,7 @@ export const GridSizeIndicator = ({
   const endRowLetter = rowIndexToLetters(Math.max(0, rows - 1));
 
   // Only the active master instance renders the UI to prevent duplicate pills in the corner
-  if (!shouldShow || !isMaster) {
+  if (!mounted || !shouldShow || !isMaster) {
     return null;
   }
 
@@ -234,8 +240,8 @@ export const GridSizeIndicator = ({
       ? `${cols}c × ${rows}r`
       : `${rows}r × ${cols}c`;
 
-  return (
-    <div ref={containerRef} className="select-none">
+  return createPortal(
+    <div ref={containerRef} className="pointer-events-auto select-none">
       {/* Floating Popover Inspector */}
       <AnimatePresence>
         {isInspectorOpen && (
@@ -244,7 +250,7 @@ export const GridSizeIndicator = ({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.96 }}
             transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed bottom-16 left-4 z-50 mb-2 flex w-88 max-w-[calc(100vw-2rem)] flex-col gap-3 rounded-2xl border border-black/10 bg-white/95 p-4 font-sans text-neutral-900 shadow-2xl backdrop-blur-md sm:bottom-18 sm:left-6"
+            className="fixed bottom-16 left-4 z-[1000] mb-2 flex w-88 max-w-[calc(100vw-2rem)] flex-col gap-3 rounded-2xl border border-black/10 bg-white/95 p-4 font-sans text-neutral-900 shadow-2xl backdrop-blur-md sm:bottom-18 sm:left-6"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-black/5 pb-2.5">
@@ -483,7 +489,7 @@ export const GridSizeIndicator = ({
         onClick={() => setIsInspectorOpen((prev) => !prev)}
         title={`Grid System Inspector (Shortcut: S)`}
         className={cn(
-          "fixed bottom-4 left-4 z-50 flex cursor-pointer items-center gap-2 rounded-full px-3.5 py-1.5 font-mono text-xs font-medium shadow-lg backdrop-blur-md transition-all duration-200 select-none sm:bottom-6 sm:left-6",
+          "fixed bottom-4 left-4 z-[1000] flex cursor-pointer items-center gap-2 rounded-full px-3.5 py-1.5 font-mono text-xs font-medium shadow-lg backdrop-blur-md transition-all duration-200 select-none sm:bottom-6 sm:left-6",
           isInspectorOpen
             ? "bg-black text-white hover:bg-neutral-800"
             : "border border-black/10 bg-white/90 text-neutral-800 hover:bg-white"
@@ -559,7 +565,8 @@ export const GridSizeIndicator = ({
           )}
         />
       </button>
-    </div>
+    </div>,
+    document.body
   );
 };
 

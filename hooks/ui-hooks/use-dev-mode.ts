@@ -26,6 +26,8 @@ export function useDevMode(): boolean {
     getServerDevParamSnapshot
   );
 
-  const isDevEnvironment = process.env.NODE_ENV === "development";
+  const isDevEnvironment =
+    process.env.NODE_ENV === "development" ||
+    process.env.NODE_ENV !== "production";
   return isDevEnvironment || isDevParam;
 }

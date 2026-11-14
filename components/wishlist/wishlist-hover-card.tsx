@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion, type MotionValue } from "motion/react";
-import type { WishlistBook, BookItem } from "@/books/books-index";
+import type { WishlistBook } from "@/books/books-index";
 import { images } from "@/constants/images";
 import { cn } from "@/lib/utils";
 
@@ -63,38 +62,6 @@ export const WishlistHoverCard = ({
   y,
   className,
 }: WishlistHoverCardProps) => {
-  const [livePrice, setLivePrice] = useState<string | null>(null);
-
-  const rawPrice = (book && "price" in book && book.price) ?? null;
-  const manualPrice =
-    rawPrice !== null && rawPrice !== undefined && rawPrice !== ""
-      ? typeof rawPrice === "number"
-        ? `₹${rawPrice}`
-        : String(rawPrice).startsWith("₹")
-          ? String(rawPrice)
-          : `₹${rawPrice}`
-      : null;
-
-  const isbn = book && "isbn" in book ? book.isbn : undefined;
-
-  useEffect(() => {
-    if (manualPrice || !isbn) return;
-
-    let isMounted = true;
-    fetch(`/book-shelf/api/book-price?isbn=${encodeURIComponent(isbn)}`)
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (isMounted && data?.price) {
-          setLivePrice(data.price);
-        }
-      })
-      .catch(() => {});
-
-    return () => {
-      isMounted = false;
-    };
-  }, [isbn, manualPrice]);
-
   if (!book) return null;
 
   const title = book.title || "Untitled";
@@ -112,9 +79,17 @@ export const WishlistHoverCard = ({
     ("coverImage" in book && book.coverImage) ||
     images.MIAFC1;
 
-  const displayPrice = manualPrice || livePrice || "₹499";
+  const displayPrice = book.price ? `~${book.price}` : "~500";
 
-  const displayTag = book.priority === "top" ? "Need this." : "Seems cool.";
+  const priorityNormalized =
+    typeof book?.priority === "string" ? book.priority.trim().toLowerCase() : "";
+
+  const displayTag =
+    priorityNormalized === "top"
+      ? "I need this!!"
+      : priorityNormalized === "high"
+        ? "I love this!"
+        : "I like this.";
 
   return (
     <motion.div

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { formatWishlistPrice } from "@/lib/price-utils";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -30,8 +31,7 @@ export async function GET(request: NextRequest) {
           data?.product?.buybox_winner?.availability?.type === "in_stock";
 
         if (priceRaw) {
-          const formatted =
-            typeof priceRaw === "number" ? `₹${priceRaw}` : String(priceRaw);
+          const formatted = formatWishlistPrice(priceRaw);
           return NextResponse.json(
             {
               price: formatted,
@@ -64,12 +64,10 @@ export async function GET(request: NextRequest) {
         const item = googleData.items?.[0];
         const saleInfo = item?.saleInfo;
         if (saleInfo?.saleability === "FOR_SALE" && saleInfo?.retailPrice) {
-          const amount = Math.round(saleInfo.retailPrice.amount);
-          const currency = saleInfo.retailPrice.currencyCode || "INR";
+          const rawAmount = saleInfo.retailPrice.amount;
           return NextResponse.json(
             {
-              price:
-                currency === "INR" ? `₹${amount}` : `${currency} ${amount}`,
+              price: formatWishlistPrice(rawAmount),
               inStock: true,
               source: "google-books",
             },

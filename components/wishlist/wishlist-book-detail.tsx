@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useCallback, useState } from "react";
+import React, { useEffect, useCallback } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
@@ -24,37 +24,6 @@ export const WishlistBookDetail = ({
 }: WishlistBookDetailProps) => {
   const router = useRouter();
   const { isClosing, triggerClose, setIsInterceptedOpen } = useReadBookModal();
-  const [livePrice, setLivePrice] = useState<string | null>(null);
-
-  const rawPrice = (book && "price" in book && book.price) ?? null;
-  const manualPrice =
-    rawPrice !== null && rawPrice !== undefined && rawPrice !== ""
-      ? typeof rawPrice === "number"
-        ? `₹${rawPrice}`
-        : String(rawPrice).startsWith("₹")
-          ? String(rawPrice)
-          : `₹${rawPrice}`
-      : null;
-
-  const isbn = book && "isbn" in book ? book.isbn : undefined;
-
-  useEffect(() => {
-    if (manualPrice || !isbn) return;
-
-    let isMounted = true;
-    fetch(`/book-shelf/api/book-price?isbn=${encodeURIComponent(isbn)}`)
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (isMounted && data?.price) {
-          setLivePrice(data.price);
-        }
-      })
-      .catch(() => {});
-
-    return () => {
-      isMounted = false;
-    };
-  }, [isbn, manualPrice]);
 
   useEffect(() => {
     if (isIntercepted) {
@@ -91,15 +60,17 @@ export const WishlistBookDetail = ({
 
   if (!book) return null;
 
-  const displayPrice = manualPrice || livePrice || "₹499";
+  const displayPrice = book.price ? `~${book.price}` : "~500";
 
-  const isPriority =
-    "priority" in book &&
-    typeof book.priority === "string" &&
-    book.priority.trim().length > 0 &&
-    book.priority.toLowerCase() !== "normal";
+  const priorityNormalized =
+    typeof book?.priority === "string" ? book.priority.trim().toLowerCase() : "";
 
-  const displayTag = isPriority ? "Need this." : "Seems cool.";
+  const displayTag =
+    priorityNormalized === "top"
+      ? "I need this!!"
+      : priorityNormalized === "high"
+        ? "I love this!"
+        : "I like this.";
 
   // Derived genres/tags fallback
   const genres =
@@ -112,9 +83,11 @@ export const WishlistBookDetail = ({
   // Derived paragraphs fallback
   const synopsisParagraphs: string[] = [
     `Currently on the wishlist: "${book.title}" by ${book.author}.`,
-    isPriority
-      ? `Marked as high priority — a title I'm eager to get my hands on next.`
-      : `Discovered and added to the bookshelf wishlist (${displayTag.toLowerCase()}).`,
+    priorityNormalized === "top"
+      ? `Marked as top priority — a title I'm eager to get my hands on next.`
+      : priorityNormalized === "high"
+        ? `Marked as high priority — a title I'm excited to read soon.`
+        : `Discovered and added to the bookshelf wishlist.`,
     `First published in ${book.publishedYear || 2024}${book.country ? ` (${book.country})` : ""}. Available in print and digital editions.`,
   ];
 

@@ -67,6 +67,11 @@ import AngelDown from "@/public/images/angel-down.jpg";
 import James from "@/public/images/james.jpg";
 import DemonCopperhead from "@/public/images/demon-copperhead.jpg";
 import MyFriends from "@/public/images/my-friends.jpg";
+import KlaraAndTheSun from "@/public/images/klara-and-the-sun.jpg";
+import BlackBag from "@/public/images/black-bag.jpg";
+import WildDarkShore from "@/public/images/wild-dark-shore.jpg";
+import Orbital from "@/public/images/orbital.jpg";
+import Kairos from "@/public/images/kairos.jpg";
 
 import chapter1a from "@/public/images/chapters-popup-1a.png";
 import chapter1b from "@/public/images/chapters-popup-1b.png";
@@ -165,6 +170,86 @@ import WN1 from "@/public/images/wn1.png";
 import WN2 from "@/public/images/wn2.png";
 import WN3 from "@/public/images/wn3.png";
 
+// =========================================================================
+// Hover Ticket Images (Filler / Placeholder)
+// Edit the paths below as actual ticker images become available.
+// =========================================================================
+import TicketAMonthInTheCountry from "@/public/images/ticket-placeholder.png";
+import TicketAMoveableFeast from "@/public/images/ticket-placeholder.png";
+import TicketAnimalFarm from "@/public/images/ticket-placeholder.png";
+import TicketAsLongAsTheLemonTreesGrow from "@/public/images/ticket-placeholder.png";
+import TicketBabel from "@/public/images/ticket-placeholder.png";
+import TicketBadWords from "@/public/images/ticket-placeholder.png";
+import TicketBeachRead from "@/public/images/ticket-placeholder.png";
+import TicketBloodOverBrightHaven from "@/public/images/ticket-placeholder.png";
+import TicketCaptainsCourageous from "@/public/images/ticket-placeholder.png";
+import TicketCirce from "@/public/images/ticket-placeholder.png";
+import TicketCrimeAndPunishment from "@/public/images/ticket-placeholder.png";
+import TicketDarkAge from "@/public/images/ticket-placeholder.png";
+import TicketDisciplineIsDestiny from "@/public/images/ticket-placeholder.png";
+import TicketDubliners from "@/public/images/ticket-placeholder.png";
+import TicketFourthWing from "@/public/images/ticket-placeholder.png";
+import TicketFruitFly from "@/public/images/ticket-placeholder.png";
+import TicketGoldenSon from "@/public/images/ticket-placeholder.png";
+import TicketGreatExpectations from "@/public/images/ticket-placeholder.png";
+import TicketHeartLamps from "@/public/images/ticket-placeholder.png";
+import TicketIronFlame from "@/public/images/ticket-placeholder.png";
+import TicketIronGold from "@/public/images/ticket-placeholder.png";
+import TicketJaneEyre from "@/public/images/ticket-placeholder.png";
+import TicketLettersToAYoungPoet from "@/public/images/ticket-placeholder.png";
+import TicketLightBringer from "@/public/images/ticket-placeholder.png";
+import TicketLookingForAlaska from "@/public/images/ticket-placeholder.png";
+import TicketMansSearchForMeaning from "@/public/images/ticket-placeholder.png";
+import TicketMartyr from "@/public/images/ticket-placeholder.png";
+import TicketMorningStar from "@/public/images/ticket-placeholder.png";
+import TicketNearToTheWildHeart from "@/public/images/ticket-placeholder.png";
+import TicketNeverLoggedOut from "@/public/images/ticket-placeholder.png";
+import TicketOldManAndTheSea from "@/public/images/ticket-placeholder.png";
+import TicketOnTheGenealogyOfMorals from "@/public/images/ticket-placeholder.png";
+import TicketOnlyDullPeople from "@/public/images/ticket-placeholder.png";
+import TicketPoorCharliesAlmanack from "@/public/images/ticket-placeholder.png";
+import TicketPoorLittleRichSlum from "@/public/images/ticket-placeholder.png";
+import TicketProjectHailMary from "@/public/images/ticket-placeholder.png";
+import TicketRedRising from "@/public/images/ticket-placeholder.png";
+import TicketSeveralShortSentencesAboutWriting from "@/public/images/ticket-placeholder.png";
+import TicketSoniaAndSunny from "@/public/images/ticket-placeholder.png";
+import TicketStoner from "@/public/images/ticket-placeholder.png";
+import TicketTaiwanTravelogue from "@/public/images/ticket-placeholder.png";
+import TicketTheCorrespondent from "@/public/images/ticket-placeholder.png";
+import TicketTheCruelPrince from "@/public/images/ticket-placeholder.png";
+import TicketTheGoldfinch from "@/public/images/ticket-placeholder.png";
+import TicketTheGreatGatsby from "@/public/images/ticket-placeholder.png";
+import TicketTheKindWorthKilling from "@/public/images/ticket-placeholder.png";
+import TicketTheLastTreeOnEasterIsland from "@/public/images/ticket-placeholder.png";
+import TicketTheMemoryPolice from "@/public/images/ticket-placeholder.png";
+import TicketTheOceanWouldPaintMeBlue from "@/public/images/ticket-placeholder.png";
+import TicketTheParadiseOfFood from "@/public/images/ticket-placeholder.png";
+import TicketTheStranger from "@/public/images/ticket-placeholder.png";
+import TicketWeShouldAllBeFeminists from "@/public/images/ticket-placeholder.png";
+import TicketWhiteNights from "@/public/images/ticket-placeholder.png";
+import TicketWinterNightATraveller from "@/public/images/ticket-placeholder.png";
+import TicketMadonna from "@/public/images/ticket-placeholder.png";
+import TicketEverythingWasBeautiful from "@/public/images/ticket-placeholder.png";
+import TicketMayWeFeedTheKing from "@/public/images/ticket-placeholder.png";
+import TicketTheSunAlsoRises from "@/public/images/ticket-placeholder.png";
+import TicketSheWhoRemains from "@/public/images/ticket-placeholder.png";
+import TicketSimplePassion from "@/public/images/ticket-placeholder.png";
+import TicketJohnOfJohn from "@/public/images/ticket-placeholder.png";
+import TicketSmallThingsLikeThese from "@/public/images/ticket-placeholder.png";
+import TicketTheRoadToTenderHearts from "@/public/images/ticket-placeholder.png";
+import TicketTheThingsWeNeverSay from "@/public/images/ticket-placeholder.png";
+import TicketWimmyRoadBoys from "@/public/images/ticket-placeholder.png";
+import TicketAngelDown from "@/public/images/ticket-placeholder.png";
+import TicketJames from "@/public/images/ticket-placeholder.png";
+import TicketDemonCopperhead from "@/public/images/ticket-placeholder.png";
+import TicketMyFriends from "@/public/images/ticket-placeholder.png";
+import TicketKlaraAndTheSun from "@/public/images/ticket-placeholder.png";
+import TicketBlackBag from "@/public/images/ticket-placeholder.png";
+import TicketWildDarkShore from "@/public/images/ticket-placeholder.png";
+import TicketOrbital from "@/public/images/ticket-placeholder.png";
+import TicketKairos from "@/public/images/ticket-placeholder.png";
+
+
 export const images = {
   AMonthInTheCountry,
   AMoveableFeast,
@@ -235,6 +320,11 @@ export const images = {
   James,
   DemonCopperhead,
   MyFriends,
+  KlaraAndTheSun,
+  BlackBag,
+  WildDarkShore,
+  Orbital,
+  Kairos,
   //
   Kshitij,
   //
@@ -332,6 +422,159 @@ export const images = {
   chapter2b,
   chapter3a,
   chapter3b,
+  // Hover Ticket Images
+  TicketAMonthInTheCountry,
+  TicketAMoveableFeast,
+  TicketAnimalFarm,
+  TicketAsLongAsTheLemonTreesGrow,
+  TicketBabel,
+  TicketBadWords,
+  TicketBeachRead,
+  TicketBloodOverBrightHaven,
+  TicketCaptainsCourageous,
+  TicketCirce,
+  TicketCrimeAndPunishment,
+  TicketDarkAge,
+  TicketDisciplineIsDestiny,
+  TicketDubliners,
+  TicketFourthWing,
+  TicketFruitFly,
+  TicketGoldenSon,
+  TicketGreatExpectations,
+  TicketHeartLamps,
+  TicketIronFlame,
+  TicketIronGold,
+  TicketJaneEyre,
+  TicketLettersToAYoungPoet,
+  TicketLightBringer,
+  TicketLookingForAlaska,
+  TicketMansSearchForMeaning,
+  TicketMartyr,
+  TicketMorningStar,
+  TicketNearToTheWildHeart,
+  TicketNeverLoggedOut,
+  TicketOldManAndTheSea,
+  TicketOnTheGenealogyOfMorals,
+  TicketOnlyDullPeople,
+  TicketPoorCharliesAlmanack,
+  TicketPoorLittleRichSlum,
+  TicketProjectHailMary,
+  TicketRedRising,
+  TicketSeveralShortSentencesAboutWriting,
+  TicketSoniaAndSunny,
+  TicketStoner,
+  TicketTaiwanTravelogue,
+  TicketTheCorrespondent,
+  TicketTheCruelPrince,
+  TicketTheGoldfinch,
+  TicketTheGreatGatsby,
+  TicketTheKindWorthKilling,
+  TicketTheLastTreeOnEasterIsland,
+  TicketTheMemoryPolice,
+  TicketTheOceanWouldPaintMeBlue,
+  TicketTheParadiseOfFood,
+  TicketTheStranger,
+  TicketWeShouldAllBeFeminists,
+  TicketWhiteNights,
+  TicketWinterNightATraveller,
+  TicketMadonna,
+  TicketEverythingWasBeautiful,
+  TicketMayWeFeedTheKing,
+  TicketTheSunAlsoRises,
+  TicketSheWhoRemains,
+  TicketSimplePassion,
+  TicketJohnOfJohn,
+  TicketSmallThingsLikeThese,
+  TicketTheRoadToTenderHearts,
+  TicketTheThingsWeNeverSay,
+  TicketWimmyRoadBoys,
+  TicketAngelDown,
+  TicketJames,
+  TicketDemonCopperhead,
+  TicketMyFriends,
+  TicketKlaraAndTheSun,
+  TicketBlackBag,
+  TicketWildDarkShore,
+  TicketOrbital,
+  TicketKairos,
 };
 
 export default images;
+
+
+export const ticketImages = {
+  TicketAMonthInTheCountry,
+  TicketAMoveableFeast,
+  TicketAnimalFarm,
+  TicketAsLongAsTheLemonTreesGrow,
+  TicketBabel,
+  TicketBadWords,
+  TicketBeachRead,
+  TicketBloodOverBrightHaven,
+  TicketCaptainsCourageous,
+  TicketCirce,
+  TicketCrimeAndPunishment,
+  TicketDarkAge,
+  TicketDisciplineIsDestiny,
+  TicketDubliners,
+  TicketFourthWing,
+  TicketFruitFly,
+  TicketGoldenSon,
+  TicketGreatExpectations,
+  TicketHeartLamps,
+  TicketIronFlame,
+  TicketIronGold,
+  TicketJaneEyre,
+  TicketLettersToAYoungPoet,
+  TicketLightBringer,
+  TicketLookingForAlaska,
+  TicketMansSearchForMeaning,
+  TicketMartyr,
+  TicketMorningStar,
+  TicketNearToTheWildHeart,
+  TicketNeverLoggedOut,
+  TicketOldManAndTheSea,
+  TicketOnTheGenealogyOfMorals,
+  TicketOnlyDullPeople,
+  TicketPoorCharliesAlmanack,
+  TicketPoorLittleRichSlum,
+  TicketProjectHailMary,
+  TicketRedRising,
+  TicketSeveralShortSentencesAboutWriting,
+  TicketSoniaAndSunny,
+  TicketStoner,
+  TicketTaiwanTravelogue,
+  TicketTheCorrespondent,
+  TicketTheCruelPrince,
+  TicketTheGoldfinch,
+  TicketTheGreatGatsby,
+  TicketTheKindWorthKilling,
+  TicketTheLastTreeOnEasterIsland,
+  TicketTheMemoryPolice,
+  TicketTheOceanWouldPaintMeBlue,
+  TicketTheParadiseOfFood,
+  TicketTheStranger,
+  TicketWeShouldAllBeFeminists,
+  TicketWhiteNights,
+  TicketWinterNightATraveller,
+  TicketMadonna,
+  TicketEverythingWasBeautiful,
+  TicketMayWeFeedTheKing,
+  TicketTheSunAlsoRises,
+  TicketSheWhoRemains,
+  TicketSimplePassion,
+  TicketJohnOfJohn,
+  TicketSmallThingsLikeThese,
+  TicketTheRoadToTenderHearts,
+  TicketTheThingsWeNeverSay,
+  TicketWimmyRoadBoys,
+  TicketAngelDown,
+  TicketJames,
+  TicketDemonCopperhead,
+  TicketMyFriends,
+  TicketKlaraAndTheSun,
+  TicketBlackBag,
+  TicketWildDarkShore,
+  TicketOrbital,
+  TicketKairos,
+};
