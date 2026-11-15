@@ -79,7 +79,7 @@ export const WishlistHoverCard = ({
     ("coverImage" in book && book.coverImage) ||
     images.MIAFC1;
 
-  const displayPrice = book.price ? `~${book.price}` : "~500";
+  const displayPrice = book.price ? `~₹${book.price}` : "~₹500";
 
   const priorityNormalized =
     typeof book?.priority === "string" ? book.priority.trim().toLowerCase() : "";
