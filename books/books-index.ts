@@ -2487,7 +2487,7 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "Jane Eyre",
     author: "Charlotte Brontë",
-    position: "",
+    position: "a8",
     amazonUrl:
       "https://www.amazon.in/Jane-Penguin-Classics-Charlotte-Bront%C3%AB/dp/0141441143/ref=sr_1_3?sr=8-3",
     price: 300,
@@ -2958,7 +2958,7 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "May We Feed The King",
     author: "Rebecca Perry",
-    position: "",
+    position: "b7",
     amazonUrl:
       "https://www.amazon.in/May-We-Feed-King-Shortlisted/dp/1803515279/ref=tmm_pap_swatch_0?_encoding=UTF8&sr=1-2",
     price: 500, 
@@ -2989,7 +2989,7 @@ export const wishlistBooks: WishlistBook[] = [
     status: "wishlist",
     title: "The Sun Also Rises",
     author: "Ernest Hemingway",
-    position: "",
+    position: "a4",
     amazonUrl:
       "https://www.amazon.in/Fiesta-Also-Rises-Ernest-Hemingway/dp/0099908506/ref=sr_1_3?sr=8-3",
     price: 575,
@@ -3443,7 +3443,7 @@ export const wishlistBooks: WishlistBook[] = [
     author: "Jenny Erpenbeck",
     position: "b4",
     price: 500,
-    priority: "",
+    priority: "high",
     note: "",
     country: "Germany",
     publishedYear: 2021,
