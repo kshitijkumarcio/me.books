@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getCurrentReadBookById, currentReads } from "@/books/books-index";
 import CRBookDetail from "@/components/current-reads/cr-book-detail";
@@ -7,13 +6,22 @@ interface PageProps {
   params: Promise<{ "book-id": string }>;
 }
 
+export const dynamic = "force-static";
+export const dynamicParams = false;
+
 export function generateStaticParams() {
-  return currentReads.map((book) => ({
-    "book-id": book.id,
-  }));
+  const params: { "book-id": string }[] = [];
+  for (const book of currentReads) {
+    params.push({ "book-id": book.id });
+    const slug = book.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    if (slug && slug !== book.id) {
+      params.push({ "book-id": slug });
+    }
+  }
+  return params;
 }
 
-async function CRBookModalContent({ params }: PageProps) {
+export default async function InterceptedCRBookPage({ params }: PageProps) {
   const { "book-id": bookId } = await params;
   const book = getCurrentReadBookById(bookId);
 
@@ -22,12 +30,4 @@ async function CRBookModalContent({ params }: PageProps) {
   }
 
   return <CRBookDetail book={book} isIntercepted={true} />;
-}
-
-export default function InterceptedCRBookPage(props: PageProps) {
-  return (
-    <Suspense fallback={null}>
-      <CRBookModalContent {...props} />
-    </Suspense>
-  );
 }

@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getWishlistBookById, wishlistBooks } from "@/books/books-index";
 import WishlistBookDetail from "@/components/wishlist/wishlist-book-detail";
@@ -7,13 +6,22 @@ interface PageProps {
   params: Promise<{ "book-id": string }>;
 }
 
+export const dynamic = "force-static";
+export const dynamicParams = false;
+
 export function generateStaticParams() {
-  return wishlistBooks.map((book) => ({
-    "book-id": book.id,
-  }));
+  const params: { "book-id": string }[] = [];
+  for (const book of wishlistBooks) {
+    params.push({ "book-id": book.id });
+    const slug = book.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    if (slug && slug !== book.id) {
+      params.push({ "book-id": slug });
+    }
+  }
+  return params;
 }
 
-async function WishlistBookModalContent({ params }: PageProps) {
+export default async function InterceptedWishlistBookPage({ params }: PageProps) {
   const { "book-id": bookId } = await params;
   const book = getWishlistBookById(bookId);
 
@@ -22,12 +30,4 @@ async function WishlistBookModalContent({ params }: PageProps) {
   }
 
   return <WishlistBookDetail book={book} isIntercepted={true} />;
-}
-
-export default function InterceptedWishlistBookPage(props: PageProps) {
-  return (
-    <Suspense fallback={null}>
-      <WishlistBookModalContent {...props} />
-    </Suspense>
-  );
 }
