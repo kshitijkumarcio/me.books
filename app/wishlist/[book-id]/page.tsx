@@ -7,9 +7,6 @@ interface PageProps {
   params: Promise<{ "book-id": string }>;
 }
 
-export const dynamic = "force-static";
-export const dynamicParams = false;
-
 export function generateStaticParams() {
   const params: { "book-id": string }[] = [];
   for (const book of wishlistBooks) {
