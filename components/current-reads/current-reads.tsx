@@ -1,6 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { PrefetchKind } from "next/dist/client/components/router-reducer/router-reducer-types";
 import { cn } from "@/lib/utils";
 import { currentReads } from "@/books/books-index";
 import type { CurrentlyReadingBook } from "@/books/books-index";
@@ -15,6 +17,20 @@ const CurrentReads = ({
   books = currentReads,
   className,
 }: CurrentReadsProps) => {
+  const router = useRouter();
+
+  // Prefetch intercepted routes for current reads and pre-warm detail component
+  useEffect(() => {
+    import("./cr-book-detail");
+    books.forEach((book) => {
+      try {
+        router.prefetch(`/reading/${book.id}`, { kind: PrefetchKind.FULL });
+      } catch {
+        router.prefetch(`/reading/${book.id}`);
+      }
+    });
+  }, [books, router]);
+
   // 3 blocks in row 1, 2 blocks in row 2 (placed centrally)
   const row1Books = books.slice(0, 3);
   const row2Books = books.slice(3, 5);

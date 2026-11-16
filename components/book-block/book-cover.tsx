@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { PrefetchKind } from "next/dist/client/components/router-reducer/router-reducer-types";
 import type { StaticImageData } from "next/image";
 import { cn } from "@/lib/utils";
 import { parseCellUnit } from "./book-block";
@@ -31,13 +31,6 @@ const BookCover = ({
   href,
 }: BookCoverProps) => {
   const router = useRouter();
-
-  const handlePrefetch = useCallback(() => {
-    if (href) {
-      router.prefetch(href);
-    }
-  }, [href, router]);
-
   if (!src) return null;
   const effectiveWidthClass =
     widthClass || COVER_FORMAT_SIZES[format] || "w-40";
@@ -80,10 +73,20 @@ const BookCover = ({
         href={href}
         scroll={false}
         prefetch={true}
-        onMouseEnter={handlePrefetch}
-        onPointerDown={handlePrefetch}
-        onTouchStart={handlePrefetch}
-        onFocus={handlePrefetch}
+        onMouseEnter={() => {
+          try {
+            router.prefetch(href, { kind: PrefetchKind.FULL });
+          } catch {
+            router.prefetch(href);
+          }
+        }}
+        onPointerDown={() => {
+          try {
+            router.prefetch(href, { kind: PrefetchKind.FULL });
+          } catch {
+            router.prefetch(href);
+          }
+        }}
         className="inline-block ring-transparent outline-none focus:ring-0 focus:ring-transparent focus:outline-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:outline-none"
       >
         {content}

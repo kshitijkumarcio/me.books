@@ -35,8 +35,10 @@ export const BookShelfAnimator = ({
     }
   }, [isModalRoute, isClosing, setIsClosing]);
 
-  // The main page should shift up immediately when an intercepted modal is rendered and not in the middle of closing
-  const shouldShiftUp = isModalRoute && (isInterceptedOpen || Boolean(modal)) && !isClosing;
+  // The main page should shift up immediately when an intercepted modal is rendered and not closing
+  const isModalActive = Boolean(modal);
+  const shouldShiftUp =
+    isModalRoute && (isModalActive || isInterceptedOpen) && !isClosing;
 
   return (
     <div className="relative isolate min-h-screen w-full overflow-hidden">

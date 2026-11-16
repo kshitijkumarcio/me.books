@@ -1,6 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { PrefetchKind } from "next/dist/client/components/router-reducer/router-reducer-types";
 import { cn } from "@/lib/utils";
 import { wishlistBooks, allBooks } from "@/books/books-index";
 import type { WishlistBook } from "@/books/books-index";
@@ -43,6 +45,20 @@ const Wishlist = ({
 }: WishlistProps) => {
   const effectiveBlockSize =
     propWishListBlockSize ?? blockSize ?? WishListBlockSize;
+
+  const router = useRouter();
+
+  // Prefetch intercepted routes for wishlist books and pre-warm detail component
+  useEffect(() => {
+    import("./wishlist-book-detail");
+    books.forEach((book) => {
+      try {
+        router.prefetch(`/wishlist/${book.id}`, { kind: PrefetchKind.FULL });
+      } catch {
+        router.prefetch(`/wishlist/${book.id}`);
+      }
+    });
+  }, [books, router]);
 
   // Local coordinate toggle state
   const [localShowCoordinates, setLocalShowCoordinates] =

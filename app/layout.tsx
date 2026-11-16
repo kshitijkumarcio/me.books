@@ -6,7 +6,7 @@ import "./globals.css";
 import { monaSans } from "@/providers/font-provider";
 import OverlayNavigators from "@/components/overlay-navigators";
 import BookShelfAnimator from "@/components/read-book-detail/book-shelf-animator";
-import BookRoutePrefetcher from "@/components/book-route-prefetcher";
+import AllBooksPrefetcher from "@/components/book-prefetcher";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://kshitijkumar.me/book-shelf"),
@@ -37,8 +37,8 @@ export default function RootLayout({
         suppressHydrationWarning
         className="no-scrollbar selection:bg-neon/80 bg-neon/90 min-h-screen selection:text-black"
       >
+        <AllBooksPrefetcher />
         <OverlayNavigators />
-        <BookRoutePrefetcher />
         <BookShelfAnimator modal={modal}>{children}</BookShelfAnimator>
       </body>
     </html>

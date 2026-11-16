@@ -1,6 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { PrefetchKind } from "next/dist/client/components/router-reducer/router-reducer-types";
 import type { BookItem } from "@/books/books-index";
 import BookBlock from "@/components/book-block";
 import { cn } from "@/lib/utils";
@@ -97,6 +99,24 @@ const ShelfGrid = ({
 }: ShelfGridProps) => {
   const effectiveGapX = horizontalGap ?? gapX ?? gapSize;
   const effectiveGapY = verticalGap ?? gapY ?? gapSize;
+  const router = useRouter();
+
+  // Prefetch intercepted routes for read books and pre-warm detail component
+  useEffect(() => {
+    // Pre-warm the client component chunk so it is immediately ready in memory on first click
+    import("@/components/read-book-detail/read-book-detail");
+
+    // Prefetch intercepted routes for all read books
+    books.forEach((book) => {
+      if (book.status === "read") {
+        try {
+          router.prefetch(`/read/${book.id}`, { kind: PrefetchKind.FULL });
+        } catch {
+          router.prefetch(`/read/${book.id}`);
+        }
+      }
+    });
+  }, [books, router]);
 
   const [localShowCoordinates, setLocalShowCoordinates] =
     useState<boolean>(false);

@@ -7,6 +7,8 @@ interface PageProps {
   params: Promise<{ "book-id": string }>;
 }
 
+export const ensureStatic = "navigation";
+
 export function generateStaticParams() {
   return wishlistBooks.map((book) => ({
     "book-id": book.id,
