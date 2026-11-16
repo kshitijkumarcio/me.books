@@ -92,10 +92,11 @@ export const BookShelfAnimator = ({
     return () => window.removeEventListener("popstate", handlePopState);
   }, [clearActiveModal, openModal]);
 
-  // The main page should shift up immediately when an intercepted modal is rendered and not closing
-  const isModalActive = Boolean(modal) || Boolean(activeModal);
-  const shouldShiftUp =
-    isModalRoute && (isModalActive || isInterceptedOpen) && !isClosing;
+  // The shelf should shift up ONLY when an intercepted modal is actively open over the shelf.
+  // On a direct visit or refresh to a standalone book route, activeModal and isInterceptedOpen are false,
+  // so the standalone book page in `children` stays at y: "0%" without any offset or push off-screen.
+  const isInterceptedModalActive = Boolean(activeModal) || isInterceptedOpen;
+  const shouldShiftUp = isInterceptedModalActive && !isClosing;
 
   // Instant native-feel modal rendered immediately on click, falling back to Next.js parallel route modal
   let modalContent = modal;
@@ -129,17 +130,21 @@ export const BookShelfAnimator = ({
 
   return (
     <div className="relative isolate min-h-screen w-full overflow-hidden">
-      {/* Main page content wrapper - shifts up when read book is opened */}
+      {/* Main page content wrapper - shifts up only when an intercepted modal is opened over the shelf */}
       <motion.div
         initial="closed"
         animate={shouldShiftUp ? "opened" : "closed"}
-        style={{
-          willChange: "transform",
-          transform: "translateZ(0)",
-          WebkitTransform: "translateZ(0)",
-          backfaceVisibility: "hidden",
-          WebkitBackfaceVisibility: "hidden",
-        }}
+        style={
+          shouldShiftUp
+            ? {
+                willChange: "transform",
+                transform: "translateZ(0)",
+                WebkitTransform: "translateZ(0)",
+                backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden",
+              }
+            : undefined
+        }
         variants={{
           opened: {
             y: "-55%",
@@ -157,8 +162,9 @@ export const BookShelfAnimator = ({
           },
         }}
         className={cn(
-          "relative min-h-screen w-full transform-gpu will-change-transform backface-hidden",
-          shouldShiftUp && "pointer-events-none select-none"
+          "relative min-h-screen w-full",
+          shouldShiftUp &&
+            "pointer-events-none select-none transform-gpu will-change-transform backface-hidden"
         )}
       >
         {children}
