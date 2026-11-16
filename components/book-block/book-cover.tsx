@@ -34,11 +34,7 @@ const BookCover = ({
 
   const handlePrefetch = useCallback(() => {
     if (href) {
-      try {
-        router.prefetch(href, { kind: "full" as any });
-      } catch {
-        router.prefetch(href);
-      }
+      router.prefetch(href);
     }
   }, [href, router]);
 

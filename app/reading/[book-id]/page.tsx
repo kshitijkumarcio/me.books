@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getCurrentReadBookById, currentReads } from "@/books/books-index";
 import CRBookDetail from "@/components/current-reads/cr-book-detail";
@@ -8,15 +9,9 @@ interface PageProps {
 }
 
 export function generateStaticParams() {
-  const params: { "book-id": string }[] = [];
-  for (const book of currentReads) {
-    params.push({ "book-id": book.id });
-    const slug = book.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-    if (slug && slug !== book.id) {
-      params.push({ "book-id": slug });
-    }
-  }
-  return params;
+  return currentReads.map((book) => ({
+    "book-id": book.id,
+  }));
 }
 
 export async function generateMetadata({
@@ -37,7 +32,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function CurrentReadStandalonePage({ params }: PageProps) {
+async function StandaloneContent({ params }: PageProps) {
   const { "book-id": bookId } = await params;
   const book = getCurrentReadBookById(bookId);
 
@@ -46,4 +41,12 @@ export default async function CurrentReadStandalonePage({ params }: PageProps) {
   }
 
   return <CRBookDetail book={book} isIntercepted={false} />;
+}
+
+export default function CurrentReadStandalonePage(props: PageProps) {
+  return (
+    <Suspense fallback={null}>
+      <StandaloneContent {...props} />
+    </Suspense>
+  );
 }

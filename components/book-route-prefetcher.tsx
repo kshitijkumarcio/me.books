@@ -14,48 +14,46 @@ export const BookRoutePrefetcher = () => {
     // Read books
     for (const book of BooksRead) {
       routes.push(`/read/${book.id}`);
-      const slug = book.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-      if (slug && slug !== book.id) {
-        routes.push(`/read/${slug}`);
-      }
     }
 
     // Currently reading books
     for (const book of currentReads) {
       routes.push(`/reading/${book.id}`);
-      const slug = book.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-      if (slug && slug !== book.id) {
-        routes.push(`/reading/${slug}`);
-      }
     }
 
     // Wishlist books
     for (const book of wishlistBooks) {
       routes.push(`/wishlist/${book.id}`);
-      const slug = book.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-      if (slug && slug !== book.id) {
-        routes.push(`/wishlist/${slug}`);
-      }
     }
 
-    return Array.from(new Set(routes));
+    return routes;
   }, []);
 
   useEffect(() => {
-    // 1. Immediately pre-warm client component chunks so code execution is instantaneous
+    // 1. Immediately pre-warm client component chunks so detail modals evaluate instantly
     void import("@/components/read-book-detail/read-book-detail");
     void import("@/components/current-reads/cr-book-detail");
     void import("@/components/wishlist/wishlist-book-detail");
 
-    // 2. Programmatically prefetch every route with full priority
-    for (const route of allBookRoutes) {
-      try {
-        router.prefetch(route, { kind: "full" as any });
-      } catch {
-        // Fallback for router implementations
+    // 2. Pre-fetch routes during browser idle time so initial hydration remains silky smooth
+    const schedulePrefetch =
+      typeof window !== "undefined" && "requestIdleCallback" in window
+        ? (window as Window & { requestIdleCallback: (cb: () => void) => number }).requestIdleCallback
+        : (cb: () => void) => setTimeout(cb, 100);
+
+    const handle = schedulePrefetch(() => {
+      for (const route of allBookRoutes) {
         router.prefetch(route);
       }
-    }
+    });
+
+    return () => {
+      if (typeof window !== "undefined" && "cancelIdleCallback" in window) {
+        (window as Window & { cancelIdleCallback: (h: number) => void }).cancelIdleCallback(handle as number);
+      } else {
+        clearTimeout(handle as unknown as NodeJS.Timeout);
+      }
+    };
   }, [allBookRoutes, router]);
 
   return (
