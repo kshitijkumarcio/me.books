@@ -14,6 +14,9 @@ import {
   getReadBookById,
   getCurrentReadBookById,
   getWishlistBookById,
+  type ReadBook,
+  type CurrentlyReadingBook,
+  type WishlistBook,
 } from "@/books/books-index";
 import FlipTextButton from "./ui-components/flip-text-button";
 import { useOverlayButtons } from "@/hooks/layout-hooks/useoverlaybuttons";
@@ -61,17 +64,27 @@ const AmazonIcon = ({ className }: { className?: string }) => (
 const OverlayNavigators = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const { isClosing, triggerClose, isInterceptedOpen } = useReadBookModal();
+  const {
+    isClosing,
+    triggerClose,
+    isInterceptedOpen,
+    activeModal,
+    clearActiveModal,
+  } = useReadBookModal();
 
-  const isReadBookRoute = Boolean(pathname?.includes("/read/"));
-  const isReadingRoute = Boolean(pathname?.includes("/reading/"));
-  const isWishlistRoute = Boolean(pathname?.includes("/wishlist/"));
+  const isReadBookRoute =
+    Boolean(pathname?.includes("/read/")) || activeModal?.type === "read";
+  const isReadingRoute =
+    Boolean(pathname?.includes("/reading/")) || activeModal?.type === "reading";
+  const isWishlistRoute =
+    Boolean(pathname?.includes("/wishlist/")) || activeModal?.type === "wishlist";
   const isAnyModalRoute = isReadBookRoute || isReadingRoute || isWishlistRoute;
   const isShowingBookControls = isAnyModalRoute && !isClosing;
 
-  // Retrieve current book metadata based on URL
-  let currentReadBook = undefined;
-  if (isReadBookRoute && pathname) {
+  // Retrieve current book metadata based on activeModal or URL
+  let currentReadBook: ReadBook | undefined =
+    activeModal?.type === "read" ? activeModal.book : undefined;
+  if (!currentReadBook && isReadBookRoute && pathname) {
     const parts = pathname.split("/read/");
     const idSegment = parts[1]?.split("/")[0]?.split("?")[0];
     if (idSegment) {
@@ -79,8 +92,9 @@ const OverlayNavigators = () => {
     }
   }
 
-  let currentCRBook = undefined;
-  if (isReadingRoute && pathname) {
+  let currentCRBook: CurrentlyReadingBook | undefined =
+    activeModal?.type === "reading" ? activeModal.book : undefined;
+  if (!currentCRBook && isReadingRoute && pathname) {
     const parts = pathname.split("/reading/");
     const idSegment = parts[1]?.split("/")[0]?.split("?")[0];
     if (idSegment) {
@@ -88,8 +102,9 @@ const OverlayNavigators = () => {
     }
   }
 
-  let currentWishlistBook = undefined;
-  if (isWishlistRoute && pathname) {
+  let currentWishlistBook: WishlistBook | undefined =
+    activeModal?.type === "wishlist" ? activeModal.book : undefined;
+  if (!currentWishlistBook && isWishlistRoute && pathname) {
     const parts = pathname.split("/wishlist/");
     const idSegment = parts[1]?.split("/")[0]?.split("?")[0];
     if (idSegment) {
@@ -99,7 +114,8 @@ const OverlayNavigators = () => {
 
   const handleCloseBook = () => {
     triggerClose(() => {
-      if (isInterceptedOpen) {
+      clearActiveModal();
+      if (isInterceptedOpen || Boolean(activeModal)) {
         router.back();
       } else {
         router.push("/");

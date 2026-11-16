@@ -206,7 +206,8 @@ export const ReadBookDetail = ({
   isIntercepted = true,
 }: ReadBookDetailProps) => {
   const router = useRouter();
-  const { isClosing, triggerClose, setIsInterceptedOpen } = useReadBookModal();
+  const { isClosing, triggerClose, setIsInterceptedOpen, clearActiveModal } =
+    useReadBookModal();
 
   useEffect(() => {
     if (isIntercepted) {
@@ -221,13 +222,14 @@ export const ReadBookDetail = ({
 
   const handleClose = useCallback(() => {
     triggerClose(() => {
+      clearActiveModal();
       if (isIntercepted) {
         router.back();
       } else {
         router.push("/");
       }
     });
-  }, [isIntercepted, triggerClose, router]);
+  }, [isIntercepted, triggerClose, router, clearActiveModal]);
 
   // Handle ESC key press
   useEffect(() => {
