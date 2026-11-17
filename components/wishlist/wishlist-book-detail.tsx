@@ -65,7 +65,9 @@ export const WishlistBookDetail = ({
   const displayPrice = book.price ? `~${book.price}` : "~500";
 
   const priorityNormalized =
-    typeof book?.priority === "string" ? book.priority.trim().toLowerCase() : "";
+    typeof book?.priority === "string"
+      ? book.priority.trim().toLowerCase()
+      : "";
 
   const displayTag =
     priorityNormalized === "top"
@@ -168,7 +170,12 @@ export const WishlistBookDetail = ({
               )}
               {/* Additional genres if any */}
               {genres.slice(3).map((g, idx) => (
-                <div key={idx} className={idx % 2 === 0 ? "md:translate-x-2" : "md:-translate-x-1"}>
+                <div
+                  key={idx}
+                  className={
+                    idx % 2 === 0 ? "md:translate-x-2" : "md:-translate-x-1"
+                  }
+                >
                   <span className="font-mona-sans inline-block rounded-md border border-black/80 bg-white px-3.5 py-1.5 text-xs font-medium text-black shadow-xs select-none sm:text-sm">
                     {g}
                   </span>
@@ -210,7 +217,9 @@ export const WishlistBookDetail = ({
                     className="font-mona-sans group inline-flex items-center gap-1.5 rounded-full border border-black bg-black px-4 py-2 text-xs font-semibold text-white shadow-xs transition-all duration-200 hover:scale-105 active:scale-95 sm:text-sm"
                   >
                     <span>View on Amazon</span>
-                    <span className="transition-transform group-hover:translate-x-0.5">&rarr;</span>
+                    <span className="transition-transform group-hover:translate-x-0.5">
+                      &rarr;
+                    </span>
                   </a>
                 )}
               </div>

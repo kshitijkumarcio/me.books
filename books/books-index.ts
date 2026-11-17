@@ -116,7 +116,6 @@ export interface BaseBookItem {
   layout?: BlockLayoutElement[];
   goodreadsUrl?: string;
   goodreads?: string;
-  ticketImage?: StaticImageData;
   country?: string;
   publishedYear?: number;
   firstPublishedYear?: number;
@@ -146,7 +145,6 @@ export interface ReadBook extends BaseBookItem {
   country?: string;
   publishedYear?: number;
   firstPublishedYear?: number;
-  ticketImage?: StaticImageData;
   genres?: string[];
   goodreadsUrl?: string;
   goodreads?: string;
@@ -177,9 +175,8 @@ export const currentReads: CurrentlyReadingBook[] = [
     coverImage: images.TheKindWorthKilling,
     progress: 168,
     total_pages: 311,
-    country: "United States",
+    country: "USA",
     publishedYear: 2015,
-    ticketImage: images.TicketTheKindWorthKilling,
     genre: "Psychological Thriller",
     genres: ["Psychological Thriller", "Crime Fiction", "Mystery Suspense"],
     status: "reading",
@@ -217,9 +214,8 @@ export const currentReads: CurrentlyReadingBook[] = [
     coverImage: images.TheOceanWouldPaintMeBlue,
     progress: 15,
     total_pages: 368,
-    country: "United States",
-    publishedYear: 2024,
-    ticketImage: images.TicketTheOceanWouldPaintMeBlue,
+    country: "USA",
+    publishedYear: 2026,
     genre: "Young Adult",
     genres: ["Young Adult", "Contemporary Fiction", "Mental Health"],
     status: "reading",
@@ -257,9 +253,8 @@ export const currentReads: CurrentlyReadingBook[] = [
     coverImage: images.PoorCharliesAlmanack,
     progress: 66,
     total_pages: 384,
-    country: "United States",
+    country: "USA",
     publishedYear: 2005,
-    ticketImage: images.TicketPoorCharliesAlmanack,
     genre: "Philosophy",
     genres: ["Philosophy", "Business & Finance", "Psychology"],
     status: "reading",
@@ -299,7 +294,6 @@ export const currentReads: CurrentlyReadingBook[] = [
     total_pages: 224,
     country: "India",
     publishedYear: 2024,
-    ticketImage: images.TicketHeartLamps,
     genre: "Short Stories",
     genres: ["Short Stories", "Literary Fiction", "Feminist Literature"],
     status: "reading",
@@ -336,9 +330,8 @@ export const currentReads: CurrentlyReadingBook[] = [
     coverImage: images.DisciplineIsDestiny,
     progress: 24,
     total_pages: 312,
-    country: "United States",
+    country: "USA",
     publishedYear: 2022,
-    ticketImage: images.TicketDisciplineIsDestiny,
     genre: "Stoicism",
     genres: ["Stoicism", "Self Improvement", "Philosophy"],
     status: "reading",
@@ -387,8 +380,7 @@ export const BooksRead: ReadBook[] = [
     format: "little-penguin-classic",
     country: "Germany",
     publishedYear: 1929,
-    ticketImage: images.TicketLettersToAYoungPoet,
-    genres: ["Essays","Poetry","Philosophy"],
+    genres: ["Essays", "Poetry", "Philosophy"],
     layout: [
       {
         type: "cover",
@@ -449,7 +441,7 @@ export const BooksRead: ReadBook[] = [
     rating: 4.5,
     yearRead: 2024,
     genre: "Classic / Literary Fiction",
-        synopsis: [
+    synopsis: [
       "For twenty years, Sciona has devoted every waking moment to the study of magic.",
       "When she finally achieves her ambition to become the first woman admitted to the High Magistry at the University of Magics and Industry, she finds herself undermined at every turn.",
       "Instead of a lab assistant, she's paired with a janitor, putting her crucial research at risk.",
@@ -460,8 +452,7 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "Turkey",
     publishedYear: 1943,
-    ticketImage: images.TicketMadonna,
-    genres: ["Romance","Turkish Classic","Literary Fiction"],
+    genres: ["Romance", "Turkish Classic", "Literary Fiction"],
     layout: [
       {
         type: "cover",
@@ -524,10 +515,9 @@ export const BooksRead: ReadBook[] = [
     genre: "Classic / Political Satire",
     goodreadsUrl: "https://www.goodreads.com/book/show/14060211-animal-farm",
     format: "standard",
-    country: "United Kingdom",
+    country: "UK",
     publishedYear: 1945,
-    ticketImage: images.TicketAnimalFarm,
-    genres: ["Political Satire","Classic","Dystopian"],
+    genres: ["Political Satire", "Classic", "Dystopian"],
     layout: [
       {
         type: "cover",
@@ -586,8 +576,7 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "Syria",
     publishedYear: 2022,
-    ticketImage: images.TicketAsLongAsTheLemonTreesGrow,
-    genres: ["YA Fiction","Contemporary","War Drama"],
+    genres: ["YA Fiction", "Contemporary", "War Drama"],
     layout: [
       {
         type: "cover",
@@ -651,10 +640,9 @@ export const BooksRead: ReadBook[] = [
     goodreadsUrl:
       "https://www.goodreads.com/book/show/609478.A_Month_in_the_Country",
     format: "standard",
-    country: "United Kingdom",
+    country: "UK",
     publishedYear: 1980,
-    ticketImage: images.TicketAMonthInTheCountry,
-    genres: ["Historical Fiction","Classic","Pastoral"],
+    genres: ["Historical Fiction", "Classic", "Pastoral"],
     layout: [
       {
         type: "cover",
@@ -713,10 +701,9 @@ export const BooksRead: ReadBook[] = [
     genre: "Romance / Contemporary",
     goodreadsUrl: "https://www.goodreads.com/book/show/52867387-beach-read",
     format: "standard",
-    country: "United States",
+    country: "USA",
     publishedYear: 2020,
-    ticketImage: images.TicketBeachRead,
-    genres: ["Romance","Contemporary","Rom-Com"],
+    genres: ["Romance", "Contemporary", "Rom-Com"],
     layout: [
       {
         type: "cover",
@@ -773,10 +760,9 @@ export const BooksRead: ReadBook[] = [
     goodreadsUrl:
       "https://www.goodreads.com/book/show/208430658-blood-over-bright-haven",
     format: "standard",
-    country: "United States",
+    country: "USA",
     publishedYear: 2023,
-    ticketImage: images.TicketBloodOverBrightHaven,
-    genres: ["Dark Fantasy","Dark Academia","Mystery"],
+    genres: ["Dark Fantasy", "Dark Academia", "Mystery"],
     layout: [
       {
         type: "cover",
@@ -834,10 +820,9 @@ export const BooksRead: ReadBook[] = [
     goodreadsUrl:
       "https://www.goodreads.com/book/show/54493401-project-hail-mary",
     format: "standard",
-    country: "United States",
+    country: "USA",
     publishedYear: 2021,
-    ticketImage: images.TicketProjectHailMary,
-    genres: ["Sci-Fi","Hard Sci-Fi","Space Adventure"],
+    genres: ["Sci-Fi", "Hard Sci-Fi", "Space Adventure"],
     layout: [
       {
         type: "cover",
@@ -893,10 +878,9 @@ export const BooksRead: ReadBook[] = [
     goodreadsUrl:
       "https://www.goodreads.com/book/show/941781.Captains_Courageous",
     format: "standard",
-    country: "United Kingdom",
+    country: "UK",
     publishedYear: 1897,
-    ticketImage: images.TicketCaptainsCourageous,
-    genres: ["Adventure","Classic","Sea Story"],
+    genres: ["Adventure", "Classic", "Sea Story"],
     layout: [
       {
         type: "cover",
@@ -952,10 +936,9 @@ export const BooksRead: ReadBook[] = [
     genre: "Mythological Fiction / Fantasy",
     goodreadsUrl: "https://www.goodreads.com/book/show/35959740-circe",
     format: "standard",
-    country: "United States",
+    country: "USA",
     publishedYear: 2018,
-    ticketImage: images.TicketCirce,
-    genres: ["Mythological Fiction","Fantasy","Greek Myth"],
+    genres: ["Mythological Fiction", "Fantasy", "Greek Myth"],
     layout: [
       {
         type: "cover",
@@ -1018,10 +1001,9 @@ export const BooksRead: ReadBook[] = [
     genre: "Sci-Fi / Dystopian",
     goodreadsUrl: "https://www.goodreads.com/book/show/15839976-red-rising",
     format: "standard",
-    country: "United States",
+    country: "USA",
     publishedYear: 2014,
-    ticketImage: images.TicketRedRising,
-    genres: ["Sci-Fi","Dystopian","Space Opera"],
+    genres: ["Sci-Fi", "Dystopian", "Space Opera"],
     layout: [
       {
         type: "cover",
@@ -1101,10 +1083,9 @@ export const BooksRead: ReadBook[] = [
     genre: "Sci-Fi / Space Opera",
     goodreadsUrl: "https://www.goodreads.com/book/show/18966819-golden-son",
     format: "standard",
-    country: "United States",
+    country: "USA",
     publishedYear: 2015,
-    ticketImage: images.TicketGoldenSon,
-    genres: ["Sci-Fi","Space Opera","Dystopian"],
+    genres: ["Sci-Fi", "Space Opera", "Dystopian"],
     layout: [
       {
         type: "cover",
@@ -1167,10 +1148,9 @@ export const BooksRead: ReadBook[] = [
     genre: "Sci-Fi / Space Opera",
     goodreadsUrl: "https://www.goodreads.com/book/show/18966806-morning-star",
     format: "standard",
-    country: "United States",
+    country: "USA",
     publishedYear: 2016,
-    ticketImage: images.TicketMorningStar,
-    genres: ["Sci-Fi","Space Opera","Action"],
+    genres: ["Sci-Fi", "Space Opera", "Action"],
     layout: [
       {
         type: "cover",
@@ -1247,10 +1227,9 @@ export const BooksRead: ReadBook[] = [
     genre: "Sci-Fi / Space Opera",
     goodreadsUrl: "https://www.goodreads.com/book/show/33257757-iron-gold",
     format: "standard",
-    country: "United States",
+    country: "USA",
     publishedYear: 2018,
-    ticketImage: images.TicketIronGold,
-    genres: ["Sci-Fi","Space Opera","Military Sci-Fi"],
+    genres: ["Sci-Fi", "Space Opera", "Military Sci-Fi"],
     layout: [
       {
         type: "cover",
@@ -1329,10 +1308,9 @@ export const BooksRead: ReadBook[] = [
     genre: "Sci-Fi / Space Opera",
     goodreadsUrl: "https://www.goodreads.com/book/show/29226553-dark-age",
     format: "standard",
-    country: "United States",
+    country: "USA",
     publishedYear: 2019,
-    ticketImage: images.TicketDarkAge,
-    genres: ["Sci-Fi","Space Opera","Dark Fantasy"],
+    genres: ["Sci-Fi", "Space Opera", "Dark Fantasy"],
     layout: [
       {
         type: "cover",
@@ -1408,10 +1386,9 @@ export const BooksRead: ReadBook[] = [
     genre: "Sci-Fi / Space Opera",
     goodreadsUrl: "https://www.goodreads.com/book/show/29227774-light-bringer",
     format: "standard",
-    country: "United States",
+    country: "USA",
     publishedYear: 2023,
-    ticketImage: images.TicketLightBringer,
-    genres: ["Sci-Fi","Space Opera","Epic"],
+    genres: ["Sci-Fi", "Space Opera", "Epic"],
     layout: [
       {
         type: "cover",
@@ -1487,10 +1464,9 @@ export const BooksRead: ReadBook[] = [
     genre: "Fantasy / Romance",
     goodreadsUrl: "https://www.goodreads.com/book/show/61431922-fourth-wing",
     format: "standard",
-    country: "United States",
+    country: "USA",
     publishedYear: 2023,
-    ticketImage: images.TicketFourthWing,
-    genres: ["Fantasy","Romantasy","Dragons"],
+    genres: ["Fantasy", "Romantasy", "Dragons"],
     layout: [
       {
         type: "cover",
@@ -1577,10 +1553,9 @@ export const BooksRead: ReadBook[] = [
     genre: "Fantasy / Romance",
     goodreadsUrl: "https://www.goodreads.com/book/show/90202302-iron-flame",
     format: "standard",
-    country: "United States",
+    country: "USA",
     publishedYear: 2023,
-    ticketImage: images.TicketIronFlame,
-    genres: ["Fantasy","Romantasy","Dragons"],
+    genres: ["Fantasy", "Romantasy", "Dragons"],
     layout: [
       {
         type: "cover",
@@ -1645,10 +1620,9 @@ export const BooksRead: ReadBook[] = [
     goodreadsUrl:
       "https://www.goodreads.com/book/show/99561.Looking_for_Alaska",
     format: "standard",
-    country: "United States",
+    country: "USA",
     publishedYear: 2005,
-    ticketImage: images.TicketLookingForAlaska,
-    genres: ["YA Fiction","Coming-of-Age","Contemporary"],
+    genres: ["YA Fiction", "Coming-of-Age", "Contemporary"],
     layout: [
       {
         type: "cover",
@@ -1714,8 +1688,7 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "Austria",
     publishedYear: 1946,
-    ticketImage: images.TicketMansSearchForMeaning,
-    genres: ["Psychology","Memoir","Philosophy"],
+    genres: ["Psychology", "Memoir", "Philosophy"],
     layout: [
       {
         type: "cover",
@@ -1779,9 +1752,8 @@ export const BooksRead: ReadBook[] = [
       "https://www.goodreads.com/book/show/244484834-never-logged-out",
     format: "standard",
     country: "India",
-    publishedYear: 2024,
-    ticketImage: images.TicketNeverLoggedOut,
-    genres: ["Essays","Technology","Culture"],
+    publishedYear: 2025,
+    genres: ["Essays", "Technology", "Culture"],
     layout: [
       {
         type: "cover",
@@ -1838,10 +1810,9 @@ export const BooksRead: ReadBook[] = [
     goodreadsUrl:
       "https://www.goodreads.com/book/show/61130.The_Old_Man_and_the_Sea",
     format: "little-penguin-classic",
-    country: "United States",
+    country: "USA",
     publishedYear: 1952,
-    ticketImage: images.TicketOldManAndTheSea,
-    genres: ["Classic","Literary Fiction","Novella"],
+    genres: ["Classic", "Literary Fiction", "Novella"],
     layout: [
       {
         type: "cover",
@@ -1908,8 +1879,7 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "India",
     publishedYear: 2012,
-    ticketImage: images.TicketPoorLittleRichSlum,
-    genres: ["Non-Fiction","Inspiration","Business"],
+    genres: ["Non-Fiction", "Inspiration", "Business"],
     layout: [
       {
         type: "cover",
@@ -1966,10 +1936,9 @@ export const BooksRead: ReadBook[] = [
     goodreadsUrl:
       "https://www.goodreads.com/book/show/29081916-only-dull-people-are-brilliant-at-breakfast",
     format: "little-penguin-classic",
-    country: "United Kingdom",
+    country: "UK",
     publishedYear: 2016,
-    ticketImage: images.TicketOnlyDullPeople,
-    genres: ["Classic","Essays & Aphorisms","Humor"],
+    genres: ["Classic", "Essays & Aphorisms", "Humor"],
     layout: [
       {
         type: "cover",
@@ -2032,10 +2001,9 @@ export const BooksRead: ReadBook[] = [
     goodreadsUrl:
       "https://www.goodreads.com/book/show/26032825-the-cruel-prince",
     format: "standard",
-    country: "United States",
+    country: "USA",
     publishedYear: 2018,
-    ticketImage: images.TicketTheCruelPrince,
-    genres: ["YA Fantasy","Faerie","Romance"],
+    genres: ["YA Fantasy", "Faerie", "Romance"],
     layout: [
       {
         type: "cover",
@@ -2092,10 +2060,9 @@ export const BooksRead: ReadBook[] = [
     goodreadsUrl:
       "https://www.goodreads.com/book/show/57356486-the-last-tree-on-easter-island",
     format: "little-penguin-classic",
-    country: "United States",
+    country: "USA",
     publishedYear: 2005,
-    ticketImage: images.TicketTheLastTreeOnEasterIsland,
-    genres: ["History","Environment","Essays"],
+    genres: ["History", "Environment", "Essays"],
     layout: [
       {
         type: "cover",
@@ -2144,7 +2111,7 @@ export const BooksRead: ReadBook[] = [
     id: "r27",
     status: "read",
     title: "We Should All Be Feminists",
-    author: "Chimamanda Ngozi Adichie",
+    author: "Chimamanda Adichie",
     coverImage: images.WeShouldAllBeFeminists,
     rating: 4.2,
     position: "d1",
@@ -2155,8 +2122,7 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "Nigeria",
     publishedYear: 2014,
-    ticketImage: images.TicketWeShouldAllBeFeminists,
-    genres: ["Essays","Non-Fiction","Feminism"],
+    genres: ["Essays", "Non-Fiction", "Feminism"],
     layout: [
       {
         type: "cover",
@@ -2220,8 +2186,7 @@ export const BooksRead: ReadBook[] = [
     format: "little-penguin-classic",
     country: "Russia",
     publishedYear: 1848,
-    ticketImage: images.TicketWhiteNights,
-    genres: ["Classic","Russian Literature","Novella"],
+    genres: ["Classic", "Russian Literature", "Novella"],
     layout: [
       {
         type: "cover",
@@ -2282,7 +2247,6 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     country: "France",
     publishedYear: 1964,
-    ticketImage: images.TicketAMoveableFeast,
     isbn: "",
     coverImage: images.AMoveableFeast,
     genres: ["Lost Generation", "Paris Cafe", "Pure Nostalgia", "Memoir"],
@@ -2312,7 +2276,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.Babel,
-  //   ticketImage: images.TicketBabel,
   //  //   genres: ["Dark Academia","Linguistic Magic","Brutal Revolution"],
   //   goodreadsUrl: "",
   //   format: "standard",
@@ -2338,7 +2301,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   country: "Ireland",
   //   publishedYear: 2024,
-  //   ticketImage: images.TicketBadWords,
   //   isbn: "",
   //   amazonUrl:
   //     "https://www.amazon.in/Bad-Words-irresistible-once-lifetime/dp/0008865140/ref=tmm_pap_swatch_0?_encoding=UTF8&sr=8-1",
@@ -2370,7 +2332,6 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     country: "Russia",
     publishedYear: 1866,
-    ticketImage: images.TicketCrimeAndPunishment,
     isbn: "",
     coverImage: images.CrimeAndPunishment,
     genres: ["Moral Fever", "Guilt", "Russia", "Philosophy"],
@@ -2399,7 +2360,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   country: "Ireland",
   //   publishedYear: 1914,
-  //   ticketImage: images.TicketDubliners,
   //   isbn: "",
   //   amazonUrl:
   //     "https://www.amazon.in/Dubliners-Modern-Classics-James-Joyce/dp/0140186476/ref=sr_1_4?sr=8-4",
@@ -2436,7 +2396,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   amazonUrl:
   //     "https://www.amazon.in/dp/1836432399/?coliid=I3X226J6EGKCA&colid=12HOKZPESP747&psc=1",
   //   coverImage: images.FruitFly,
-  //   ticketImage: images.TicketFruitFly,
   //  //   genres: ["Wildly Chaotic","Dark Humor","Unhinged Energy"],
   //   goodreadsUrl: "",
   //   format: "standard",
@@ -2462,9 +2421,8 @@ export const wishlistBooks: WishlistBook[] = [
   //   price: 225,
   //   priority: "",
   //   note: "",
-  //   country: "United Kingdom",
+  //   country: "UK",
   //   publishedYear: 1861,
-  //   ticketImage: images.TicketGreatExpectations,
   //   isbn: "",
   //   coverImage: images.GreatExpectations,
   //   genres: ["19th Century", "Gothic Classic", "Victorian"],
@@ -2493,9 +2451,8 @@ export const wishlistBooks: WishlistBook[] = [
     price: 300,
     priority: "",
     note: "",
-    country: "United Kingdom",
+    country: "UK",
     publishedYear: 1847,
-    ticketImage: images.TicketJaneEyre,
     isbn: "",
     coverImage: images.JaneEyre,
     genres: ["Literary Fiction", "Gothic Mystery", "Romance"],
@@ -2525,7 +2482,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.Martyr,
-  //   ticketImage: images.TicketMartyr,
   //  //   genres: ["Dazzling Voice","Poetic Grief","Raw Heart"],
   //   goodreadsUrl: "",
   //   format: "standard",
@@ -2553,7 +2509,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.NearToTheWildHeart,
-  //   ticketImage: images.TicketNearToTheWildHeart,
   //  //   genres: ["Inner Monologue","Wild Heart","Fervent Prose"],
   //   goodreadsUrl: "",
   //   format: "standard",
@@ -2581,7 +2536,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.OnTheGenealogyOfMorals,
-  //   ticketImage: images.TicketOnTheGenealogyOfMorals,
   //  //   genres: ["Radical Critique","Will To Power","Provocative Thought"],
   //   goodreadsUrl: "",
   //   format: "standard",
@@ -2609,7 +2563,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.SeveralShortSentencesAboutWriting,
-  //   ticketImage: images.TicketSeveralShortSentencesAboutWriting,
   //  //   genres: ["Craft Wisdom","Sentence Rhythm","Pure Clarity"],
   //   goodreadsUrl: "",
   //   format: "standard",
@@ -2637,7 +2590,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   amazonUrl:
   //     "https://www.amazon.in/dp/067008557X/?coliid=I1R8KDH7QTIKHZ&colid=12HOKZPESP747&psc=1#",
   //   coverImage: images.SoniaAndSunny,
-  //   ticketImage: images.TicketSoniaAndSunny,
   //  //   genres: ["Sharp Diaspora","Tender Longing","Rich Texture"],
   //   goodreadsUrl: "",
   //   format: "standard",
@@ -2663,9 +2615,8 @@ export const wishlistBooks: WishlistBook[] = [
     price: 425,
     priority: "",
     note: "",
-    country: "United States",
+    country: "USA",
     publishedYear: 1965,
-    ticketImage: images.TicketStoner,
     isbn: "",
     coverImage: images.Stoner,
     genres: ["Quiet Tragedy", "Stoic Beauty", "Sublime Prose"],
@@ -2695,7 +2646,6 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     country: "Taiwan",
     publishedYear: 2020,
-    ticketImage: images.TicketTaiwanTravelogue,
     isbn: "",
     coverImage: images.TaiwanTravelogue,
     genres: ["Food History", "Subtle Bond", "Colonial Tale"],
@@ -2724,9 +2674,8 @@ export const wishlistBooks: WishlistBook[] = [
     price: 625,
     priority: "",
     note: "",
-    country: "United States",
-    publishedYear: 2024,
-    ticketImage: images.TicketTheCorrespondent,
+    country: "USA",
+    publishedYear: 2025,
     isbn: "",
     coverImage: images.TheCorrespondent,
     genres: ["Contemporary", "Letters", "Literary Fiction"],
@@ -2757,7 +2706,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.TheGoldfinch,
-  //   ticketImage: images.TicketTheGoldfinch,
   //  //   genres: ["Secret Art","Epic Journey","Haunting Loss"],
   //   goodreadsUrl: "",
   //   format: "standard",
@@ -2781,9 +2729,8 @@ export const wishlistBooks: WishlistBook[] = [
   //   price: 350,
   //   priority: "",
   //   note: "",
-  //   country: "United States",
+  //   country: "USA",
   //   publishedYear: 1925,
-  //   ticketImage: images.TicketTheGreatGatsby,
   //   isbn: "",
   //   amazonUrl:
   //     "https://www.amazon.in/dp/0141182636/?coliid=I19J32CB4ADL5V&colid=12HOKZPESP747&psc=1",
@@ -2813,7 +2760,6 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     country: "Japan",
     publishedYear: 1994,
-    ticketImage: images.TicketTheMemoryPolice,
     isbn: "",
     amazonUrl:
       "https://www.amazon.in/dp/1784700444/?coliid=I28SX8L0IKIRR0&colid=12HOKZPESP747&psc=1",
@@ -2846,7 +2792,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.TheParadiseOfFood,
-  //   ticketImage: images.TicketTheParadiseOfFood,
   //  //   genres: ["Visceral Feast","Existential Dread","Darkly Comic"],
   //   goodreadsUrl: "",
   //   format: "standard",
@@ -2874,7 +2819,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   country: "France",
   //   publishedYear: 1942,
-  //   ticketImage: images.TicketTheStranger,
   //   isbn: "",
   //   coverImage: images.TheStranger,
   //   genres: ["Philosophy", "Absurdism", "Detachment"],
@@ -2904,7 +2848,6 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     country: "Italy",
     publishedYear: 1979,
-    ticketImage: images.TicketWinterNightATraveller,
     isbn: "",
     coverImage: images.WinterNightATraveller,
     genres: ["Reader's Maze", "Metafiction Magic", "Pure Ingenuity"],
@@ -2933,9 +2876,8 @@ export const wishlistBooks: WishlistBook[] = [
     price: 600,
     priority: "",
     note: "",
-    country: "United States",
-    publishedYear: 2023,
-    ticketImage: images.TicketEverythingWasBeautiful,
+    country: "USA",
+    publishedYear: 2026,
     isbn: "",
     coverImage: images.EverythingWasBeautiful,
     genres: ["Tender Sorrow", "Poetic Dream", "Quiet Hope"],
@@ -2961,12 +2903,11 @@ export const wishlistBooks: WishlistBook[] = [
     position: "b7",
     amazonUrl:
       "https://www.amazon.in/May-We-Feed-King-Shortlisted/dp/1803515279/ref=tmm_pap_swatch_0?_encoding=UTF8&sr=1-2",
-    price: 500, 
+    price: 500,
     priority: "top",
     note: "",
     country: "UK",
     publishedYear: 2026,
-    ticketImage: images.TicketMayWeFeedTheKing,
     isbn: "",
     coverImage: images.MayWeFeedTheKing,
     genres: ["Dark Folklore", "Strange Ritual", "Eerie Beauty"],
@@ -2995,9 +2936,8 @@ export const wishlistBooks: WishlistBook[] = [
     price: 575,
     priority: "",
     note: "",
-    country: "United States",
+    country: "USA",
     publishedYear: 1926,
-    ticketImage: images.TicketTheSunAlsoRises,
     isbn: "",
     coverImage: images.TheSunAlsoRises,
     genres: ["Pamplona Fiesta", "Unspoken Wounds", "Lost Generation"],
@@ -3025,9 +2965,8 @@ export const wishlistBooks: WishlistBook[] = [
     price: 500,
     priority: "",
     note: "",
-    country: "United States",
+    country: "USA",
     publishedYear: 2022,
-    ticketImage: images.TicketDemonCopperhead,
     isbn: "",
     coverImage: images.DemonCopperhead,
     genres: ["Appalachia", "Fierce Survival", "Pulitzer Winner"],
@@ -3058,7 +2997,6 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     country: "France",
     publishedYear: 1991,
-    ticketImage: images.TicketSimplePassion,
     isbn: "",
     coverImage: images.SimplePassion,
     genres: ["French Lit", "Romance", "Contemporary"],
@@ -3087,8 +3025,7 @@ export const wishlistBooks: WishlistBook[] = [
     priority: "",
     note: "",
     country: "Scotland",
-    publishedYear: 2025,
-    ticketImage: images.TicketJohnOfJohn,
+    publishedYear: 2026,
     isbn: "",
     coverImage: images.JohnOfJohn,
     genres: ["Literary Fiction", "Scotland", "Queer"],
@@ -3118,7 +3055,6 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     country: "Ireland",
     publishedYear: 2021,
-    ticketImage: images.TicketSmallThingsLikeThese,
     isbn: "",
     coverImage: images.SmallThingsLikeThese,
     genres: ["Historical Fiction", "Irish Winter", "Christmas"],
@@ -3147,9 +3083,8 @@ export const wishlistBooks: WishlistBook[] = [
     price: 450,
     priority: "",
     note: "",
-    country: "United States",
+    country: "USA",
     publishedYear: 2025,
-    ticketImage: images.TicketTheRoadToTenderHearts,
     isbn: "",
     coverImage: images.TheRoadToTenderHearts,
     genres: ["Quirky Warmth", "Grief Healing", "Big Heart"],
@@ -3178,9 +3113,8 @@ export const wishlistBooks: WishlistBook[] = [
     price: 750,
     priority: "",
     note: "",
-    country: "United States",
-    publishedYear: 2025,
-    ticketImage: images.TicketTheThingsWeNeverSay,
+    country: "USA",
+    publishedYear: 2026,
     isbn: "",
     coverImage: images.TheThingsWeNeverSay,
     genres: ["Unspoken Truth", "Small Town", "Deep Empathy"],
@@ -3209,9 +3143,8 @@ export const wishlistBooks: WishlistBook[] = [
     price: 1200,
     priority: "",
     note: "",
-    country: "United Kingdom",
-    publishedYear: 2025,
-    ticketImage: images.TicketWimmyRoadBoys,
+    country: "UK",
+    publishedYear: 2026,
     isbn: "",
     coverImage: images.WimmyRoadBoys,
     genres: ["Brotherhood Bond", "Curry Mile", "Raw Hustle"],
@@ -3240,9 +3173,8 @@ export const wishlistBooks: WishlistBook[] = [
     price: 600,
     priority: "",
     note: "",
-    country: "United States",
-    publishedYear: 2024,
-    ticketImage: images.TicketAngelDown,
+    country: "USA",
+    publishedYear: 2025,
     isbn: "",
     coverImage: images.AngelDown,
     genres: ["Horror", "Myth", "Fantasy"],
@@ -3268,9 +3200,8 @@ export const wishlistBooks: WishlistBook[] = [
     price: 500,
     priority: "",
     note: "",
-    country: "United States",
+    country: "USA",
     publishedYear: 2024,
-    ticketImage: images.TicketJames,
     isbn: "",
     amazonUrl:
       "https://www.amazon.in/dp/1035031248/?coliid=IUDFK0SST7HH8&colid=12HOKZPESP747&psc=1",
@@ -3300,7 +3231,6 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     country: "Sweden",
     publishedYear: 2025,
-    ticketImage: images.TicketMyFriends,
     isbn: "",
     amazonUrl:
       "https://www.amazon.in/My-Friends-Fredrik-Backman/dp/1398516406/ref=monarch_sidesheet_title",
@@ -3328,14 +3258,20 @@ export const wishlistBooks: WishlistBook[] = [
     price: 475,
     priority: "",
     note: "",
-    country: "United Kingdom",
+    country: "UK",
     publishedYear: 2021,
-    ticketImage: images.TicketKlaraAndTheSun,
     isbn: "9780571364886",
-    amazonUrl: "https://www.amazon.in/Klara-Sun-Times-Sunday-Book/dp/057136490X/ref=sr_1_2?sr=8-2",
+    amazonUrl:
+      "https://www.amazon.in/Klara-Sun-Times-Sunday-Book/dp/057136490X/ref=sr_1_2?sr=8-2",
     coverImage: images.KlaraAndTheSun,
-    genres: ["Sci-Fi", "Dystopian", "Literary Fiction", "Artificial Intelligence"],
-    goodreadsUrl: "https://www.goodreads.com/book/show/54120408-klara-and-the-sun",
+    genres: [
+      "Sci-Fi",
+      "Dystopian",
+      "Literary Fiction",
+      "Artificial Intelligence",
+    ],
+    goodreadsUrl:
+      "https://www.goodreads.com/book/show/54120408-klara-and-the-sun",
     format: "standard",
     layout: [
       {
@@ -3357,11 +3293,11 @@ export const wishlistBooks: WishlistBook[] = [
     price: 450,
     priority: "top",
     note: "",
-    country: "United Kingdom",
+    country: "UK",
     publishedYear: 2026,
-    ticketImage: images.TicketBlackBag,
     isbn: "9781399826129",
-    amazonUrl: "https://www.amazon.in/Black-Bag-Luke-Kennard/dp/1399826123/ref=tmm_pap_swatch_0?_encoding=UTF8&sr=8-1",
+    amazonUrl:
+      "https://www.amazon.in/Black-Bag-Luke-Kennard/dp/1399826123/ref=tmm_pap_swatch_0?_encoding=UTF8&sr=8-1",
     coverImage: images.BlackBag,
     genres: ["Contemporary", "Dark-comedy", "Campus novel", "Lit fiction"],
     goodreadsUrl: "https://www.goodreads.com/book/show/249766722-black-bag",
@@ -3387,14 +3323,14 @@ export const wishlistBooks: WishlistBook[] = [
     priority: "",
     note: "",
     country: "Australia",
-    publishedYear: 2026,
-    ticketImage: images.TicketWildDarkShore,
+    publishedYear: 2025,
     isbn: "9781837265923",
     amazonUrl:
       "https://www.amazon.in/Wild-Dark-Shore-Charlotte-McConaghy/dp/1837265925/ref=tmm_pap_swatch_0?_encoding=UTF8&sr=8-1",
     coverImage: images.WildDarkShore,
     genres: ["Literary Fiction", "Mystery Thriller", "Survival", "Atmospheric"],
-    goodreadsUrl: "https://www.goodreads.com/book/show/231127223-wild-dark-shore",
+    goodreadsUrl:
+      "https://www.goodreads.com/book/show/231127223-wild-dark-shore",
     format: "standard",
     layout: [
       {
@@ -3416,11 +3352,11 @@ export const wishlistBooks: WishlistBook[] = [
     price: 325,
     priority: "",
     note: "",
-    country: "United Kingdom",
+    country: "UK",
     publishedYear: 2023,
-    ticketImage: images.TicketOrbital,
     isbn: "9781787334342",
-    amazonUrl: "https://www.amazon.in/Orbital-Winner-Booker-Prize-2024/dp/1529922933/ref=sr_1_1?sr=8-1",
+    amazonUrl:
+      "https://www.amazon.in/Orbital-Winner-Booker-Prize-2024/dp/1529922933/ref=sr_1_1?sr=8-1",
     coverImage: images.Orbital,
     genres: ["Literary Fiction", "Space", "Philosophical", "Booker Prize"],
     goodreadsUrl: "https://www.goodreads.com/book/show/212343501-orbital",
@@ -3447,9 +3383,9 @@ export const wishlistBooks: WishlistBook[] = [
     note: "",
     country: "Germany",
     publishedYear: 2021,
-    ticketImage: images.TicketKairos,
     isbn: "9781783788736",
-    amazonUrl: "https://www.amazon.in/Kairos-Jenny-Erpenbeck/dp/1783786132/ref=sr_1_1?sr=8-1",
+    amazonUrl:
+      "https://www.amazon.in/Kairos-Jenny-Erpenbeck/dp/1783786132/ref=sr_1_1?sr=8-1",
     coverImage: images.Kairos,
     genres: [
       "Literary Fiction",
@@ -3470,7 +3406,6 @@ export const wishlistBooks: WishlistBook[] = [
       },
     ],
   },
- 
 ];
 
 export const allBooks: BookItem[] = [...BooksRead];

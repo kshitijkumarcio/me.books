@@ -1,8 +1,8 @@
-import images, { ticketImages } from "@/constants/images";
+import images from "@/constants/images";
 import icons from "@/constants/icons";
 import { Easing } from "motion";
 
-export { images, icons, ticketImages };
+export { images, icons };
 
 // When linking across zones (e.g., a button in /essays that takes the user to /books or back to your root portfolio /), use a standard HTML <a href="/books"> tag instead of Next.js <Link>. Because they are separate Next.js apps with separate client routers, <Link> would look for /books inside the kshitij-essays bundle and fail, whereas <a> triggers a clean browser navigation across zones.
 

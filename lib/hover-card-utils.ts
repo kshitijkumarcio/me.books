@@ -59,4 +59,3 @@ export const calculateHoverCardPosition = (
 };
 
 export default calculateHoverCardPosition;
-

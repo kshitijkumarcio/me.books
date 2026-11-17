@@ -61,6 +61,99 @@ const AmazonIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const ChaptersIcon = () => (
+  <div className="relative h-4 w-4">
+    {/* Center Filled Square - visible at rest (non-hovered), scales down and fades out on hover */}
+    <div
+      className={cn(
+        "absolute inset-0 m-auto aspect-square h-2 w-2 rounded-xs bg-[#FEFEFE]",
+        "origin-center scale-100 opacity-100 group-hover/nb:scale-0 group-hover/nb:opacity-0",
+        "transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]"
+      )}
+    />
+
+    {/* Top-Left Corner */}
+    <div
+      className={cn(
+        "absolute top-0 left-0 h-1.5 w-1.5 text-[#FEFEFE] group-hover/nb:text-white",
+        "translate-x-[3.75px] translate-y-[3.75px] group-hover/nb:translate-x-0 group-hover/nb:translate-y-0",
+        "transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]"
+      )}
+    >
+      <svg viewBox="0 0 6 6" className="block h-full w-full">
+        <path
+          d="M 0.75 5.5 V 2.5 C 0.75 1.5 1.5 0.75 2.5 0.75 H 5.5"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
+      </svg>
+    </div>
+
+    {/* Top-Right Corner */}
+    <div
+      className={cn(
+        "absolute top-0 right-0 h-1.5 w-1.5 text-[#FEFEFE] group-hover/nb:text-white",
+        "translate-x-[-3.75px] translate-y-[3.75px] group-hover/nb:translate-x-0 group-hover/nb:translate-y-0",
+        "transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]"
+      )}
+    >
+      <svg viewBox="0 0 6 6" className="block h-full w-full">
+        <path
+          d="M 0.5 0.75 H 3.5 C 4.5 0.75 5.25 1.5 5.25 2.5 V 5.5"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
+      </svg>
+    </div>
+
+    {/* Bottom-Left Corner */}
+    <div
+      className={cn(
+        "absolute bottom-0 left-0 h-1.5 w-1.5 text-[#FEFEFE] group-hover/nb:text-white",
+        "translate-x-[3.75px] translate-y-[-3.75px] group-hover/nb:translate-x-0 group-hover/nb:translate-y-0",
+        "transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]"
+      )}
+    >
+      <svg viewBox="0 0 6 6" className="block h-full w-full">
+        <path
+          d="M 0.75 0.5 V 3.5 C 0.75 4.5 1.5 5.25 2.5 5.25 H 5.5"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
+      </svg>
+    </div>
+
+    {/* Bottom-Right Corner */}
+    <div
+      className={cn(
+        "absolute right-0 bottom-0 h-1.5 w-1.5 text-[#FEFEFE] group-hover/nb:text-white",
+        "translate-x-[-3.75px] translate-y-[-3.75px] group-hover/nb:translate-x-0 group-hover/nb:translate-y-0",
+        "transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]"
+      )}
+    >
+      <svg viewBox="0 0 6 6" className="block h-full w-full">
+        <path
+          d="M 0.5 5.25 H 3.5 C 4.5 5.25 5.25 4.5 5.25 3.5 V 0.5"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
+      </svg>
+    </div>
+  </div>
+);
+
 const OverlayNavigators = () => {
   const pathname = usePathname();
   const router = useRouter();
@@ -77,7 +170,8 @@ const OverlayNavigators = () => {
   const isReadingRoute =
     Boolean(pathname?.includes("/reading/")) || activeModal?.type === "reading";
   const isWishlistRoute =
-    Boolean(pathname?.includes("/wishlist/")) || activeModal?.type === "wishlist";
+    Boolean(pathname?.includes("/wishlist/")) ||
+    activeModal?.type === "wishlist";
   const isAnyModalRoute = isReadBookRoute || isReadingRoute || isWishlistRoute;
   const isShowingBookControls = isAnyModalRoute && !isClosing;
 
@@ -355,15 +449,8 @@ const OverlayNavigators = () => {
                 onClick={toggleChaptersMenu}
                 className="group/nb pointer-events-auto flex cursor-pointer gap-x-1"
               >
-                <div className="flex aspect-square w-10 flex-col items-center justify-center gap-y-[2.5px] rounded-sm bg-black">
-                  <div className="h-[1.5px] w-4 bg-white"></div>
-                  <div
-                    className={cn(
-                      "h-[1.5px] w-4 origin-center bg-white group-hover/nb:w-0",
-                      "ease-[cubic-bezier(0.19, 1, 0.22, 1)] duration-500 transform-content"
-                    )}
-                  ></div>
-                  <div className="h-[1.5px] w-4 bg-white"></div>
+                <div className="flex aspect-square w-10 items-center justify-center rounded-sm bg-black">
+                  <ChaptersIcon />
                 </div>
                 <div className="flex h-10 items-center justify-center rounded-sm bg-black px-4">
                   <FlipTextButton>

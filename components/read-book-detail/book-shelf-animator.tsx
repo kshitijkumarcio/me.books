@@ -43,7 +43,8 @@ export const BookShelfAnimator = ({
   const isReadingRoute =
     Boolean(pathname?.includes("/reading/")) || activeModal?.type === "reading";
   const isWishlistRoute =
-    Boolean(pathname?.includes("/wishlist/")) || activeModal?.type === "wishlist";
+    Boolean(pathname?.includes("/wishlist/")) ||
+    activeModal?.type === "wishlist";
   const isModalRoute = isReadBookRoute || isReadingRoute || isWishlistRoute;
 
   // Reset isClosing once the route has actually navigated away from modal views
@@ -164,7 +165,7 @@ export const BookShelfAnimator = ({
         className={cn(
           "relative min-h-screen w-full",
           shouldShiftUp &&
-            "pointer-events-none select-none transform-gpu will-change-transform backface-hidden"
+            "pointer-events-none transform-gpu will-change-transform select-none backface-hidden"
         )}
       >
         {children}

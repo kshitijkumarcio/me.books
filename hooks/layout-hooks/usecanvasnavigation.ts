@@ -133,7 +133,10 @@ export const useCanvasNavigation = create<CanvasNavigationState>(
       }
     },
 
-    goToZone: (zoneId: string, options?: { lerp?: number; duration?: number; offset?: number }) => {
+    goToZone: (
+      zoneId: string,
+      options?: { lerp?: number; duration?: number; offset?: number }
+    ) => {
       const { scrollToTargetFn, panToFn } = get();
       if (typeof document !== "undefined") {
         const el = document.getElementById(zoneId);

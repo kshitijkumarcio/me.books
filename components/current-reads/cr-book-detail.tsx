@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
@@ -172,7 +172,12 @@ export const CRBookDetail = ({
               )}
               {/* Additional tags if any */}
               {leftTags.slice(3).map((tag, idx) => (
-                <div key={idx} className={idx % 2 === 0 ? "md:translate-x-2" : "md:-translate-x-1"}>
+                <div
+                  key={idx}
+                  className={
+                    idx % 2 === 0 ? "md:translate-x-2" : "md:-translate-x-1"
+                  }
+                >
                   <span className="font-mona-sans inline-block rounded-md border border-black/80 bg-white px-3.5 py-1.5 text-xs font-medium text-black shadow-xs select-none sm:text-sm">
                     {tag}
                   </span>

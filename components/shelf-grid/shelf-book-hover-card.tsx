@@ -1,10 +1,10 @@
 "use client";
 
 import { useId } from "react";
-import Image from "next/image";
 import { motion, type MotionValue } from "motion/react";
 import type { BookItem, ReadBook } from "@/books/books-index";
-import { images } from "@/constants/images";
+import TicketStamp from "@/components/ui-components/ticket-stamp";
+import useTicketPerforations from "@/hooks/ui-hooks/use-ticket-perforations";
 import { cn } from "@/lib/utils";
 
 export interface ShelfBookHoverCardProps {
@@ -16,49 +16,6 @@ export interface ShelfBookHoverCardProps {
 
 const STAR_POINTS =
   "12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2";
-
-// Paper-cut perforated ticket mask with see-through holes along all sides
-const TICKET_MASK_STYLE: React.CSSProperties = (() => {
-  const horizontalHoles = 18;
-  const verticalHoles = 10;
-  const holeRadius = "3px";
-
-  const topGradients = Array.from({ length: horizontalHoles }).map((_, i) => {
-    const position = 4 + i * (92 / (horizontalHoles - 1));
-    return `radial-gradient(circle at ${position.toFixed(2)}% 0%, transparent 0, transparent ${holeRadius}, black ${holeRadius})`;
-  });
-
-  const bottomGradients = Array.from({ length: horizontalHoles }).map(
-    (_, i) => {
-      const position = 4 + i * (92 / (horizontalHoles - 1));
-      return `radial-gradient(circle at ${position.toFixed(2)}% 100%, transparent 0, transparent ${holeRadius}, black ${holeRadius})`;
-    }
-  );
-
-  const leftGradients = Array.from({ length: verticalHoles }).map((_, i) => {
-    const position = 6 + i * (88 / (verticalHoles - 1));
-    return `radial-gradient(circle at 0% ${position.toFixed(2)}%, transparent 0, transparent ${holeRadius}, black ${holeRadius})`;
-  });
-
-  const rightGradients = Array.from({ length: verticalHoles }).map((_, i) => {
-    const position = 6 + i * (88 / (verticalHoles - 1));
-    return `radial-gradient(circle at 100% ${position.toFixed(2)}%, transparent 0, transparent ${holeRadius}, black ${holeRadius})`;
-  });
-
-  const maskImage = [
-    ...topGradients,
-    ...bottomGradients,
-    ...leftGradients,
-    ...rightGradients,
-  ].join(",\n  ");
-
-  return {
-    maskImage,
-    WebkitMaskImage: maskImage,
-    maskComposite: "intersect",
-    WebkitMaskComposite: "source-in",
-  };
-})();
 
 const DynamicStarRating = ({
   rating,
@@ -150,13 +107,12 @@ export const ShelfBookHoverCard = ({
 }: ShelfBookHoverCardProps) => {
   const rawId = useId();
   const baseId = rawId.replace(/[^a-zA-Z0-9_-]/g, "");
+  const { ticketRef, maskStyle } = useTicketPerforations();
 
   if (!book) return null;
 
   const title = book.title || "Untitled";
   const author = book.author || "Unknown";
-
-  const country = ("country" in book && book.country) || "International";
 
   const publishedYear =
     ("publishedYear" in book && book.publishedYear) ||
@@ -166,11 +122,6 @@ export const ShelfBookHoverCard = ({
 
   const rating =
     "rating" in book && typeof book.rating === "number" ? book.rating : 4.5;
-
-  const ticketImage =
-    ("ticketImage" in book && book.ticketImage) ||
-    ("coverImage" in book && book.coverImage) ||
-    images.MIAFC1;
 
   return (
     <motion.div
@@ -183,68 +134,43 @@ export const ShelfBookHoverCard = ({
     >
       {/* Outer Ticket Container with Paper-cut Perforated Holes */}
       <div
-        style={TICKET_MASK_STYLE}
-        className={cn("w-52 bg-[#F1F1F1] p-2", className)}
+        ref={ticketRef}
+        style={maskStyle}
+        className={cn(
+          "bg-ticket-neon relative max-w-52 min-w-44 overflow-hidden p-2",
+          className
+        )}
       >
+        {/* Faint Stamp */}
+        <div className="pointer-events-none absolute -right-2 -bottom-5 z-0 select-none">
+          <TicketStamp text="FINISHED" />
+        </div>
+
         {/* Inner Grid Box with crisp black outline */}
-        <div className="flex flex-col overflow-hidden border border-black">
-          {/* Top Marquee Row (Genres) */}
-          <div className="flex h-5 items-center border-b border-black px-1">
-            <span className="font-mona-sans truncate text-[9.5px] font-bold tracking-tight text-black">
-              Available for borrowing
+        <div className="relative z-10 flex flex-col overflow-hidden border border-black">
+          {/* Title Row */}
+          <div className="flex h-auto items-center px-2 py-1.5">
+            <h4 className="font-mona-sans line-clamp-2 text-[14.5px] leading-[1.15] font-bold tracking-tight text-black">
+              {title}
+            </h4>
+          </div>
+
+          {/* Author & Year */}
+          <div className="flex h-5.5 items-center justify-between border-t border-black px-2">
+            <span className="font-mona-sans mr-1 max-w-31.25 truncate text-[10px] font-semibold text-black">
+              {author}
+            </span>
+            <span className="font-mona-sans shrink-0 text-[10px] font-semibold text-black tabular-nums">
+              {publishedYear}
             </span>
           </div>
 
-          {/* Lower Grid (Left Column: Image & Country, Right Column: Title, Author, Year, Rating) */}
-          <div className="flex flex-row">
-            {/* Left Column */}
-            <div className="flex w-16 shrink-0 flex-col border-r border-black">
-              {/* Ticket Image */}
-              <div className=" relative h-14.5 w-full overflow-hidden">
-                <Image
-                  src={ticketImage}
-                  alt={title}
-                  fill
-                  className="object-cover mix-blend-multiply contrast-125 filter"
-                  sizes="64px"
-                />
-              </div>
-
-              {/* Country */}
-              <div className="flex h-5 items-center border-t border-black px-1.5">
-                <span className="font-mona-sans truncate text-[9.5px] font-bold tracking-tight text-black">
-                  {country}
-                </span>
-              </div>
-            </div>
-
-            {/* Right Column */}
-            <div className="flex min-w-0 flex-1 flex-col justify-between overflow-hidden">
-              {/* Title */}
-              <div className="flex min-h-9.5 flex-1 items-center px-1.5 py-1">
-                <h4 className="font-mona-sans line-clamp-2 text-[12.5px] leading-[1.12] font-bold tracking-tight text-black">
-                  {title}
-                </h4>
-              </div>
-
-              {/* Author & Year */}
-              <div className="flex h-5 items-center justify-between border-t border-black px-1.5">
-                <span className="font-mona-sans mr-1 max-w-21.25 truncate text-[9.5px] font-semibold text-black">
-                  {author}
-                </span>
-                <span className="font-mona-sans shrink-0 text-[9.5px] font-semibold text-black tabular-nums">
-                  {publishedYear}
-                </span>
-              </div>
-
-              {/* Star Rating & Numeric Value */}
-              <div className="flex h-5 items-center justify-between border-t border-black px-1.5">
-                <DynamicStarRating rating={rating} baseId={baseId} />
-                <span className="font-mona-sans text-[9.5px] font-bold text-black tabular-nums">
-                  {Number(rating).toFixed(1)}
-                </span>
-              </div>
-            </div>
+          {/* Star Rating & Numeric Value */}
+          <div className="flex h-5.5 items-center justify-between border-t border-black px-2">
+            <DynamicStarRating rating={rating} baseId={baseId} />
+            <span className="font-mona-sans text-[10px] font-bold text-black tabular-nums">
+              {Number(rating).toFixed(1)}
+            </span>
           </div>
         </div>
       </div>

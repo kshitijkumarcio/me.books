@@ -53,4 +53,3 @@ export const useReadBookModal = create<ReadBookModalState>((set) => ({
     }, READ_BOOK_TRANSITION_DURATION_MS + 400);
   },
 }));
-
