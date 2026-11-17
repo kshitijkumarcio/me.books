@@ -1,173 +1,53 @@
 import { images } from "@/constants";
-import type { StaticImageData } from "next/image";
+import type {
+  PositionValue,
+  ElementPosition,
+  BaseLayoutElement,
+  BookFormat,
+  CoverLayoutElement,
+  QuoteTextColor,
+  QuoteLayoutElement,
+  ImageLayoutElement,
+  CodeLayoutElement,
+  TagLayoutElement,
+  PillMessageLayoutElement,
+  CustomLayoutElement,
+  GenrePillLayoutElement,
+  BlockLayoutElement,
+  BookStatus,
+  BaseBookItem,
+  CurrentlyReadingPill,
+  CurrentlyReadingBook,
+  ReadBook,
+  WishlistBook,
+  BookItem,
+} from "@/types/books";
+import { COVER_FORMAT_SIZES } from "@/types/books";
 
-export type PositionValue = string | number;
-
-export interface ElementPosition {
-  top?: PositionValue;
-  right?: PositionValue;
-  bottom?: PositionValue;
-  left?: PositionValue;
-  width?: PositionValue;
-  height?: PositionValue;
-  zIndex?: number;
-  rotation?: string;
-}
-
-export interface BaseLayoutElement extends ElementPosition {
-  id?: string;
-  className?: string;
-}
-
-// Book format types (affects cover dimensions and styling)
-export type BookFormat = "standard" | "little-penguin-classic";
-
-export const COVER_FORMAT_SIZES: Record<BookFormat, string> = {
-  standard: "w-46",
-  "little-penguin-classic": "w-40",
+export type {
+  PositionValue,
+  ElementPosition,
+  BaseLayoutElement,
+  BookFormat,
+  CoverLayoutElement,
+  QuoteTextColor,
+  QuoteLayoutElement,
+  ImageLayoutElement,
+  CodeLayoutElement,
+  TagLayoutElement,
+  PillMessageLayoutElement,
+  CustomLayoutElement,
+  GenrePillLayoutElement,
+  BlockLayoutElement,
+  BookStatus,
+  BaseBookItem,
+  CurrentlyReadingPill,
+  CurrentlyReadingBook,
+  ReadBook,
+  WishlistBook,
+  BookItem,
 };
-
-export interface CoverLayoutElement extends BaseLayoutElement {
-  type: "cover";
-  src?: StaticImageData | string;
-  alt?: string;
-  widthClass?: string;
-  format?: BookFormat;
-}
-
-export type QuoteTextColor =
-  "black" | "white" | `text-[${string}]` | `#${string}` | (string & {});
-
-export interface QuoteLayoutElement extends BaseLayoutElement {
-  type: "quote";
-  quote: string;
-  author?: string;
-  paperColor?: string;
-  textColor?: QuoteTextColor;
-  paperSeed?: number;
-  tearStrength?: number;
-  tearFrequency?: number;
-  roughness?: number;
-  lightAngle?: number;
-  lightElevation?: number;
-  maxWidthClass?: string;
-}
-
-export interface ImageLayoutElement extends BaseLayoutElement {
-  type: "image";
-  src: StaticImageData | string;
-  alt?: string;
-  widthClass?: string;
-}
-
-export interface CodeLayoutElement extends BaseLayoutElement {
-  type: "code";
-  code: string;
-  language?: string;
-  filename?: string;
-}
-
-export interface TagLayoutElement extends BaseLayoutElement {
-  type: "tag";
-  text: string;
-  color?: string;
-}
-
-export interface PillMessageLayoutElement extends BaseLayoutElement {
-  type: "pill-message";
-  text?: React.ReactNode;
-  pill_classnames?: string;
-  text_classnames?: string;
-}
-
-export interface CustomLayoutElement extends BaseLayoutElement {
-  type: "custom";
-  content?: React.ReactNode;
-}
-
-export interface GenrePillLayoutElement extends BaseLayoutElement {
-  type: "genre-pill";
-  genre?: string;
-  text?: string;
-}
-
-export type BlockLayoutElement =
-  | CoverLayoutElement
-  | QuoteLayoutElement
-  | ImageLayoutElement
-  | CodeLayoutElement
-  | TagLayoutElement
-  | PillMessageLayoutElement
-  | GenrePillLayoutElement
-  | CustomLayoutElement;
-
-export type BookStatus = "reading" | "read" | "wishlist";
-
-export interface BaseBookItem {
-  id: string;
-  title: string;
-  author: string;
-  coverImage: StaticImageData;
-  genre?: string;
-  genres?: string[];
-  status: BookStatus;
-  format: BookFormat;
-  position?: string; // Grid position e.g. "A1", "A3", "B5"
-  layout?: BlockLayoutElement[];
-  goodreadsUrl?: string;
-  goodreads?: string;
-  ticketImage?: StaticImageData;
-  country?: string;
-  publishedYear?: number;
-  firstPublishedYear?: number;
-  synopsis?: string | string[];
-}
-
-export interface CurrentlyReadingPill {
-  text: string;
-  pill_classnames?: string;
-  text_classnames?: string;
-}
-
-export interface CurrentlyReadingBook extends BaseBookItem {
-  status: "reading";
-  progress: number;
-  total_pages: number;
-  genres?: string[];
-  pills?: CurrentlyReadingPill[];
-  goodreadsUrl?: string;
-  goodreads?: string;
-}
-
-export interface ReadBook extends BaseBookItem {
-  status: "read";
-  rating: number;
-  yearRead: number;
-  country?: string;
-  publishedYear?: number;
-  firstPublishedYear?: number;
-  ticketImage?: StaticImageData;
-  genres?: string[];
-  goodreadsUrl?: string;
-  goodreads?: string;
-  borrowUrl?: string;
-  borrowMessage?: string;
-}
-
-export interface WishlistBook extends BaseBookItem {
-  status: "wishlist";
-  amazonUrl?: string; // Direct Amazon product URL
-  goodreadsUrl?: string;
-  goodreads?: string;
-  price?: number | string; // e.g. 450, "~450"
-  priority?: "top" | "high" | "normal" | ""; // "top" = Most Wanted / Top Pick
-  note?: string; // 1-line personal note on why you want this book
-  isbn?: string;
-  isClaimed?: boolean; // Set to true if someone has already gifted this book
-  genres?: string[];
-}
-
-export type BookItem = CurrentlyReadingBook | ReadBook | WishlistBook;
+export { COVER_FORMAT_SIZES };
 
 export const currentReads: CurrentlyReadingBook[] = [
   {
@@ -175,7 +55,6 @@ export const currentReads: CurrentlyReadingBook[] = [
     title: "The Kind Worth Killing",
     author: "Peter Swanson",
     coverImage: images.TheKindWorthKilling,
-  //  //  //  //  //   ticketImage: images.TicketTheKindWorthKilling,
     progress: 168,
     total_pages: 311,
     country: "USA",
@@ -215,7 +94,6 @@ export const currentReads: CurrentlyReadingBook[] = [
     title: "The Ocean Would Paint Me Blue",
     author: "Zoulfa Katouh",
     coverImage: images.TheOceanWouldPaintMeBlue,
-    ticketImage: images.TicketTheOceanWouldPaintMeBlue,
     progress: 15,
     total_pages: 368,
     country: "USA",
@@ -255,7 +133,6 @@ export const currentReads: CurrentlyReadingBook[] = [
     title: "Poor Charlie's Almanack",
     author: "Charles Munger",
     coverImage: images.PoorCharliesAlmanack,
-    ticketImage: images.TicketPoorCharliesAlmanack,
     progress: 66,
     total_pages: 384,
     country: "USA",
@@ -295,7 +172,6 @@ export const currentReads: CurrentlyReadingBook[] = [
     title: "Heart Lamps",
     author: "Banu Mushtaq",
     coverImage: images.HeartLamps,
-    ticketImage: images.TicketHeartLamps,
     progress: 25,
     total_pages: 224,
     country: "India",
@@ -334,7 +210,6 @@ export const currentReads: CurrentlyReadingBook[] = [
     title: "Discipline is Destiny",
     author: "Ryan Holiday",
     coverImage: images.DisciplineIsDestiny,
-    ticketImage: images.TicketDisciplineIsDestiny,
     progress: 24,
     total_pages: 312,
     country: "USA",
@@ -379,7 +254,6 @@ export const BooksRead: ReadBook[] = [
     author: "Rainer Maria Rilke",
     position: "c3",
     coverImage: images.LettersToAYoungPoet,
-    ticketImage: images.TicketLettersToAYoungPoet,
     rating: 5,
     yearRead: 2024,
     genre: "Essays / Poetry",
@@ -445,7 +319,6 @@ export const BooksRead: ReadBook[] = [
     title: "Madonna in a Fur Coat",
     author: "Sabahattin Ali",
     coverImage: images.Madonna,
-    ticketImage: images.TicketMadonna,
     position: "A4",
     rating: 4.5,
     yearRead: 2024,
@@ -519,7 +392,6 @@ export const BooksRead: ReadBook[] = [
     title: "Animal Farm",
     author: "George Orwell",
     coverImage: images.AnimalFarm,
-    ticketImage: images.TicketAnimalFarm,
     rating: 3.8,
     yearRead: 2023,
     genre: "Classic / Political Satire",
@@ -578,7 +450,6 @@ export const BooksRead: ReadBook[] = [
     author: "Zoulfa Katouh",
     position: "c5",
     coverImage: images.AsLongAsTheLemonTreesGrow,
-    ticketImage: images.TicketAsLongAsTheLemonTreesGrow,
     rating: 3.75,
     yearRead: 2024,
     genre: "YA Fiction / Contemporary",
@@ -644,7 +515,6 @@ export const BooksRead: ReadBook[] = [
     title: "A Month In The Country",
     author: "J.L. Carr",
     coverImage: images.AMonthInTheCountry,
-    ticketImage: images.TicketAMonthInTheCountry,
     rating: 4.3,
     position: "A5",
     yearRead: 2024,
@@ -708,7 +578,6 @@ export const BooksRead: ReadBook[] = [
     position: "a6",
     author: "Emily Henry",
     coverImage: images.BeachRead,
-    ticketImage: images.TicketBeachRead,
     rating: 3.4,
     yearRead: 2023,
     genre: "Romance / Contemporary",
@@ -767,7 +636,6 @@ export const BooksRead: ReadBook[] = [
     author: "M.L. Wang",
     position: "b4",
     coverImage: images.BloodOverBrightHaven,
-    ticketImage: images.TicketBloodOverBrightHaven,
     rating: 3.7,
     yearRead: 2024,
     genre: "Dark Fantasy / Dark Academia",
@@ -828,7 +696,6 @@ export const BooksRead: ReadBook[] = [
     author: "Andy Weir",
     position: "c4",
     coverImage: images.ProjectHailMary,
-    ticketImage: images.TicketProjectHailMary,
     rating: 4.2,
     yearRead: 2024,
     genre: "Sci-Fi",
@@ -887,7 +754,6 @@ export const BooksRead: ReadBook[] = [
     title: "Captains Courageous",
     author: "Rudyard Kipling",
     coverImage: images.CaptainsCourageous,
-    ticketImage: images.TicketCaptainsCourageous,
     rating: 3.3,
     yearRead: 2022,
     genre: "Adventure / Classic",
@@ -947,7 +813,6 @@ export const BooksRead: ReadBook[] = [
     author: "Madeline Miller",
     position: "b5",
     coverImage: images.Circe,
-    ticketImage: images.TicketCirce,
     rating: 4.3,
     yearRead: 2024,
     genre: "Mythological Fiction / Fantasy",
@@ -1012,7 +877,6 @@ export const BooksRead: ReadBook[] = [
     title: "Red Rising",
     author: "Pierce Brown",
     coverImage: images.RedRising,
-    ticketImage: images.TicketRedRising,
     position: "A3",
     rating: 4.2,
     yearRead: 2023,
@@ -1096,7 +960,6 @@ export const BooksRead: ReadBook[] = [
     author: "Pierce Brown",
     position: "A2",
     coverImage: images.GoldenSon,
-    ticketImage: images.TicketGoldenSon,
     rating: 4.4,
     yearRead: 2023,
     genre: "Sci-Fi / Space Opera",
@@ -1162,7 +1025,6 @@ export const BooksRead: ReadBook[] = [
     author: "Pierce Brown",
     position: "b1",
     coverImage: images.MorningStar,
-    ticketImage: images.TicketMorningStar,
     rating: 4.3,
     yearRead: 2023,
     genre: "Sci-Fi / Space Opera",
@@ -1242,7 +1104,6 @@ export const BooksRead: ReadBook[] = [
     author: "Pierce Brown",
     position: "a1",
     coverImage: images.IronGold,
-    ticketImage: images.TicketIronGold,
     rating: 3.75,
     yearRead: 2024,
     genre: "Sci-Fi / Space Opera",
@@ -1324,7 +1185,6 @@ export const BooksRead: ReadBook[] = [
     author: "Pierce Brown",
     position: "B2",
     coverImage: images.DarkAge,
-    ticketImage: images.TicketDarkAge,
     rating: 4.25,
     yearRead: 2024,
     genre: "Sci-Fi / Space Opera",
@@ -1402,7 +1262,6 @@ export const BooksRead: ReadBook[] = [
     title: "Light Bringer",
     author: "Pierce Brown",
     coverImage: images.LightBringer,
-    ticketImage: images.TicketLightBringer,
     position: "b3",
     rating: 4.9,
     yearRead: 2024,
@@ -1482,7 +1341,6 @@ export const BooksRead: ReadBook[] = [
     author: "Rebecca Yarros",
     position: "d2",
     coverImage: images.FourthWing,
-    ticketImage: images.TicketFourthWing,
     rating: 3.75,
     yearRead: 2024,
     genre: "Fantasy / Romance",
@@ -1572,7 +1430,6 @@ export const BooksRead: ReadBook[] = [
     author: "Rebecca Yarros",
     position: "d3",
     coverImage: images.IronFlame,
-    ticketImage: images.TicketIronFlame,
     rating: 3.1,
     yearRead: 2024,
     genre: "Fantasy / Romance",
@@ -1639,7 +1496,6 @@ export const BooksRead: ReadBook[] = [
     author: "John Green",
     position: "c1",
     coverImage: images.LookingForAlaska,
-    ticketImage: images.TicketLookingForAlaska,
     rating: 3.8,
     yearRead: 2022,
     genre: "YA Fiction / Coming-of-Age",
@@ -1706,7 +1562,6 @@ export const BooksRead: ReadBook[] = [
     author: "Viktor E. Frankl",
     position: "e6",
     coverImage: images.MansSearchForMeaning,
-    ticketImage: images.TicketMansSearchForMeaning,
     rating: 4.4,
     yearRead: 2023,
     genre: "Psychology / Memoir",
@@ -1772,7 +1627,6 @@ export const BooksRead: ReadBook[] = [
     position: "d4",
     author: "Ria Chopra",
     coverImage: images.NeverLoggedOut,
-    ticketImage: images.TicketNeverLoggedOut,
     rating: 3.9,
     yearRead: 2024,
     genre: "Essays / Technology",
@@ -1832,7 +1686,6 @@ export const BooksRead: ReadBook[] = [
     author: "Ernest Hemingway",
     position: "e2",
     coverImage: images.OldManAndTheSea,
-    ticketImage: images.TicketOldManAndTheSea,
     rating: 3.8,
     yearRead: 2023,
     genre: "Classic / Literary Fiction",
@@ -1899,7 +1752,6 @@ export const BooksRead: ReadBook[] = [
     title: "Poor Little Rich Slum",
     author: "Rashmi Bansal & Deepak Gandhi",
     coverImage: images.PoorLittleRichSlum,
-    ticketImage: images.TicketPoorLittleRichSlum,
     position: "e1",
     rating: 3.6,
     yearRead: 2023,
@@ -1960,7 +1812,6 @@ export const BooksRead: ReadBook[] = [
     author: "Oscar Wilde",
     position: "e5",
     coverImage: images.OnlyDullPeople,
-    ticketImage: images.TicketOnlyDullPeople,
     rating: 4.1,
     yearRead: 2022,
     genre: "Classic / Essays & Aphorisms",
@@ -2026,7 +1877,6 @@ export const BooksRead: ReadBook[] = [
     author: "Holly Black",
     position: "c6",
     coverImage: images.TheCruelPrince,
-    ticketImage: images.TicketTheCruelPrince,
     rating: 3.75,
     yearRead: 2024,
     genre: "YA Fantasy",
@@ -2086,7 +1936,6 @@ export const BooksRead: ReadBook[] = [
     author: "Jared Diamond",
     position: "d5",
     coverImage: images.TheLastTreeOnEasterIsland,
-    ticketImage: images.TicketTheLastTreeOnEasterIsland,
     rating: 4,
     yearRead: 2023,
     genre: "History / Environment",
@@ -2146,7 +1995,6 @@ export const BooksRead: ReadBook[] = [
     title: "We Should All Be Feminists",
     author: "Chimamanda Adichie",
     coverImage: images.WeShouldAllBeFeminists,
-    ticketImage: images.TicketWeShouldAllBeFeminists,
     rating: 4.2,
     position: "d1",
     yearRead: 2023,
@@ -2213,7 +2061,6 @@ export const BooksRead: ReadBook[] = [
     title: "White Nights",
     author: "Fyodor Dostoevsky",
     coverImage: images.WhiteNights,
-    ticketImage: images.TicketWhiteNights,
     rating: 4.1,
     yearRead: 2024,
     genre: "Classic / Russian Literature",
@@ -2284,7 +2131,6 @@ export const wishlistBooks: WishlistBook[] = [
     publishedYear: 1964,
     isbn: "",
     coverImage: images.AMoveableFeast,
-    ticketImage: images.TicketAMoveableFeast,
     genres: ["Lost Generation", "Paris Cafe", "Pure Nostalgia", "Memoir"],
     goodreadsUrl: "https://www.goodreads.com/book/show/831287.A_Moveable_Feast",
     format: "little-penguin-classic",
@@ -2312,7 +2158,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.Babel,
-  //   ticketImage: images.TicketBabel,
   //  //   genres: ["Dark Academia","Linguistic Magic","Brutal Revolution"],
   //   goodreadsUrl: "",
   //   format: "standard",
@@ -2342,7 +2187,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   amazonUrl:
   //     "https://www.amazon.in/Bad-Words-irresistible-once-lifetime/dp/0008865140/ref=tmm_pap_swatch_0?_encoding=UTF8&sr=8-1",
   //   coverImage: images.BadWords,
-  //   ticketImage: images.TicketBadWords,
   //   genres: ["Contemporary", "Enemies-To-Lovers", "Laugh-Out-Loud", "Romance"],
   //   goodreadsUrl: "https://www.goodreads.com/book/show/241344658-bad-words",
   //   format: "standard",
@@ -2372,7 +2216,6 @@ export const wishlistBooks: WishlistBook[] = [
     publishedYear: 1866,
     isbn: "",
     coverImage: images.CrimeAndPunishment,
-    ticketImage: images.TicketCrimeAndPunishment,
     genres: ["Moral Fever", "Guilt", "Russia", "Philosophy"],
     goodreadsUrl:
       "https://www.goodreads.com/book/show/181309.Crime_and_Punishment",
@@ -2403,7 +2246,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   amazonUrl:
   //     "https://www.amazon.in/Dubliners-Modern-Classics-James-Joyce/dp/0140186476/ref=sr_1_4?sr=8-4",
   //   coverImage: images.Dubliners,
-  //   ticketImage: images.TicketDubliners,
   //   genres: [
   //     "Quiet Epiphanies",
   //     "Dublin Life",
@@ -2436,7 +2278,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   amazonUrl:
   //     "https://www.amazon.in/dp/1836432399/?coliid=I3X226J6EGKCA&colid=12HOKZPESP747&psc=1",
   //   coverImage: images.FruitFly,
-  //   ticketImage: images.TicketFruitFly,
   //  //   genres: ["Wildly Chaotic","Dark Humor","Unhinged Energy"],
   //   goodreadsUrl: "",
   //   format: "standard",
@@ -2466,7 +2307,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   publishedYear: 1861,
   //   isbn: "",
   //   coverImage: images.GreatExpectations,
-  //   ticketImage: images.TicketGreatExpectations,
   //   genres: ["19th Century", "Gothic Classic", "Victorian"],
   //   goodreadsUrl:
   //     "https://www.goodreads.com/book/show/13641547-great-expectations",
@@ -2497,7 +2337,6 @@ export const wishlistBooks: WishlistBook[] = [
     publishedYear: 1847,
     isbn: "",
     coverImage: images.JaneEyre,
-    ticketImage: images.TicketJaneEyre,
     genres: ["Literary Fiction", "Gothic Mystery", "Romance"],
     goodreadsUrl: "https://www.goodreads.com/book/show/11016.Jane_Eyre",
     format: "standard",
@@ -2525,7 +2364,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.Martyr,
-  //   ticketImage: images.TicketMartyr,
   //  //   genres: ["Dazzling Voice","Poetic Grief","Raw Heart"],
   //   goodreadsUrl: "",
   //   format: "standard",
@@ -2553,7 +2391,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.NearToTheWildHeart,
-  //   ticketImage: images.TicketNearToTheWildHeart,
   //  //   genres: ["Inner Monologue","Wild Heart","Fervent Prose"],
   //   goodreadsUrl: "",
   //   format: "standard",
@@ -2581,7 +2418,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.OnTheGenealogyOfMorals,
-  //   ticketImage: images.TicketOnTheGenealogyOfMorals,
   //  //   genres: ["Radical Critique","Will To Power","Provocative Thought"],
   //   goodreadsUrl: "",
   //   format: "standard",
@@ -2609,7 +2445,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.SeveralShortSentencesAboutWriting,
-  //   ticketImage: images.TicketSeveralShortSentencesAboutWriting,
   //  //   genres: ["Craft Wisdom","Sentence Rhythm","Pure Clarity"],
   //   goodreadsUrl: "",
   //   format: "standard",
@@ -2637,7 +2472,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   amazonUrl:
   //     "https://www.amazon.in/dp/067008557X/?coliid=I1R8KDH7QTIKHZ&colid=12HOKZPESP747&psc=1#",
   //   coverImage: images.SoniaAndSunny,
-  //   ticketImage: images.TicketSoniaAndSunny,
   //  //   genres: ["Sharp Diaspora","Tender Longing","Rich Texture"],
   //   goodreadsUrl: "",
   //   format: "standard",
@@ -2667,7 +2501,6 @@ export const wishlistBooks: WishlistBook[] = [
     publishedYear: 1965,
     isbn: "",
     coverImage: images.Stoner,
-    ticketImage: images.TicketStoner,
     genres: ["Quiet Tragedy", "Stoic Beauty", "Sublime Prose"],
     goodreadsUrl: "https://www.goodreads.com/book/show/216281031-stoner",
     format: "standard",
@@ -2697,7 +2530,6 @@ export const wishlistBooks: WishlistBook[] = [
     publishedYear: 2020,
     isbn: "",
     coverImage: images.TaiwanTravelogue,
-    ticketImage: images.TicketTaiwanTravelogue,
     genres: ["Food History", "Subtle Bond", "Colonial Tale"],
     goodreadsUrl:
       "https://www.goodreads.com/book/show/205363984-taiwan-travelogue",
@@ -2728,7 +2560,6 @@ export const wishlistBooks: WishlistBook[] = [
     publishedYear: 2025,
     isbn: "",
     coverImage: images.TheCorrespondent,
-    ticketImage: images.TicketTheCorrespondent,
     genres: ["Contemporary", "Letters", "Literary Fiction"],
     goodreadsUrl:
       "https://www.goodreads.com/book/show/236717594-the-correspondent",
@@ -2757,7 +2588,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.TheGoldfinch,
-  //   ticketImage: images.TicketTheGoldfinch,
   //  //   genres: ["Secret Art","Epic Journey","Haunting Loss"],
   //   goodreadsUrl: "",
   //   format: "standard",
@@ -2787,7 +2617,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   amazonUrl:
   //     "https://www.amazon.in/dp/0141182636/?coliid=I19J32CB4ADL5V&colid=12HOKZPESP747&psc=1",
   //   coverImage: images.TheGreatGatsby,
-  //   ticketImage: images.TicketTheGreatGatsby,
   //   genres: ["Jazz Age", "Literature", "Classics"],
   //   goodreadsUrl: "https://www.goodreads.com/book/show/396094.The_Great_Gatsby",
   //   format: "little-penguin-classic",
@@ -2817,7 +2646,6 @@ export const wishlistBooks: WishlistBook[] = [
     amazonUrl:
       "https://www.amazon.in/dp/1784700444/?coliid=I28SX8L0IKIRR0&colid=12HOKZPESP747&psc=1",
     coverImage: images.TheMemoryPolice,
-    ticketImage: images.TicketTheMemoryPolice,
     genres: ["Sci-Fi", "Dystopia", "Japan"],
     goodreadsUrl:
       "https://www.goodreads.com/book/show/37004370-the-memory-police",
@@ -2846,7 +2674,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   note: "",
   //   isbn: "",
   //   coverImage: images.TheParadiseOfFood,
-  //   ticketImage: images.TicketTheParadiseOfFood,
   //  //   genres: ["Visceral Feast","Existential Dread","Darkly Comic"],
   //   goodreadsUrl: "",
   //   format: "standard",
@@ -2876,7 +2703,6 @@ export const wishlistBooks: WishlistBook[] = [
   //   publishedYear: 1942,
   //   isbn: "",
   //   coverImage: images.TheStranger,
-  //   ticketImage: images.TicketTheStranger,
   //   genres: ["Philosophy", "Absurdism", "Detachment"],
   //   goodreadsUrl: "https://www.goodreads.com/book/show/49552.The_Stranger",
   //   format: "little-penguin-classic",
@@ -2906,7 +2732,6 @@ export const wishlistBooks: WishlistBook[] = [
     publishedYear: 1979,
     isbn: "",
     coverImage: images.WinterNightATraveller,
-    ticketImage: images.TicketWinterNightATraveller,
     genres: ["Reader's Maze", "Metafiction Magic", "Pure Ingenuity"],
     goodreadsUrl:
       "https://www.goodreads.com/book/show/204813048-if-on-a-winter-s-night-a-traveler",
@@ -2937,7 +2762,6 @@ export const wishlistBooks: WishlistBook[] = [
     publishedYear: 2026,
     isbn: "",
     coverImage: images.EverythingWasBeautiful,
-    ticketImage: images.TicketEverythingWasBeautiful,
     genres: ["Tender Sorrow", "Poetic Dream", "Quiet Hope"],
     goodreadsUrl:
       "https://www.goodreads.com/book/show/242975495-everything-was-beautiful-and-nothing-hurt",
@@ -2968,7 +2792,6 @@ export const wishlistBooks: WishlistBook[] = [
     publishedYear: 2026,
     isbn: "",
     coverImage: images.MayWeFeedTheKing,
-    ticketImage: images.TicketMayWeFeedTheKing,
     genres: ["Dark Folklore", "Strange Ritual", "Eerie Beauty"],
     goodreadsUrl:
       "https://www.goodreads.com/book/show/242252419-may-we-feed-the-king",
@@ -2999,7 +2822,6 @@ export const wishlistBooks: WishlistBook[] = [
     publishedYear: 1926,
     isbn: "",
     coverImage: images.TheSunAlsoRises,
-    ticketImage: images.TicketTheSunAlsoRises,
     genres: ["Pamplona Fiesta", "Unspoken Wounds", "Lost Generation"],
     goodreadsUrl: "https://www.goodreads.com/book/show/266466.Fiesta",
     format: "standard",
@@ -3029,7 +2851,6 @@ export const wishlistBooks: WishlistBook[] = [
     publishedYear: 2022,
     isbn: "",
     coverImage: images.DemonCopperhead,
-    ticketImage: images.TicketDemonCopperhead,
     genres: ["Appalachia", "Fierce Survival", "Pulitzer Winner"],
     goodreadsUrl:
       "https://www.goodreads.com/book/show/60194162-demon-copperhead",
@@ -3060,7 +2881,6 @@ export const wishlistBooks: WishlistBook[] = [
     publishedYear: 1991,
     isbn: "",
     coverImage: images.SimplePassion,
-    ticketImage: images.TicketSimplePassion,
     genres: ["French Lit", "Romance", "Contemporary"],
     goodreadsUrl: "https://www.goodreads.com/book/show/58678702-simple-passion",
     format: "standard",
@@ -3090,7 +2910,6 @@ export const wishlistBooks: WishlistBook[] = [
     publishedYear: 2026,
     isbn: "",
     coverImage: images.JohnOfJohn,
-    ticketImage: images.TicketJohnOfJohn,
     genres: ["Literary Fiction", "Scotland", "Queer"],
     goodreadsUrl: "https://www.goodreads.com/book/show/235260861-john-of-john",
     format: "standard",
@@ -3120,7 +2939,6 @@ export const wishlistBooks: WishlistBook[] = [
     publishedYear: 2021,
     isbn: "",
     coverImage: images.SmallThingsLikeThese,
-    ticketImage: images.TicketSmallThingsLikeThese,
     genres: ["Historical Fiction", "Irish Winter", "Christmas"],
     goodreadsUrl:
       "https://www.goodreads.com/book/show/59733531-small-things-like-these",
@@ -3151,7 +2969,6 @@ export const wishlistBooks: WishlistBook[] = [
     publishedYear: 2025,
     isbn: "",
     coverImage: images.TheRoadToTenderHearts,
-    ticketImage: images.TicketTheRoadToTenderHearts,
     genres: ["Quirky Warmth", "Grief Healing", "Big Heart"],
     goodreadsUrl:
       "https://www.goodreads.com/book/show/218460347-the-road-to-tender-hearts",
@@ -3182,7 +2999,6 @@ export const wishlistBooks: WishlistBook[] = [
     publishedYear: 2026,
     isbn: "",
     coverImage: images.TheThingsWeNeverSay,
-    ticketImage: images.TicketTheThingsWeNeverSay,
     genres: ["Unspoken Truth", "Small Town", "Deep Empathy"],
     goodreadsUrl:
       "https://www.goodreads.com/book/show/242082631-the-things-we-never-say",
@@ -3213,7 +3029,6 @@ export const wishlistBooks: WishlistBook[] = [
     publishedYear: 2026,
     isbn: "",
     coverImage: images.WimmyRoadBoys,
-    ticketImage: images.TicketWimmyRoadBoys,
     genres: ["Brotherhood Bond", "Curry Mile", "Raw Hustle"],
     goodreadsUrl:
       "https://www.goodreads.com/book/show/241174585-wimmy-road-boyz",
@@ -3244,7 +3059,6 @@ export const wishlistBooks: WishlistBook[] = [
     publishedYear: 2025,
     isbn: "",
     coverImage: images.AngelDown,
-    ticketImage: images.TicketAngelDown,
     genres: ["Horror", "Myth", "Fantasy"],
     goodreadsUrl: "https://www.goodreads.com/book/show/220160849-angel-down",
     format: "standard",
@@ -3274,7 +3088,6 @@ export const wishlistBooks: WishlistBook[] = [
     amazonUrl:
       "https://www.amazon.in/dp/1035031248/?coliid=IUDFK0SST7HH8&colid=12HOKZPESP747&psc=1",
     coverImage: images.James,
-    ticketImage: images.TicketJames,
     genres: ["Historical Fiction", "Race", "African American"],
     goodreadsUrl: "https://www.goodreads.com/book/show/211137743-james",
     format: "standard",
@@ -3304,7 +3117,6 @@ export const wishlistBooks: WishlistBook[] = [
     amazonUrl:
       "https://www.amazon.in/My-Friends-Fredrik-Backman/dp/1398516406/ref=monarch_sidesheet_title",
     coverImage: images.MyFriends,
-    ticketImage: images.TicketMyFriends,
     genres: ["Summer", "Coming Of Age", "Friendship"],
     goodreadsUrl: "https://www.goodreads.com/book/show/217163697-my-friends",
     format: "standard",
@@ -3334,7 +3146,6 @@ export const wishlistBooks: WishlistBook[] = [
     amazonUrl:
       "https://www.amazon.in/Klara-Sun-Times-Sunday-Book/dp/057136490X/ref=sr_1_2?sr=8-2",
     coverImage: images.KlaraAndTheSun,
-    ticketImage: images.TicketKlaraAndTheSun,
     genres: [
       "Sci-Fi",
       "Dystopian",
@@ -3370,7 +3181,6 @@ export const wishlistBooks: WishlistBook[] = [
     amazonUrl:
       "https://www.amazon.in/Black-Bag-Luke-Kennard/dp/1399826123/ref=tmm_pap_swatch_0?_encoding=UTF8&sr=8-1",
     coverImage: images.BlackBag,
-    ticketImage: images.TicketBlackBag,
     genres: ["Contemporary", "Dark-comedy", "Campus novel", "Lit fiction"],
     goodreadsUrl: "https://www.goodreads.com/book/show/249766722-black-bag",
     format: "standard",
@@ -3400,7 +3210,6 @@ export const wishlistBooks: WishlistBook[] = [
     amazonUrl:
       "https://www.amazon.in/Wild-Dark-Shore-Charlotte-McConaghy/dp/1837265925/ref=tmm_pap_swatch_0?_encoding=UTF8&sr=8-1",
     coverImage: images.WildDarkShore,
-    ticketImage: images.TicketWildDarkShore,
     genres: ["Literary Fiction", "Mystery Thriller", "Survival", "Atmospheric"],
     goodreadsUrl:
       "https://www.goodreads.com/book/show/231127223-wild-dark-shore",
@@ -3431,7 +3240,6 @@ export const wishlistBooks: WishlistBook[] = [
     amazonUrl:
       "https://www.amazon.in/Orbital-Winner-Booker-Prize-2024/dp/1529922933/ref=sr_1_1?sr=8-1",
     coverImage: images.Orbital,
-    ticketImage: images.TicketOrbital,
     genres: ["Literary Fiction", "Space", "Philosophical", "Booker Prize"],
     goodreadsUrl: "https://www.goodreads.com/book/show/212343501-orbital",
     format: "standard",
@@ -3461,7 +3269,6 @@ export const wishlistBooks: WishlistBook[] = [
     amazonUrl:
       "https://www.amazon.in/Kairos-Jenny-Erpenbeck/dp/1783786132/ref=sr_1_1?sr=8-1",
     coverImage: images.Kairos,
-    ticketImage: images.TicketKairos,
     genres: [
       "Literary Fiction",
       "Historical Fiction",

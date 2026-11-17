@@ -1,12 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import {
-  motion,
-  AnimatePresence,
-  useMotionValue,
-  useSpring,
-} from "motion/react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import type {
   CurrentlyReadingBook,
   BookItem,
@@ -16,8 +11,8 @@ import BookCover from "@/components/book-block/book-cover";
 import PillMessage from "@/components/book-block/pill-message";
 import GenrePill from "./genres-pill";
 import ReadingProgressBar from "./reading-progress-bar";
-import CRBookHoverCard from "./cr-book-hover-card";
-import { calculateHoverCardPosition } from "@/lib/hover-card-utils";
+import BookTitleHoverLabel from "@/components/book-block/book-title-hover-label";
+import { useBlockHover } from "@/hooks/ui-hooks/use-block-hover";
 import { cn } from "@/lib/utils";
 import {
   type ActivePillState,
@@ -37,54 +32,15 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
   const { widthClass, rotation, cellWidth } = getCoverConfig(book);
   const { progress, totalPages } = getReadingProgress(book);
 
-  const [isCoverHovered, setIsCoverHovered] = useState(false);
-  const coverRef = useRef<HTMLDivElement>(null);
-
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const springX = useSpring(mouseX, {
-    damping: 60,
-    stiffness: 300,
-    mass: 0.5,
-  });
-  const springY = useSpring(mouseY, {
-    damping: 60,
-    stiffness: 300,
-    mass: 0.5,
-  });
-
-  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (coverRef.current) {
-      const rect = coverRef.current.getBoundingClientRect();
-      const { x, y } = calculateHoverCardPosition(e.clientX, e.clientY, rect);
-      mouseX.set(x);
-      mouseY.set(y);
-      springX.jump(x);
-      springY.jump(y);
-    }
-    setIsCoverHovered(true);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (coverRef.current) {
-      const rect = coverRef.current.getBoundingClientRect();
-      const { x, y } = calculateHoverCardPosition(e.clientX, e.clientY, rect);
-      if (!isCoverHovered) {
-        mouseX.set(x);
-        mouseY.set(y);
-        springX.jump(x);
-        springY.jump(y);
-        setIsCoverHovered(true);
-      } else {
-        mouseX.set(x);
-        mouseY.set(y);
-      }
-    }
-  };
-
-  const handleMouseLeave = () => {
-    setIsCoverHovered(false);
-  };
+  const {
+    blockRef,
+    isHovered,
+    springX,
+    springY,
+    handleMouseEnter,
+    handleMouseMove,
+    handleMouseLeave,
+  } = useBlockHover();
 
   // Extract review pills (3 pills) and genres (3 genres)
   const pills: CurrentlyReadingPill[] =
@@ -229,26 +185,25 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
   const currentGenre = genres[genrePill.index];
 
   return (
-    <div className={cn("w-cell-6 h-cell-6 relative select-none", className)}>
+    <div
+      ref={blockRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className={cn(
+        "w-cell-6 h-cell-6 relative select-none",
+        isHovered && "z-50",
+        className
+      )}
+    >
       {/* Central Unit: Anchored to a fixed bottom baseline with exact height container so all covers align */}
-      <div
-        className={cn(
-          "bottom-cell-[0.55] absolute left-1/2 z-10 flex -translate-x-1/2 flex-col items-center",
-          isCoverHovered && "z-50"
-        )}
-      >
+      <div className="bottom-cell-[0.55] absolute left-1/2 z-10 flex -translate-x-1/2 flex-col items-center">
         {/* Cover container with fixed height & items-end: locks the bottom of every cover to the exact same baseline */}
         <div
           className="flex items-end justify-center"
           style={{ height: "calc(var(--cell-size) * 3.8)" }}
         >
-          <div
-            ref={coverRef}
-            onMouseEnter={handleMouseEnter}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            className="relative cursor-pointer"
-          >
+          <div className="relative inline-block cursor-pointer">
             <BookCover
               src={book.coverImage}
               alt={book.title}
@@ -257,18 +212,6 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
               rotation={rotation}
               href={`/reading/${book.id}`}
             />
-
-            <AnimatePresence>
-              {isCoverHovered && (
-                <CRBookHoverCard
-                  book={book}
-                  progress={progress}
-                  totalPages={totalPages}
-                  x={springX}
-                  y={springY}
-                />
-              )}
-            </AnimatePresence>
           </div>
         </div>
 
@@ -327,6 +270,20 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
           >
             <GenrePill genre={currentGenre} />
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isHovered && (
+          <BookTitleHoverLabel
+            key={`cr-title-${book.id}`}
+            type="Current-read"
+            title={book.title}
+            progress={progress}
+            totalPages={totalPages}
+            x={springX}
+            y={springY}
+          />
         )}
       </AnimatePresence>
     </div>

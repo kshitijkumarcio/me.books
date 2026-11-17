@@ -4,8 +4,11 @@ import { useId } from "react";
 import Image from "next/image";
 import { motion, type MotionValue } from "motion/react";
 import type { BookItem, ReadBook } from "@/books/books-index";
+import TicketStamp from "./ticket-stamp";
 import { images } from "@/constants/images";
-import useTicketPerforations from "@/hooks/ui-hooks/use-ticket-perforations";
+import useTicketPerforations, {
+  TicketPerforatedBorder,
+} from "./use-ticket-perforations";
 import { cn } from "@/lib/utils";
 
 export interface ShelfBookHoverCardProps {
@@ -108,7 +111,8 @@ export const ShelfBookHoverCard = ({
 }: ShelfBookHoverCardProps) => {
   const rawId = useId();
   const baseId = rawId.replace(/[^a-zA-Z0-9_-]/g, "");
-  const { ticketRef, maskStyle } = useTicketPerforations();
+  const { ticketRef, maskStyle, borderPath, width, height } =
+    useTicketPerforations();
 
   if (!book) return null;
 
@@ -140,73 +144,91 @@ export const ShelfBookHoverCard = ({
       transition={{ duration: 0.22, ease: "easeOut" }}
       className="pointer-events-none absolute top-0 left-0 z-50 select-none"
     >
-      {/* Outer Ticket Container with Paper-cut Perforated Holes */}
-      <div
-        ref={ticketRef}
-        style={maskStyle}
-        className={cn("w-52 bg-white p-2", className)}
-      >
-        {/* Inner Grid Box with crisp black outline */}
-        <div className="flex flex-col overflow-hidden border border-black">
-          {/* Top Marquee Row (Genres) */}
-          <div className="flex h-5 items-center border-b border-black px-1">
-            <span className="font-mona-sans truncate text-[9.5px] font-bold tracking-tight text-black">
-              Available for borrowing
-            </span>
-          </div>
+      <div className="relative drop-shadow-[0_12px_24px_rgba(0,0,0,0.3)] filter">
+        {/* Outer Ticket Container with Paper-cut Perforated Holes */}
+        <div
+          ref={ticketRef}
+          style={maskStyle}
+          className={cn(
+            "bg-neon relative max-w-56 min-w-52 overflow-hidden p-2",
+            className
+          )}
+        >
+          {/* Faint Stamp */}
+          {/* <div className="pointer-events-none absolute -right-5 -bottom-3 z-20 select-none">
+            <TicketStamp text="FINISHED" />
+          </div> */}
 
-          {/* Lower Grid (Left Column: Image & Country, Right Column: Title, Author, Year, Rating) */}
-          <div className="flex flex-row">
-            {/* Left Column */}
-            <div className="flex w-16 shrink-0 flex-col border-r border-black">
-              {/* Ticket Image */}
-              <div className="relative h-14.5 w-full overflow-hidden">
-                <Image
-                  src={ticketImage}
-                  alt={title}
-                  fill
-                  className="object-cover mix-blend-multiply contrast-125 filter"
-                  sizes="64px"
-                />
-              </div>
-
-              {/* Country */}
-              <div className="flex h-5 items-center border-t border-black px-1.5">
-                <span className="font-mona-sans truncate text-[9.5px] font-bold tracking-tight text-black">
-                  {country}
-                </span>
-              </div>
+          {/* Inner Grid Box with crisp black outline */}
+          <div className="bg-neon relative z-10 flex flex-col overflow-hidden border border-black">
+            {/* Top Marquee Row (Genres) */}
+            <div className="flex h-5 items-center border-b border-black px-1">
+              <span className="font-mona-sans truncate text-[9.5px] font-bold tracking-tight text-black">
+                Available for borrowing
+              </span>
             </div>
 
-            {/* Right Column */}
-            <div className="flex min-w-0 flex-1 flex-col justify-between overflow-hidden">
-              {/* Title */}
-              <div className="flex min-h-9.5 flex-1 items-center px-1.5 py-1">
-                <h4 className="font-mona-sans line-clamp-2 text-[12.5px] leading-[1.12] font-bold tracking-tight text-black">
-                  {title}
-                </h4>
+            {/* Lower Grid (Left Column: Image & Country, Right Column: Title, Author, Year, Rating) */}
+            <div className="flex flex-row">
+              {/* Left Column */}
+              <div className="flex w-16 shrink-0 flex-col border-r border-black">
+                {/* Ticket Image */}
+                <div className="relative h-14.5 w-full overflow-hidden">
+                  <Image
+                    src={ticketImage}
+                    alt={title}
+                    fill
+                    className="object-cover mix-blend-multiply contrast-125 filter"
+                    sizes="64px"
+                  />
+                </div>
+
+                {/* Country */}
+                <div className="flex h-5 items-center border-t border-black px-1.5">
+                  <span className="font-mona-sans truncate text-[9.5px] font-bold tracking-tight text-black">
+                    {country}
+                  </span>
+                </div>
               </div>
 
-              {/* Author & Year */}
-              <div className="flex h-5 items-center justify-between border-t border-black px-1.5">
-                <span className="font-mona-sans mr-1 max-w-21.25 truncate text-[9.5px] font-semibold text-black">
-                  {author}
-                </span>
-                <span className="font-mona-sans shrink-0 text-[9.5px] font-semibold text-black tabular-nums">
-                  {publishedYear}
-                </span>
-              </div>
+              {/* Right Column */}
+              <div className="flex min-w-0 flex-1 flex-col justify-between overflow-hidden">
+                {/* Title */}
+                <div className="flex min-h-9.5 flex-1 items-center px-1.5 py-1">
+                  <h4 className="font-mona-sans line-clamp-2 text-[12.5px] leading-[1.12] font-bold tracking-tight text-black">
+                    {title}
+                  </h4>
+                </div>
 
-              {/* Star Rating & Numeric Value */}
-              <div className="flex h-5 items-center justify-between border-t border-black px-1.5">
-                <DynamicStarRating rating={rating} baseId={baseId} />
-                <span className="font-mona-sans text-[9.5px] font-bold text-black tabular-nums">
-                  {Number(rating).toFixed(1)}
-                </span>
+                {/* Author & Year */}
+                <div className="flex h-5 items-center justify-between border-t border-black px-1.5">
+                  <span className="font-mona-sans mr-1 max-w-21.25 truncate text-[9.5px] font-semibold text-black">
+                    {author}
+                  </span>
+                  <span className="font-mona-sans shrink-0 text-[9.5px] font-semibold text-black tabular-nums">
+                    {publishedYear}
+                  </span>
+                </div>
+
+                {/* Star Rating & Numeric Value */}
+                <div className="flex h-5 items-center justify-between border-t border-black px-1.5">
+                  <DynamicStarRating rating={rating} baseId={baseId} />
+                  <span className="font-mona-sans text-[9.5px] font-bold text-black tabular-nums">
+                    {Number(rating).toFixed(1)}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Perforated Black Border that follows the perforations */}
+        {/* <TicketPerforatedBorder
+          borderPath={borderPath}
+          width={width}
+          height={height}
+          strokeWidth={1}
+        /> */}
       </div>
     </motion.div>
   );

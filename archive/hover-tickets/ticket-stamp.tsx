@@ -12,7 +12,7 @@ export const TicketStamp = ({ text, className }: TicketStampProps) => {
       height="132"
       viewBox="-66 -66 132 132"
       className={cn(
-        "pointer-events-none h-33 w-33 stroke-black/20 text-black/20 select-none",
+        "pointer-events-none h-33 w-33 stroke-black/15 text-black/15 select-none",
         className
       )}
       fill="none"

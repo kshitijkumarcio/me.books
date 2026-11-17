@@ -1,5 +1,5 @@
 import type { CurrentlyReadingBook, BookItem } from "@/books/books-index";
-import { parseCellUnit } from "@/components/book-block/book-block";
+import { parseCellUnit } from "@/components/book-block/book-block-utils";
 
 export interface PillCoord {
   top: string;

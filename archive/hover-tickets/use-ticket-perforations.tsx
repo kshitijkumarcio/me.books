@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 
 export interface TicketPerforationOptions {
   /** Radius of each perforation hole in px. Default: 2.8 */
@@ -87,18 +88,130 @@ export const generatePerforatedMask = (
 };
 
 /**
+ * Generates an SVG path string that traces the outer rectangular perimeter
+ * with semicircular inward arcs at each perforation hole, producing a crisp
+ * continuous border that follows the perforated edges.
+ */
+export const generatePerforatedBorderPath = (
+  width: number,
+  height: number,
+  options: TicketPerforationOptions = {}
+): string => {
+  if (width <= 0 || height <= 0) return "";
+  const { holeRadius = 2.8, standardPitch = 11, cornerMargin = 7 } = options;
+  const r = holeRadius;
+
+  const getHoleCount = (len: number) => {
+    const available = Math.max(0, len - cornerMargin * 2);
+    return Math.max(2, Math.round(available / standardPitch) + 1);
+  };
+
+  const hCount = getHoleCount(width);
+  const vCount = getHoleCount(height);
+
+  let d = "M 0 0";
+
+  // 1. Top Edge: Left to Right (inward arcs into positive Y)
+  for (let i = 0; i < hCount; i++) {
+    const cx = cornerMargin + i * ((width - cornerMargin * 2) / (hCount - 1));
+    d += ` L ${(cx - r).toFixed(2)} 0`;
+    d += ` A ${r} ${r} 0 0 0 ${(cx + r).toFixed(2)} 0`;
+  }
+  d += ` L ${width} 0`;
+
+  // 2. Right Edge: Top to Bottom (inward arcs into X < width)
+  for (let i = 0; i < vCount; i++) {
+    const cy = cornerMargin + i * ((height - cornerMargin * 2) / (vCount - 1));
+    d += ` L ${width} ${(cy - r).toFixed(2)}`;
+    d += ` A ${r} ${r} 0 0 0 ${width} ${(cy + r).toFixed(2)}`;
+  }
+  d += ` L ${width} ${height}`;
+
+  // 3. Bottom Edge: Right to Left (inward arcs into Y < height)
+  for (let i = hCount - 1; i >= 0; i--) {
+    const cx = cornerMargin + i * ((width - cornerMargin * 2) / (hCount - 1));
+    d += ` L ${(cx + r).toFixed(2)} ${height}`;
+    d += ` A ${r} ${r} 0 0 0 ${(cx - r).toFixed(2)} ${height}`;
+  }
+  d += ` L 0 ${height}`;
+
+  // 4. Left Edge: Bottom to Top (inward arcs into positive X)
+  for (let i = vCount - 1; i >= 0; i--) {
+    const cy = cornerMargin + i * ((height - cornerMargin * 2) / (vCount - 1));
+    d += ` L 0 ${(cy + r).toFixed(2)}`;
+    d += ` A ${r} ${r} 0 0 0 0 ${(cy - r).toFixed(2)}`;
+  }
+  d += " Z";
+
+  return d;
+};
+
+/**
+ * Overlay component that renders the black border following the perforations.
+ */
+export const TicketPerforatedBorder = ({
+  borderPath,
+  width,
+  height,
+  strokeWidth = 1,
+  className,
+}: {
+  borderPath?: string;
+  width?: number;
+  height?: number;
+  strokeWidth?: number;
+  className?: string;
+}) => {
+  if (!borderPath || !width || !height) return null;
+
+  return (
+    <svg
+      className={cn(
+        "pointer-events-none absolute inset-0 z-20 h-full w-full overflow-visible select-none",
+        className
+      )}
+      viewBox={`0 0 ${width} ${height}`}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d={borderPath}
+        fill="none"
+        stroke="black"
+        strokeWidth={strokeWidth}
+        strokeLinejoin="miter"
+      />
+    </svg>
+  );
+};
+
+/**
  * React hook that attaches a ref to any ticket element, dynamically measures its dimensions
- * via ResizeObserver, and computes the exact perforation hole count for each edge.
+ * via ResizeObserver, and computes the exact perforation hole count for each edge and
+ * generates both the mask CSS and the SVG border path that follows the perforations.
  */
 export const useTicketPerforations = (
   options: TicketPerforationOptions = {},
-  fallbackWidth = 176,
-  fallbackHeight = 90
+  fallbackWidth = 208,
+  fallbackHeight = 98
 ) => {
   const { holeRadius, standardPitch, cornerMargin } = options;
   const ticketRef = useRef<HTMLDivElement | null>(null);
+
+  const [dimensions, setDimensions] = useState<{
+    width: number;
+    height: number;
+  }>({
+    width: fallbackWidth,
+    height: fallbackHeight,
+  });
+
   const [maskStyle, setMaskStyle] = useState<React.CSSProperties>(() =>
     generatePerforatedMask(fallbackWidth, fallbackHeight, options)
+  );
+
+  const [borderPath, setBorderPath] = useState<string>(() =>
+    generatePerforatedBorderPath(fallbackWidth, fallbackHeight, options)
   );
 
   useEffect(() => {
@@ -118,8 +231,16 @@ export const useTicketPerforations = (
       ) {
         prevW = roundedW;
         prevH = roundedH;
+        setDimensions({ width: roundedW, height: roundedH });
         setMaskStyle(
           generatePerforatedMask(roundedW, roundedH, {
+            holeRadius,
+            standardPitch,
+            cornerMargin,
+          })
+        );
+        setBorderPath(
+          generatePerforatedBorderPath(roundedW, roundedH, {
             holeRadius,
             standardPitch,
             cornerMargin,
@@ -151,7 +272,13 @@ export const useTicketPerforations = (
     };
   }, [holeRadius, standardPitch, cornerMargin]);
 
-  return { ticketRef, maskStyle };
+  return {
+    ticketRef,
+    maskStyle,
+    borderPath,
+    width: dimensions.width,
+    height: dimensions.height,
+  };
 };
 
 export default useTicketPerforations;

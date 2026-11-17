@@ -4,7 +4,7 @@ import type { CSSProperties } from "react";
 import PaperBackground from "@/components/ui-components/paper-background";
 import { cn } from "@/lib/utils";
 import type { QuoteTextColor } from "@/books/books-index";
-import { parseCellUnit } from "./book-block";
+import { parseCellUnit } from "./book-block-utils";
 
 interface BookQuoteProps {
   quote: string;

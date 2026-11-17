@@ -2,8 +2,8 @@
 
 import { motion, type MotionValue } from "motion/react";
 import type { CurrentlyReadingBook, BookItem } from "@/books/books-index";
-import TicketStamp from "@/components/ui-components/ticket-stamp";
-import useTicketPerforations from "@/hooks/ui-hooks/use-ticket-perforations";
+import TicketStamp from "../hover-tickets/ticket-stamp";
+import useTicketPerforations from "../hover-tickets/use-ticket-perforations";
 import { cn } from "@/lib/utils";
 
 export interface CRBookHoverCardProps {

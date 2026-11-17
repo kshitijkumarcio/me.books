@@ -1,12 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo, useCallback } from "react";
-import {
-  motion,
-  AnimatePresence,
-  useMotionValue,
-  useSpring,
-} from "motion/react";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import type { WishlistBook, BookItem } from "@/books/books-index";
 import BookCover from "@/components/book-block/book-cover";
 import GenrePill from "@/components/current-reads/genres-pill";
@@ -14,8 +9,8 @@ import {
   getRandomSidePosition,
   type PillCoord,
 } from "@/components/current-reads/cr-block-geometry";
-import WishlistHoverCard from "./wishlist-hover-card";
-import { calculateHoverCardPosition } from "@/lib/hover-card-utils";
+import BookTitleHoverLabel from "@/components/book-block/book-title-hover-label";
+import { useBlockHover } from "@/hooks/ui-hooks/use-block-hover";
 import { cn } from "@/lib/utils";
 
 export interface WishListBlockProps {
@@ -35,24 +30,18 @@ export const WishListBlock = ({
   size = 6,
   className,
 }: WishListBlockProps) => {
-  const [isHovered, setIsHovered] = useState(false);
+  const {
+    blockRef,
+    isHovered,
+    springX,
+    springY,
+    handleMouseEnter: baseMouseEnter,
+    handleMouseMove: baseMouseMove,
+    handleMouseLeave,
+  } = useBlockHover();
+
   const [leftPill, setLeftPill] = useState<ActiveWishlistPill | null>(null);
   const [rightPill, setRightPill] = useState<ActiveWishlistPill | null>(null);
-  const blockRef = useRef<HTMLDivElement>(null);
-
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const springX = useSpring(mouseX, {
-    damping: 60,
-    stiffness: 300,
-    mass: 0.5,
-  });
-  const springY = useSpring(mouseY, {
-    damping: 60,
-    stiffness: 300,
-    mass: 0.5,
-  });
 
   const isWishlist = book?.status === "wishlist";
   const coverElement = book?.layout?.find((el) => el.type === "cover");
@@ -160,46 +149,23 @@ export const WishListBlock = ({
 
   if (!book) return null;
 
-  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (blockRef.current) {
-      const rect = blockRef.current.getBoundingClientRect();
-      const { x, y } = calculateHoverCardPosition(e.clientX, e.clientY, rect);
-      mouseX.set(x);
-      mouseY.set(y);
-      springX.jump(x);
-      springY.jump(y);
-    }
+  const handleBlockMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+    baseMouseEnter(e);
     spawnHoverPills();
-    setIsHovered(true);
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (blockRef.current) {
-      const rect = blockRef.current.getBoundingClientRect();
-      const { x, y } = calculateHoverCardPosition(e.clientX, e.clientY, rect);
-      if (!isHovered) {
-        mouseX.set(x);
-        mouseY.set(y);
-        springX.jump(x);
-        springY.jump(y);
-        spawnHoverPills();
-        setIsHovered(true);
-      } else {
-        mouseX.set(x);
-        mouseY.set(y);
-      }
+  const handleBlockMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isHovered) {
+      spawnHoverPills();
     }
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
+    baseMouseMove(e);
   };
 
   return (
     <div
       ref={blockRef}
-      onMouseEnter={handleMouseEnter}
-      onMouseMove={handleMouseMove}
+      onMouseEnter={handleBlockMouseEnter}
+      onMouseMove={handleBlockMouseMove}
       onMouseLeave={handleMouseLeave}
       className={cn(
         "w-cell-6 h-cell-6",
@@ -214,7 +180,7 @@ export const WishListBlock = ({
     >
       <div className="relative h-full w-full">
         {/* Book Cover Container */}
-        <div className="bottom-cell-[1.05] absolute left-1/2 -translate-x-1/2">
+        <div className="bottom-cell-[1.05] absolute left-1/2 inline-block -translate-x-1/2 cursor-pointer">
           <BookCover
             src={book.coverImage}
             alt={book.title}
@@ -265,9 +231,12 @@ export const WishListBlock = ({
             )}
 
             {isHovered && (
-              <WishlistHoverCard
-                book={book as WishlistBook}
+              <BookTitleHoverLabel
+                key={`wishlist-title-${book.id}`}
+                type="Wishlist"
+                title={book.title}
                 x={springX}
+                price={book.price}
                 y={springY}
               />
             )}

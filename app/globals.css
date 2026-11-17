@@ -23,7 +23,7 @@
 @theme inline {
   --font-mona-sans: var(--font-mona-sans);
   --color-neon: #d9ff36;
-  --color-ticket-neon: #ddff4b;
+  --color-ticket-neon: #e0ff5a;
   --shadow-book: var(--shadow-book);
   --spacing-cell: var(--cell-size);
 }
@@ -120,6 +120,11 @@
     position: relative;
     overscroll-behavior: none;
   }
+}
+
+@utility drop-shadow-ticket {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08))
+    drop-shadow(0 12px 24px rgba(0, 0, 0, 0.18));
 }
 
 @layer utilities {

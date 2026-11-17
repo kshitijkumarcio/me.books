@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { PrefetchKind } from "next/dist/client/components/router-reducer/router-reducer-types";
 import type { StaticImageData } from "next/image";
 import { cn } from "@/lib/utils";
-import { parseCellUnit } from "./book-block";
+import { parseCellUnit } from "./book-block-utils";
 import type { BookFormat } from "@/books/books-index";
 import {
   COVER_FORMAT_SIZES,
