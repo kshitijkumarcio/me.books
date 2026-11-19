@@ -271,7 +271,7 @@ const Wishlist = ({
           {brickRows.map((row, r) => (
             <div
               key={`wishlist-row-${r}`}
-              className="relative flex flex-row justify-center hover:z-40"
+              className="relative flex flex-row justify-center hover:z-40 focus-within:z-40 has-[[data-hovered]]:z-40"
               style={{
                 columnGap: `calc(var(--cell-size) * ${horizontalGap})`,
               }}
@@ -279,7 +279,7 @@ const Wishlist = ({
               {row.map((item) => (
                 <div
                   key={item.key}
-                  className="relative flex shrink-0 items-center justify-center focus-within:z-50 hover:z-50"
+                  className="relative flex shrink-0 items-center justify-center focus-within:z-50 hover:z-50 has-[[data-hovered]]:z-50"
                 >
                   {item.book ? (
                     <WishListBlock book={item.book} size={effectiveBlockSize} />

@@ -15,6 +15,12 @@ import { cn } from "@/lib/utils";
 
 export { parseCellUnit, resolveElementPosition };
 
+const AVAILABILITY_LABEL_MAP = {
+  available: "Available",
+  taken: "Taken",
+  "not for borrowing": "Not for borrowing",
+} as const;
+
 export interface BookBlockProps {
   item?: BookItem;
   book?: BookItem;
@@ -32,6 +38,7 @@ export const BookBlock = ({
   const {
     blockRef,
     isHovered,
+    isElevated,
     springX,
     springY,
     handleMouseEnter,
@@ -46,13 +53,14 @@ export const BookBlock = ({
   return (
     <div
       ref={blockRef}
+      data-hovered={isHovered ? "true" : isElevated ? "exiting" : undefined}
       onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className={cn(
         size === 6 ? "w-cell-6 h-cell-6" : "w-cell-8 h-cell-8",
         "relative aspect-square select-none",
-        isHovered && "z-50",
+        isHovered ? "z-[60]" : isElevated ? "z-[50]" : "isolate",
         className
       )}
     >
@@ -64,7 +72,11 @@ export const BookBlock = ({
             key={`shelf-title-${book.id}`}
             type="Shelf"
             title={book.title}
-            availability={book.status === "read" ? "Available" : undefined}
+            availability={
+              book.availability
+                ? AVAILABILITY_LABEL_MAP[book.availability]
+                : undefined
+            }
             x={springX}
             y={springY}
           />

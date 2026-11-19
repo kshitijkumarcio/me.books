@@ -60,7 +60,7 @@ const CurrentReads = ({
         >
           {/* Row 1: 3 blocks */}
           <div
-            className="flex flex-row items-end justify-center"
+            className="relative flex flex-row items-end justify-center hover:z-40 focus-within:z-40 has-[[data-hovered]]:z-40"
             style={{
               columnGap: "calc(var(--cell-size) * 2)",
             }}
@@ -72,7 +72,7 @@ const CurrentReads = ({
 
           {/* Row 2: 2 blocks (placed centrally) */}
           <div
-            className="flex flex-row items-end justify-center"
+            className="relative flex flex-row items-end justify-center hover:z-40 focus-within:z-40 has-[[data-hovered]]:z-40"
             style={{
               columnGap: "calc(var(--cell-size) * 2)",
             }}

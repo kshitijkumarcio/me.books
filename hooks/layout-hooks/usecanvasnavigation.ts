@@ -60,6 +60,7 @@ interface CanvasNavigationState {
     | null;
   activeZoneId: string;
   isChaptersMenuOpen: boolean;
+  isCurateMenuOpen: boolean;
   setPanToFn: (fn: (x: number, y: number) => void) => void;
   setScrollToTargetFn: (
     fn:
@@ -71,7 +72,13 @@ interface CanvasNavigationState {
   ) => void;
   setActiveZoneId: (id: string) => void;
   toggleChaptersMenu: () => void;
+  openChaptersMenu: () => void;
   closeChaptersMenu: () => void;
+  toggleCurateMenu: () => void;
+  openCurateMenu: () => void;
+  closeCurateMenu: () => void;
+  setIsChaptersMenuOpen: (isOpen: boolean) => void;
+  setIsCurateMenuOpen: (isOpen: boolean) => void;
   goToZone: (
     zoneId: string,
     options?: { lerp?: number; duration?: number; offset?: number }
@@ -91,12 +98,42 @@ export const useCanvasNavigation = create<CanvasNavigationState>(
     scrollToTargetFn: null,
     activeZoneId: "books-read",
     isChaptersMenuOpen: false,
+    isCurateMenuOpen: false,
     setPanToFn: (fn) => set({ panToFn: fn }),
     setScrollToTargetFn: (fn) => set({ scrollToTargetFn: fn }),
     setActiveZoneId: (id) => set({ activeZoneId: id }),
     toggleChaptersMenu: () =>
-      set((state) => ({ isChaptersMenuOpen: !state.isChaptersMenuOpen })),
+      set((state) => ({
+        isChaptersMenuOpen: !state.isChaptersMenuOpen,
+        isCurateMenuOpen: false,
+      })),
+    openChaptersMenu: () =>
+      set({
+        isChaptersMenuOpen: true,
+        isCurateMenuOpen: false,
+      }),
     closeChaptersMenu: () => set({ isChaptersMenuOpen: false }),
+    toggleCurateMenu: () =>
+      set((state) => ({
+        isCurateMenuOpen: !state.isCurateMenuOpen,
+        isChaptersMenuOpen: false,
+      })),
+    openCurateMenu: () =>
+      set({
+        isCurateMenuOpen: true,
+        isChaptersMenuOpen: false,
+      }),
+    closeCurateMenu: () => set({ isCurateMenuOpen: false }),
+    setIsChaptersMenuOpen: (open) =>
+      set({
+        isChaptersMenuOpen: open,
+        ...(open ? { isCurateMenuOpen: false } : {}),
+      }),
+    setIsCurateMenuOpen: (open) =>
+      set({
+        isCurateMenuOpen: open,
+        ...(open ? { isChaptersMenuOpen: false } : {}),
+      }),
 
     scrollToTarget: (target, options) => {
       const { scrollToTargetFn } = get();
@@ -150,7 +187,11 @@ export const useCanvasNavigation = create<CanvasNavigationState>(
           } else {
             el.scrollIntoView({ behavior: "smooth" });
           }
-          set({ activeZoneId: zoneId, isChaptersMenuOpen: false });
+          set({
+            activeZoneId: zoneId,
+            isChaptersMenuOpen: false,
+            isCurateMenuOpen: false,
+          });
           return;
         }
       }
@@ -168,7 +209,11 @@ export const useCanvasNavigation = create<CanvasNavigationState>(
       const targetY = zone.rowStart * cellSize;
 
       panToFn(targetX, targetY);
-      set({ activeZoneId: zoneId, isChaptersMenuOpen: false });
+      set({
+        activeZoneId: zoneId,
+        isChaptersMenuOpen: false,
+        isCurateMenuOpen: false,
+      });
     },
   })
 );

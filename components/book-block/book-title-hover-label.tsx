@@ -11,7 +11,7 @@ export interface BookTitleHoverLabelProps {
   price?: number;
   progress?: number;
   totalPages?: number;
-  availability?: "Available" | "Taken";
+  availability?: "Available" | "Taken" | "Not for borrowing";
   type?: "Wishlist" | "Current-read" | "Shelf";
 }
 
@@ -42,7 +42,7 @@ export const BookTitleHoverLabel = ({
 
   return (
     <motion.div
-      style={{ x, y }}
+      style={{ x, y, zIndex: 999 }}
       initial={{ opacity: 0, scale: 0.92 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.92 }}
@@ -51,7 +51,7 @@ export const BookTitleHoverLabel = ({
     >
       <div
         className={cn(
-          "bg-neon flex items-center gap-1.5 rounded-md border border-black/50 py-1 pr-2 pl-2 whitespace-nowrap",
+          "bg-neon flex items-center gap-1.5 rounded-lg border border-black/50 py-1 pr-2 pl-2 whitespace-nowrap",
           className
         )}
       >

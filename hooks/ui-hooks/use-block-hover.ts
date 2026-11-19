@@ -1,9 +1,11 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useMotionValue, useSpring } from "motion/react";
 import { calculateHoverCardPosition } from "@/lib/hover-card-utils";
 
 export function useBlockHover() {
   const [isHovered, setIsHovered] = useState(false);
+  const [isElevated, setIsElevated] = useState(false);
+  const leaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const blockRef = useRef<HTMLDivElement>(null);
 
   const mouseX = useMotionValue(0);
@@ -20,6 +22,10 @@ export function useBlockHover() {
   });
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (leaveTimerRef.current) {
+      clearTimeout(leaveTimerRef.current);
+      leaveTimerRef.current = null;
+    }
     if (blockRef.current) {
       const rect = blockRef.current.getBoundingClientRect();
       const { x, y } = calculateHoverCardPosition(e.clientX, e.clientY, rect);
@@ -29,9 +35,14 @@ export function useBlockHover() {
       springY.jump(y);
     }
     setIsHovered(true);
+    setIsElevated(true);
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (leaveTimerRef.current) {
+      clearTimeout(leaveTimerRef.current);
+      leaveTimerRef.current = null;
+    }
     if (blockRef.current) {
       const rect = blockRef.current.getBoundingClientRect();
       const { x, y } = calculateHoverCardPosition(e.clientX, e.clientY, rect);
@@ -41,6 +52,7 @@ export function useBlockHover() {
         springX.jump(x);
         springY.jump(y);
         setIsHovered(true);
+        setIsElevated(true);
       } else {
         mouseX.set(x);
         mouseY.set(y);
@@ -50,11 +62,28 @@ export function useBlockHover() {
 
   const handleMouseLeave = () => {
     setIsHovered(false);
+    if (leaveTimerRef.current) {
+      clearTimeout(leaveTimerRef.current);
+    }
+    // Maintain elevation during the 180ms AnimatePresence exit transition
+    leaveTimerRef.current = setTimeout(() => {
+      setIsElevated(false);
+      leaveTimerRef.current = null;
+    }, 250);
   };
+
+  useEffect(() => {
+    return () => {
+      if (leaveTimerRef.current) {
+        clearTimeout(leaveTimerRef.current);
+      }
+    };
+  }, []);
 
   return {
     blockRef,
     isHovered,
+    isElevated,
     springX,
     springY,
     handleMouseEnter,

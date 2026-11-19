@@ -121,7 +121,7 @@ export interface BaseBookItem {
   publishedYear?: number;
   firstPublishedYear?: number;
   synopsis?: string | string[];
-  avaiability?: "available" | "taken";
+  availability?: "available" | "taken" | "not for borrowing";
 }
 
 export interface CurrentlyReadingPill {

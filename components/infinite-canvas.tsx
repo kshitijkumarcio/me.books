@@ -13,6 +13,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { cn } from "@/lib/utils";
 import { useCanvasNavigation } from "@/hooks/layout-hooks/usecanvasnavigation";
+import { useCanvasZoneObserver } from "@/hooks/layout-hooks/use-canvas-zone-observer";
 
 // ============================================================================
 // SINGLE SOURCE OF TRUTH: CANVAS PHYSICS & EASING CONFIGURATION
@@ -113,6 +114,9 @@ const InfiniteCanvas = ({
     getTouchSnapshot,
     getServerTouchSnapshot
   );
+
+  // High-performance off-thread observer keeping active canvas zone in sync with viewport
+  useCanvasZoneObserver(wrapperRef);
 
   // Merge top-level config with any optional prop overrides
   const cfg = useMemo(

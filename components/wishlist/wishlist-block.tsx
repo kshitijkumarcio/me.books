@@ -33,6 +33,7 @@ export const WishListBlock = ({
   const {
     blockRef,
     isHovered,
+    isElevated,
     springX,
     springY,
     handleMouseEnter: baseMouseEnter,
@@ -164,13 +165,14 @@ export const WishListBlock = ({
   return (
     <div
       ref={blockRef}
+      data-hovered={isHovered ? "true" : isElevated ? "exiting" : undefined}
       onMouseEnter={handleBlockMouseEnter}
       onMouseMove={handleBlockMouseMove}
       onMouseLeave={handleMouseLeave}
       className={cn(
         "w-cell-6 h-cell-6",
         "relative flex items-center justify-center select-none",
-        isHovered && "z-50",
+        isHovered ? "z-[60]" : isElevated ? "z-[50]" : "isolate",
         className
       )}
       style={{
