@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useCanvasNavigation } from "./usecanvasnavigation";
 import {
-  PRICE_RANGE_OPTIONS,
   PRIORITY_OPTIONS,
   MIN_BOOK_PRICE,
   MAX_BOOK_PRICE,

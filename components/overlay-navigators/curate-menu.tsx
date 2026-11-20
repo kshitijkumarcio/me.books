@@ -126,24 +126,19 @@ export const CurateMenu = ({
         <motion.div
           key="curate-button"
           ref={curateMenuRef}
-          layout
-          transition={{ duration: 0.4, ease: easing016 }}
           initial={{
             opacity: 0,
-            scale: 1,
             width: 0,
             marginLeft: 0,
           }}
           animate={{
             opacity: 1,
-            scale: 1,
-            width: isCurateMenuOpen ? (isMobile ? "100%" : "auto") : "auto",
+            width: "auto",
             marginLeft: isMobile && isCurateMenuOpen ? 0 : 8,
             transition: { duration: 0.4, ease: easing016 },
           }}
           exit={{
             opacity: 0,
-            scale: 1,
             width: 0,
             marginLeft: 0,
             transition: { duration: 0.3, ease: easing016 },
@@ -155,12 +150,7 @@ export const CurateMenu = ({
             setIsCurateHovered(false);
           }}
           className={cn(
-            "relative flex max-w-[90vw] items-center gap-x-1",
-            isCurateMenuOpen
-              ? isMobile
-                ? "w-full max-w-full"
-                : "w-max"
-              : "shrink-0",
+            "relative flex max-w-[90vw] shrink-0 items-center gap-x-1",
             !isCurateMenuOpen && "group/curate cursor-pointer"
           )}
         >
@@ -277,9 +267,8 @@ export const CurateMenu = ({
           </button>
 
           {/* Curate text button OR Curate menu items */}
-          <motion.div
-            layout
-            transition={{ duration: 0.4, ease: easing016 }}
+          {/* Curate text button OR Curate menu items */}
+          <div
             className={cn(
               "relative max-w-[calc(90vw-44px)] overflow-hidden",
               isCurateMenuOpen ? "w-max" : "w-max shrink-0"
@@ -289,6 +278,7 @@ export const CurateMenu = ({
               {!isCurateMenuOpen ? (
                 <motion.div
                   key="curate-text-button"
+                  layout="position"
                   initial={{ opacity: 0 }}
                   animate={{
                     opacity: 1,
@@ -328,7 +318,7 @@ export const CurateMenu = ({
               ) : (
                 <motion.div
                   key="curate-menu-items"
-                  layout
+                  layout="position"
                   initial={{ opacity: 0 }}
                   animate={{
                     opacity: 1,
@@ -342,7 +332,7 @@ export const CurateMenu = ({
                     opacity: 0,
                     transition: { duration: 0.15, ease: easing016 },
                   }}
-                  className="no-scrollbar flex w-max items-center gap-x-1 overflow-x-auto py-0.5"
+                  className="no-scrollbar flex w-max max-w-full items-center gap-x-1 overflow-x-auto py-0.5"
                 >
                   {/* classics button */}
                   <motion.button
@@ -602,7 +592,7 @@ export const CurateMenu = ({
                 </motion.div>
               )}
             </AnimatePresence>
-          </motion.div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

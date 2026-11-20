@@ -5,12 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
 import { easing016 } from "@/constants";
 import { ShortlistIcon } from "./icons";
-import {
-  PRICE_RANGE_OPTIONS,
-  PRIORITY_OPTIONS,
-  MIN_BOOK_PRICE,
-  MAX_BOOK_PRICE,
-} from "./constants";
+import { PRIORITY_OPTIONS, MIN_BOOK_PRICE, MAX_BOOK_PRICE } from "./constants";
 import FlipTextButton from "../ui-components/flip-text-button";
 import { SubOptionPopupCard } from "./sub-option-popup-card";
 import { PriceSliderPopupCard } from "./price-slider-popup-card";
@@ -125,24 +120,19 @@ export const ShortlistMenu = ({
         <motion.div
           key="shortlist-button"
           ref={shortlistMenuRef}
-          layout
-          transition={{ duration: 0.4, ease: easing016 }}
           initial={{
             opacity: 0,
-            scale: 1,
             width: 0,
             marginLeft: 0,
           }}
           animate={{
             opacity: 1,
-            scale: 1,
-            width: isShortlistMenuOpen ? (isMobile ? "100%" : "auto") : "auto",
+            width: "auto",
             marginLeft: isMobile && isShortlistMenuOpen ? 0 : 8,
             transition: { duration: 0.4, ease: easing016 },
           }}
           exit={{
             opacity: 0,
-            scale: 1,
             width: 0,
             marginLeft: 0,
             transition: { duration: 0.3, ease: easing016 },
@@ -154,12 +144,7 @@ export const ShortlistMenu = ({
             setIsShortlistHovered(false);
           }}
           className={cn(
-            "relative flex max-w-[90vw] items-center gap-x-1",
-            isShortlistMenuOpen
-              ? isMobile
-                ? "w-full max-w-full"
-                : "w-max"
-              : "shrink-0",
+            "relative flex max-w-[90vw] shrink-0 items-center gap-x-1",
             !isShortlistMenuOpen && "group/shortlist cursor-pointer"
           )}
         >
@@ -278,9 +263,7 @@ export const ShortlistMenu = ({
           </button>
 
           {/* Shortlist text button OR Shortlist menu items */}
-          <motion.div
-            layout
-            transition={{ duration: 0.4, ease: easing016 }}
+          <div
             className={cn(
               "relative max-w-[calc(90vw-44px)] overflow-hidden",
               isShortlistMenuOpen ? "w-max" : "w-max shrink-0"
@@ -290,6 +273,7 @@ export const ShortlistMenu = ({
               {!isShortlistMenuOpen ? (
                 <motion.div
                   key="shortlist-text-button"
+                  layout="position"
                   initial={{ opacity: 0 }}
                   animate={{
                     opacity: 1,
@@ -329,7 +313,7 @@ export const ShortlistMenu = ({
               ) : (
                 <motion.div
                   key="shortlist-menu-items"
-                  layout
+                  layout="position"
                   initial={{ opacity: 0 }}
                   animate={{
                     opacity: 1,
@@ -587,7 +571,7 @@ export const ShortlistMenu = ({
                 </motion.div>
               )}
             </AnimatePresence>
-          </motion.div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

@@ -250,7 +250,7 @@ export const GridSizeIndicator = ({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.96 }}
             transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed bottom-16 left-4 z-[1000] mb-2 flex w-88 max-w-[calc(100vw-2rem)] flex-col gap-3 rounded-2xl border border-black/10 bg-white/95 p-4 font-sans text-neutral-900 shadow-2xl backdrop-blur-md sm:bottom-18 sm:left-6"
+            className="fixed bottom-16 left-4 z-1000 mb-2 flex w-88 max-w-[calc(100vw-2rem)] flex-col gap-3 rounded-2xl border border-black/10 bg-white/95 p-4 font-sans text-neutral-900 shadow-2xl backdrop-blur-md sm:bottom-18 sm:left-6"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-black/5 pb-2.5">
@@ -489,7 +489,7 @@ export const GridSizeIndicator = ({
         onClick={() => setIsInspectorOpen((prev) => !prev)}
         title={`Grid System Inspector (Shortcut: S)`}
         className={cn(
-          "fixed bottom-4 left-4 z-[1000] flex cursor-pointer items-center gap-2 rounded-full px-3.5 py-1.5 font-mono text-xs font-medium shadow-lg backdrop-blur-md transition-all duration-200 select-none sm:bottom-6 sm:left-6",
+          "fixed bottom-4 left-4 z-1000 flex cursor-pointer items-center gap-2 rounded-full px-3.5 py-1.5 font-mono text-xs font-medium shadow-lg backdrop-blur-md transition-all duration-200 select-none sm:bottom-6 sm:left-6",
           isInspectorOpen
             ? "bg-black text-white hover:bg-neutral-800"
             : "border border-black/10 bg-white/90 text-neutral-800 hover:bg-white"

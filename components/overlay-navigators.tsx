@@ -247,7 +247,7 @@ const OverlayNavigators = () => {
           {!isShowingBookControls ? (
             <motion.div
               key="main-bottom-buttons"
-              layout
+              layout="position"
               transition={{ duration: 0.4, ease: easing016 }}
               initial={{ opacity: 0 }}
               animate={{
