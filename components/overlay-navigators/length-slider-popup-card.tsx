@@ -111,12 +111,12 @@ export const LengthSliderPopupCard = ({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 10, scale: 0.95 }}
       transition={{ duration: 0.26, ease: easing016 }}
-      className="pointer-events-auto absolute bottom-[calc(100%+12px)] left-1/2 z-40 w-[calc(100vw-32px)] max-w-105 -translate-x-1/2 overflow-hidden rounded-xl border border-black/15 bg-[#FBFBFA] shadow-2xl sm:w-auto sm:min-w-95"
+      className="pointer-events-auto absolute bottom-[calc(100%+12px)] left-1/2 z-40 w-[90vw] max-w-[90vw] -translate-x-1/2 overflow-hidden rounded-xl border border-black/15 bg-[#FBFBFA] shadow-2xl sm:w-auto sm:min-w-95"
     >
       {/* Top Section: Dual-Thumb Slider (matching Image 4) */}
-      <div className="flex items-center gap-x-4 px-5 py-6 sm:px-6">
+      <div className="flex items-center gap-x-3 sm:gap-x-4 px-4 py-6 sm:px-6">
         {/* Left Label: ø {minVal}p */}
-        <span className="font-mona-sans min-w-16 text-[13px] font-semibold text-black select-none sm:text-[14px]">
+        <span className="font-mona-sans min-w-14 sm:min-w-16 text-[13px] sm:text-[14px] font-semibold text-black select-none">
           ø {minVal}p
         </span>
 
@@ -212,7 +212,7 @@ export const LengthSliderPopupCard = ({
         </div>
 
         {/* Right Label: ø {maxVal}p (or 850p+) */}
-        <span className="font-mona-sans min-w-16 text-right text-[13px] font-semibold text-black select-none sm:text-[14px]">
+        <span className="font-mona-sans min-w-14 sm:min-w-16 text-right text-[13px] sm:text-[14px] font-semibold text-black select-none">
           ø {maxVal >= maxPages ? `${maxPages}p+` : `${maxVal}p`}
         </span>
       </div>

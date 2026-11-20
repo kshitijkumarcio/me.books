@@ -34,10 +34,10 @@ export const SubOptionPopupCard = ({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 10, scale: 0.95 }}
       transition={{ duration: 0.26, ease: easing016 }}
-      className="pointer-events-auto absolute bottom-[calc(100%+12px)] left-1/2 z-40 w-[calc(100vw-32px)] max-w-105 -translate-x-1/2 overflow-hidden rounded-xl border border-black/15 bg-[#FBFBFA] shadow-2xl sm:w-auto sm:min-w-85"
+      className="pointer-events-auto absolute bottom-[calc(100%+12px)] left-1/2 z-40 w-max max-w-[90vw] -translate-x-1/2 overflow-hidden rounded-xl border border-black/15 bg-[#FBFBFA] shadow-2xl sm:min-w-85"
     >
       {/* Top Section: Pill Options (matching Image 3) */}
-      <div className="flex flex-wrap items-center justify-center gap-2 p-4 sm:p-4.5">
+      <div className="flex flex-wrap items-center justify-center gap-2 p-4 sm:p-4.5 max-w-[90vw]">
         {options.map((opt, index) => {
           const isAllOption = opt.id === "all";
           const isSelected = isAllOption
@@ -51,7 +51,7 @@ export const SubOptionPopupCard = ({
               type="button"
               onClick={() => onToggleValue(opt.id)}
               className={cn(
-                "group/pill pointer-events-auto flex cursor-pointer items-center justify-center rounded-full px-4 py-2 text-[13px] font-semibold transition-all duration-200 outline-none select-none",
+                "group/pill pointer-events-auto flex cursor-pointer items-center justify-center rounded-full px-4 py-2 text-[13px] sm:text-[14px] font-semibold transition-all duration-200 outline-none select-none",
                 isFocused
                   ? "bg-neon text-black"
                   : isSelected

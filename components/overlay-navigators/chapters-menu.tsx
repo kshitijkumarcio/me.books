@@ -62,9 +62,9 @@ export const ChaptersMenu = ({
             setIsChaptersHovered(false);
           }}
           className={cn(
-            "flex items-center gap-x-1 overflow-visible",
+            "flex items-center gap-x-1 max-w-[90vw]",
             isChaptersMenuOpen
-              ? "w-full max-w-full sm:w-auto"
+              ? "w-max"
               : "shrink-0",
             !isChaptersMenuOpen && "group/chapters cursor-pointer"
           )}
@@ -102,8 +102,8 @@ export const ChaptersMenu = ({
             layout
             transition={{ duration: 0.4, ease: easing016 }}
             className={cn(
-              "relative overflow-x-clip",
-              isChaptersMenuOpen ? "flex-1 min-w-0 sm:flex-initial" : "w-max shrink-0"
+              "relative overflow-hidden max-w-[calc(90vw-44px)]",
+              isChaptersMenuOpen ? "w-max" : "w-max shrink-0"
             )}
           >
             <AnimatePresence mode="popLayout" initial={false}>
@@ -157,21 +157,20 @@ export const ChaptersMenu = ({
                     opacity: 0,
                     transition: { duration: 0.15, ease: easing016 },
                   }}
-                  className="flex w-full sm:w-max items-center gap-x-1"
+                  className="flex w-max items-center gap-x-1 overflow-x-auto no-scrollbar py-0.5"
                 >
                   {/* bookshelf */}
                   <button
                     type="button"
                     onClick={() => goToZone("books-read")}
-                    className="group/item hover:bg-neon pointer-events-auto flex h-10 flex-1 sm:flex-initial min-w-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-2 sm:px-4 text-white transition-colors duration-200 outline-none select-none hover:text-black"
+                    className="group/item hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-3 sm:px-4 text-white transition-colors duration-200 outline-none select-none hover:text-black"
                   >
                     <FlipTextButton>
-                      <span className="font-mona-sans text-[13px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black sm:text-[14px] flex items-center justify-center">
+                      <span className="font-mona-sans flex items-center justify-center text-[13px] sm:text-[14px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black">
                         {activeZoneId === "books-read" && (
-                          <span className="inline-block w-1.5 h-1.5 bg-current mr-1.5 shrink-0 rounded-2xs align-middle" />
+                          <span className="rounded-2xs mr-1.5 inline-block h-1.5 w-1.5 shrink-0 bg-current align-middle" />
                         )}
-                        <span className="hidden sm:inline">bookshelf</span>
-                        <span className="inline sm:hidden">booksh</span>
+                        bookshelf
                       </span>
                     </FlipTextButton>
                   </button>
@@ -180,15 +179,14 @@ export const ChaptersMenu = ({
                   <button
                     type="button"
                     onClick={() => goToZone("current-reads")}
-                    className="group/item hover:bg-neon pointer-events-auto flex h-10 flex-1 sm:flex-initial min-w-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-2 sm:px-4 text-white transition-colors duration-200 outline-none select-none hover:text-black sm:px-4"
+                    className="group/item hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-3 sm:px-4 text-white transition-colors duration-200 outline-none select-none hover:text-black"
                   >
                     <FlipTextButton>
-                      <span className="font-mona-sans text-[13px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black sm:text-[14px] flex items-center justify-center">
+                      <span className="font-mona-sans flex items-center justify-center text-[13px] sm:text-[14px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black">
                         {activeZoneId === "current-reads" && (
-                          <span className="inline-block w-1.5 h-1.5 bg-current mr-1.5 shrink-0 rounded-2xs align-middle" />
+                          <span className="rounded-2xs mr-1.5 inline-block h-1.5 w-1.5 shrink-0 bg-current align-middle" />
                         )}
-                        <span className="hidden sm:inline">current reads</span>
-                        <span className="inline sm:hidden">current</span>
+                        current reads
                       </span>
                     </FlipTextButton>
                   </button>
@@ -197,15 +195,14 @@ export const ChaptersMenu = ({
                   <button
                     type="button"
                     onClick={() => goToZone("wishlist")}
-                    className="group/item hover:bg-neon pointer-events-auto flex h-10 flex-1 sm:flex-initial min-w-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-2 sm:px-4 text-white transition-colors duration-200 outline-none select-none hover:text-black sm:px-4"
+                    className="group/item hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-3 sm:px-4 text-white transition-colors duration-200 outline-none select-none hover:text-black"
                   >
                     <FlipTextButton>
-                      <span className="font-mona-sans text-[13px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black sm:text-[14px] flex items-center justify-center">
+                      <span className="font-mona-sans flex items-center justify-center text-[13px] sm:text-[14px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black">
                         {activeZoneId === "wishlist" && (
-                          <span className="inline-block w-1.5 h-1.5 bg-current mr-1.5 shrink-0 rounded-2xs align-middle" />
+                          <span className="rounded-2xs mr-1.5 inline-block h-1.5 w-1.5 shrink-0 bg-current align-middle" />
                         )}
-                        <span className="hidden sm:inline">wishlist</span>
-                        <span className="inline sm:hidden">wishl</span>
+                        wishlist
                       </span>
                     </FlipTextButton>
                   </button>

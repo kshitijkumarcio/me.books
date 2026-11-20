@@ -104,8 +104,8 @@ export const CurateMenu = ({
             setIsCurateHovered(false);
           }}
           className={cn(
-            "relative flex items-center gap-x-1 overflow-visible",
-            isCurateMenuOpen ? "w-full max-w-full sm:w-auto" : "shrink-0",
+            "relative flex items-center gap-x-1 max-w-[90vw]",
+            isCurateMenuOpen ? "w-max" : "shrink-0",
             !isCurateMenuOpen && "group/curate cursor-pointer"
           )}
         >
@@ -146,7 +146,7 @@ export const CurateMenu = ({
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 6, scale: 0.95 }}
                 transition={{ duration: 0.25, ease: easing016 }}
-                className="pointer-events-auto absolute bottom-[calc(100%+8px)] left-0 z-20 flex max-w-[calc(100vw-32px)] items-center gap-x-1.5 overflow-x-auto no-scrollbar whitespace-nowrap sm:left-11"
+                className="pointer-events-auto absolute bottom-[calc(100%+8px)] left-0 z-20 flex max-w-[90vw] items-center gap-x-1.5 overflow-x-auto no-scrollbar whitespace-nowrap sm:left-11"
               >
                 {activeFilters.map((filter) => (
                   <motion.button
@@ -158,11 +158,11 @@ export const CurateMenu = ({
                     exit={{ opacity: 0, scale: 0.85 }}
                     transition={{ duration: 0.2, ease: easing016 }}
                     onClick={() => filter.onRemove()}
-                    className="group/chip hover:bg-neon flex h-8.5 shrink-0 cursor-pointer items-center gap-x-2 rounded-sm border border-black bg-white px-3 text-[13px] font-semibold text-black transition-colors duration-200 select-none hover:text-black"
+                    className="group/chip hover:bg-neon flex h-8.5 shrink-0 cursor-pointer items-center gap-x-2 rounded-sm border border-black bg-white px-3 text-[13px] sm:text-[14px] font-semibold text-black transition-colors duration-200 select-none hover:text-black"
                     title={`Remove ${filter.label} filter`}
                   >
                     <FlipTextButton>
-                      <span className="font-mona-sans text-[13px] font-semibold whitespace-nowrap">
+                      <span className="font-mona-sans text-[13px] sm:text-[14px] font-semibold whitespace-nowrap">
                         {filter.label}
                       </span>
                     </FlipTextButton>
@@ -220,8 +220,8 @@ export const CurateMenu = ({
             layout
             transition={{ duration: 0.4, ease: easing016 }}
             className={cn(
-              "relative overflow-hidden",
-              isCurateMenuOpen ? "flex-1 min-w-0 sm:flex-initial" : "w-max shrink-0"
+              "relative overflow-hidden max-w-[calc(90vw-44px)]",
+              isCurateMenuOpen ? "w-max" : "w-max shrink-0"
             )}
           >
             <AnimatePresence mode="popLayout" initial={false}>
@@ -281,7 +281,7 @@ export const CurateMenu = ({
                     opacity: 0,
                     transition: { duration: 0.15, ease: easing016 },
                   }}
-                  className="flex w-full sm:w-max items-center gap-x-1"
+                  className="flex w-max items-center gap-x-1 overflow-x-auto no-scrollbar py-0.5"
                 >
                   {/* classics button */}
                   <motion.button
@@ -290,17 +290,16 @@ export const CurateMenu = ({
                     type="button"
                     onClick={() => setIsClassicsActive((prev) => !prev)}
                     className={cn(
-                      "group/classics hover:bg-neon pointer-events-auto flex h-10 flex-1 sm:flex-initial min-w-0 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black px-2 sm:px-4 transition-colors duration-200 outline-none select-none hover:text-black",
+                      "group/classics hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black px-3 sm:px-4 transition-colors duration-200 outline-none select-none hover:text-black",
                       isClassicsActive
                         ? "bg-black font-semibold text-white"
                         : "bg-white text-black"
                     )}
                   >
                     <FlipTextButton>
-                      <span className="font-mona-sans text-[13px] font-semibold whitespace-nowrap sm:text-[14px]">
-                        <span className="hidden sm:inline">classics</span>
-                        <span className="inline sm:hidden">classic</span>
-                      </span>
+                      <p className="font-mona-sans text-[13px] sm:text-[14px] font-semibold whitespace-nowrap">
+                        classics
+                      </p>
                     </FlipTextButton>
                   </motion.button>
 
@@ -311,7 +310,7 @@ export const CurateMenu = ({
                     type="button"
                     onClick={() => handleToggleSection("genre")}
                     className={cn(
-                      "group/genre hover:bg-neon pointer-events-auto flex h-10 flex-1 sm:flex-initial min-w-0 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black px-2 sm:px-4 transition-colors duration-200 outline-none select-none hover:text-black",
+                      "group/genre hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black px-3 sm:px-4 transition-colors duration-200 outline-none select-none hover:text-black",
                       expandedCurateSection === "genre"
                         ? "bg-neon text-black font-semibold"
                         : selectedGenres.length > 0
@@ -320,20 +319,13 @@ export const CurateMenu = ({
                     )}
                   >
                     <FlipTextButton>
-                      <span className="font-mona-sans text-[13px] font-semibold whitespace-nowrap sm:text-[14px]">
-                        <span className="hidden sm:inline">
-                          {selectedGenres.length === 0
-                            ? "genre +"
-                            : selectedGenres.length === 1
-                              ? `genre: ${selectedGenres[0]}`
-                              : `genre (${String(selectedGenres.length).padStart(2, "0")})`}
-                        </span>
-                        <span className="inline sm:hidden">
-                          {selectedGenres.length === 0
-                            ? "genre"
-                            : `genre (${selectedGenres.length})`}
-                        </span>
-                      </span>
+                      <p className="font-mona-sans text-[13px] sm:text-[14px] font-semibold whitespace-nowrap">
+                        {selectedGenres.length === 0
+                          ? "genre +"
+                          : selectedGenres.length === 1
+                            ? `genre: ${selectedGenres[0]}`
+                            : `genre (${String(selectedGenres.length).padStart(2, "0")})`}
+                      </p>
                     </FlipTextButton>
                   </motion.button>
 
@@ -344,7 +336,7 @@ export const CurateMenu = ({
                     type="button"
                     onClick={() => handleToggleSection("length")}
                     className={cn(
-                      "group/length hover:bg-neon pointer-events-auto flex h-10 flex-1 sm:flex-initial min-w-0 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black px-2 sm:px-4 transition-colors duration-200 outline-none select-none hover:text-black",
+                      "group/length hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black px-3 sm:px-4 transition-colors duration-200 outline-none select-none hover:text-black",
                       expandedCurateSection === "length"
                         ? "bg-neon text-black font-semibold"
                         : isLengthFiltered
@@ -353,18 +345,11 @@ export const CurateMenu = ({
                     )}
                   >
                     <FlipTextButton>
-                      <span className="font-mona-sans text-[13px] font-semibold whitespace-nowrap sm:text-[14px]">
-                        <span className="hidden sm:inline">
-                          {!isLengthFiltered
-                            ? "length +"
-                            : `length: ${pageRange[0]}-${pageRange[1] >= 850 ? "850p+" : `${pageRange[1]}p`}`}
-                        </span>
-                        <span className="inline sm:hidden">
-                          {!isLengthFiltered
-                            ? "length"
-                            : `${pageRange[0]}-${pageRange[1] >= 850 ? "850+" : `${pageRange[1]}`}`}
-                        </span>
-                      </span>
+                      <p className="font-mona-sans text-[13px] sm:text-[14px] font-semibold whitespace-nowrap">
+                        {!isLengthFiltered
+                          ? "length +"
+                          : `length: ${pageRange[0]}-${pageRange[1] >= 850 ? "850p+" : `${pageRange[1]}p`}`}
+                      </p>
                     </FlipTextButton>
                   </motion.button>
 

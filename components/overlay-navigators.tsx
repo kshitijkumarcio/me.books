@@ -239,8 +239,8 @@ const OverlayNavigators = () => {
         )}
       </AnimatePresence>
 
-      {/* bottom buttons */}
-      <div className="relative flex w-full items-center justify-center sm:w-auto">
+      {/* bottom buttons (strictly max 90% of screen width) */}
+      <div className="relative mx-auto flex w-max max-w-[90vw] items-center justify-center">
         <AnimatePresence mode="wait" initial={false}>
           {!isShowingBookControls ? (
             <motion.div
@@ -256,7 +256,7 @@ const OverlayNavigators = () => {
                 opacity: 0,
                 transition: { duration: 0.4, delay: 0.2, ease: easing016 },
               }}
-              className="flex w-full items-center justify-center max-w-[calc(100vw-32px)] sm:w-auto sm:max-w-none"
+              className="flex w-max max-w-[90vw] items-center justify-center"
             >
               <ChaptersMenu
                 chaptersMenuRef={chaptersMenuRef}

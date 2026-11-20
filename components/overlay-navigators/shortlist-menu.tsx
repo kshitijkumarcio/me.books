@@ -91,8 +91,8 @@ export const ShortlistMenu = ({
             setIsShortlistHovered(false);
           }}
           className={cn(
-            "relative flex items-center gap-x-1 overflow-visible",
-            isShortlistMenuOpen ? "w-full max-w-full sm:w-auto" : "shrink-0",
+            "relative flex items-center gap-x-1 max-w-[90vw]",
+            isShortlistMenuOpen ? "w-max" : "shrink-0",
             !isShortlistMenuOpen && "group/shortlist cursor-pointer"
           )}
         >
@@ -132,7 +132,7 @@ export const ShortlistMenu = ({
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 6, scale: 0.95 }}
                 transition={{ duration: 0.25, ease: easing016 }}
-                className="pointer-events-auto absolute bottom-[calc(100%+8px)] left-0 z-20 flex max-w-[calc(100vw-32px)] items-center gap-x-1.5 overflow-x-auto no-scrollbar whitespace-nowrap sm:left-11"
+                className="pointer-events-auto absolute bottom-[calc(100%+8px)] left-0 z-20 flex max-w-[90vw] items-center gap-x-1.5 overflow-x-auto no-scrollbar whitespace-nowrap sm:left-11"
               >
                 {activeFilters.map((filter) => (
                   <motion.button
@@ -144,11 +144,11 @@ export const ShortlistMenu = ({
                     exit={{ opacity: 0, scale: 0.85 }}
                     transition={{ duration: 0.2, ease: easing016 }}
                     onClick={() => filter.onRemove()}
-                    className="group/chip hover:bg-neon flex h-8.5 shrink-0 cursor-pointer items-center gap-x-2 rounded-sm border border-black bg-white px-3 text-[13px] font-semibold text-black transition-colors duration-200 select-none hover:text-black"
+                    className="group/chip hover:bg-neon flex h-8.5 shrink-0 cursor-pointer items-center gap-x-2 rounded-sm border border-black bg-white px-3 text-[13px] sm:text-[14px] font-semibold text-black transition-colors duration-200 select-none hover:text-black"
                     title={`Remove ${filter.label} filter`}
                   >
                     <FlipTextButton>
-                      <span className="font-mona-sans text-[13px] font-semibold whitespace-nowrap">
+                      <span className="font-mona-sans text-[13px] sm:text-[14px] font-semibold whitespace-nowrap">
                         {filter.label}
                       </span>
                     </FlipTextButton>
@@ -208,10 +208,8 @@ export const ShortlistMenu = ({
             layout
             transition={{ duration: 0.4, ease: easing016 }}
             className={cn(
-              "relative overflow-hidden",
-              isShortlistMenuOpen
-                ? "flex-1 min-w-0 sm:flex-initial"
-                : "w-max shrink-0"
+              "relative overflow-hidden max-w-[calc(90vw-44px)]",
+              isShortlistMenuOpen ? "w-max" : "w-max shrink-0"
             )}
           >
             <AnimatePresence mode="popLayout" initial={false}>
@@ -271,7 +269,7 @@ export const ShortlistMenu = ({
                     opacity: 0,
                     transition: { duration: 0.15, ease: easing016 },
                   }}
-                  className="flex w-full sm:w-max items-center gap-x-1"
+                  className="flex w-max items-center gap-x-1 overflow-x-auto no-scrollbar py-0.5"
                 >
                   {/* price range button */}
                   <motion.button
@@ -280,7 +278,7 @@ export const ShortlistMenu = ({
                     type="button"
                     onClick={() => handleToggleSection("price")}
                     className={cn(
-                      "group/price hover:bg-neon pointer-events-auto flex h-10 flex-1 sm:flex-initial min-w-0 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black px-2 sm:px-4 transition-colors duration-200 outline-none select-none hover:text-black",
+                      "group/price hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black px-3 sm:px-4 transition-colors duration-200 outline-none select-none hover:text-black",
                       expandedShortlistSection === "price"
                         ? "bg-neon text-black font-semibold"
                         : selectedPriceRanges.length > 0
@@ -289,24 +287,17 @@ export const ShortlistMenu = ({
                     )}
                   >
                     <FlipTextButton>
-                      <span className="font-mona-sans text-[13px] font-semibold whitespace-nowrap sm:text-[14px]">
-                        <span className="hidden sm:inline">
-                          {selectedPriceRanges.length === 0
-                            ? "price range +"
-                            : selectedPriceRanges.length === 1
-                              ? `price: ${
-                                  PRICE_RANGE_OPTIONS.find(
-                                    (p) => p.id === selectedPriceRanges[0]
-                                  )?.label || selectedPriceRanges[0]
-                                }`
-                              : `price (${String(selectedPriceRanges.length).padStart(2, "0")})`}
-                        </span>
-                        <span className="inline sm:hidden">
-                          {selectedPriceRanges.length === 0
-                            ? "price"
-                            : `price (${selectedPriceRanges.length})`}
-                        </span>
-                      </span>
+                      <p className="font-mona-sans text-[13px] sm:text-[14px] font-semibold whitespace-nowrap">
+                        {selectedPriceRanges.length === 0
+                          ? "price range +"
+                          : selectedPriceRanges.length === 1
+                            ? `price: ${
+                                PRICE_RANGE_OPTIONS.find(
+                                  (p) => p.id === selectedPriceRanges[0]
+                                )?.label || selectedPriceRanges[0]
+                              }`
+                            : `price (${String(selectedPriceRanges.length).padStart(2, "0")})`}
+                      </p>
                     </FlipTextButton>
                   </motion.button>
 
@@ -317,7 +308,7 @@ export const ShortlistMenu = ({
                     type="button"
                     onClick={() => handleToggleSection("priority")}
                     className={cn(
-                      "group/priority hover:bg-neon pointer-events-auto flex h-10 flex-1 sm:flex-initial min-w-0 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black px-2 sm:px-4 transition-colors duration-200 outline-none select-none hover:text-black",
+                      "group/priority hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black px-3 sm:px-4 transition-colors duration-200 outline-none select-none hover:text-black",
                       expandedShortlistSection === "priority"
                         ? "bg-neon text-black font-semibold"
                         : selectedPriorities.length > 0
@@ -326,24 +317,17 @@ export const ShortlistMenu = ({
                     )}
                   >
                     <FlipTextButton>
-                      <span className="font-mona-sans text-[13px] font-semibold whitespace-nowrap sm:text-[14px]">
-                        <span className="hidden sm:inline">
-                          {selectedPriorities.length === 0
-                            ? "priority +"
-                            : selectedPriorities.length === 1
-                              ? `priority: ${
-                                  PRIORITY_OPTIONS.find(
-                                    (pr) => pr.id === selectedPriorities[0]
-                                  )?.label || selectedPriorities[0]
-                                }`
-                              : `priority (${String(selectedPriorities.length).padStart(2, "0")})`}
-                        </span>
-                        <span className="inline sm:hidden">
-                          {selectedPriorities.length === 0
-                            ? "priority"
-                            : `priority (${selectedPriorities.length})`}
-                        </span>
-                      </span>
+                      <p className="font-mona-sans text-[13px] sm:text-[14px] font-semibold whitespace-nowrap">
+                        {selectedPriorities.length === 0
+                          ? "priority +"
+                          : selectedPriorities.length === 1
+                            ? `priority: ${
+                                PRIORITY_OPTIONS.find(
+                                  (pr) => pr.id === selectedPriorities[0]
+                                )?.label || selectedPriorities[0]
+                              }`
+                            : `priority (${String(selectedPriorities.length).padStart(2, "0")})`}
+                      </p>
                     </FlipTextButton>
                   </motion.button>
 
