@@ -22,6 +22,7 @@ const RootPage = () => {
           blockSize={8}
           horizontalGap={0.75}
           verticalGap={1}
+          showGridSize={false}
         />
         <CurrentReads />
         <Wishlist horizontalGap={0.25} verticalGap={1} />

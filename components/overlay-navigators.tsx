@@ -59,6 +59,7 @@ const OverlayNavigators = () => {
     activeFilters,
     resetAllFilters,
     isResetFlashing: isCurateResetFlashing,
+    resetSpinCount: curateResetSpinCount,
     toggleChaptersMenu,
     openChaptersMenu,
     toggleCurateMenu,
@@ -79,13 +80,14 @@ const OverlayNavigators = () => {
     shortlistFocusedIndex,
     handleToggleSection: handleToggleShortlistSection,
     handleHorizontalWheel: handleShortlistHorizontalWheel,
-    selectedPriceRanges,
-    togglePriceRange,
+    priceRange,
+    setPriceRange,
     selectedPriorities,
     togglePriority,
     activeFilters: activeShortlistFilters,
     resetAllFilters: resetAllShortlistFilters,
     isResetFlashing: isShortlistResetFlashing,
+    resetSpinCount: shortlistResetSpinCount,
     toggleShortlistMenu,
     openShortlistMenu,
   } = useShortlistMenu();
@@ -298,6 +300,7 @@ const OverlayNavigators = () => {
                 handleHorizontalWheel={handleHorizontalWheel}
                 resetAllFilters={resetAllFilters}
                 isResetFlashing={isCurateResetFlashing}
+                resetSpinCount={curateResetSpinCount}
               />
 
               <ShortlistMenu
@@ -311,8 +314,8 @@ const OverlayNavigators = () => {
                 toggleShortlistMenu={toggleShortlistMenu}
                 setExpandedShortlistSection={setExpandedShortlistSection}
                 activeFilters={activeShortlistFilters}
-                selectedPriceRanges={selectedPriceRanges}
-                togglePriceRange={togglePriceRange}
+                priceRange={priceRange}
+                setPriceRange={setPriceRange}
                 selectedPriorities={selectedPriorities}
                 togglePriority={togglePriority}
                 expandedShortlistSection={expandedShortlistSection}
@@ -321,6 +324,7 @@ const OverlayNavigators = () => {
                 handleHorizontalWheel={handleShortlistHorizontalWheel}
                 resetAllFilters={resetAllShortlistFilters}
                 isResetFlashing={isShortlistResetFlashing}
+                resetSpinCount={shortlistResetSpinCount}
               />
             </motion.div>
           ) : (

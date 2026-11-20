@@ -7,6 +7,12 @@ export const GENRE_OPTIONS = [
   "thriller",
 ] as const;
 
+export const MIN_BOOK_LENGTH = 10;
+export const MAX_BOOK_LENGTH = 900;
+
+export const MIN_BOOK_PRICE = 100;
+export const MAX_BOOK_PRICE = 1000;
+
 export const LENGTH_OPTIONS = [
   { id: "all", label: "all" },
   { id: "short", label: "< 250p" },

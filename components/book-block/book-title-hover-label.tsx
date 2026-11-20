@@ -50,6 +50,7 @@ export const BookTitleHoverLabel = ({
       className="pointer-events-none absolute top-0 left-0 z-999 select-none"
     >
       <div
+        data-book-hover-label
         className={cn(
           "bg-neon flex items-center gap-1.5 rounded-lg border border-black/50 py-1 pr-2 pl-2 whitespace-nowrap",
           className

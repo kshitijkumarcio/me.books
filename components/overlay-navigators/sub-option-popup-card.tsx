@@ -37,7 +37,7 @@ export const SubOptionPopupCard = ({
       className="pointer-events-auto absolute bottom-[calc(100%+12px)] left-1/2 z-40 w-max max-w-[90vw] -translate-x-1/2 overflow-hidden rounded-xl border border-black/15 bg-[#FBFBFA] shadow-2xl sm:min-w-85"
     >
       {/* Top Section: Pill Options (matching Image 3) */}
-      <div className="flex flex-wrap items-center justify-center gap-2 p-4 sm:p-4.5 max-w-[90vw]">
+      <div className="flex max-w-[90vw] flex-wrap items-center justify-center gap-2 p-4">
         {options.map((opt, index) => {
           const isAllOption = opt.id === "all";
           const isSelected = isAllOption
@@ -51,12 +51,12 @@ export const SubOptionPopupCard = ({
               type="button"
               onClick={() => onToggleValue(opt.id)}
               className={cn(
-                "group/pill pointer-events-auto flex cursor-pointer items-center justify-center rounded-full px-4 py-2 text-[13px] sm:text-[14px] font-semibold transition-all duration-200 outline-none select-none",
+                "group/pill pointer-events-auto flex cursor-pointer items-center justify-center rounded-full px-4 py-1.5 text-[13px] font-semibold transition-all duration-200 outline-none select-none sm:text-[14px]",
                 isFocused
                   ? "bg-neon text-black"
                   : isSelected
                     ? "bg-black text-white hover:bg-black/90"
-                    : "bg-black/6 text-black hover:bg-neon hover:text-black"
+                    : "hover:bg-neon bg-black/6 text-black hover:text-black"
               )}
             >
               <span className="font-mona-sans whitespace-nowrap">
@@ -73,7 +73,7 @@ export const SubOptionPopupCard = ({
           type="button"
           onClick={onClose}
           aria-label="Back to menu"
-          className="group/back flex h-11 w-full cursor-pointer items-center justify-center text-black/70 transition-colors duration-200 hover:bg-black/5 hover:text-black outline-none select-none"
+          className="group/back flex h-10 w-full cursor-pointer items-center justify-center text-black/70 transition-colors duration-200 outline-none select-none hover:bg-black/5 hover:text-black"
         >
           <svg
             viewBox="0 0 24 24"

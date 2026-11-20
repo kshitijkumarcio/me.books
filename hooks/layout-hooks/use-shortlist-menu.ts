@@ -5,6 +5,8 @@ import { useCanvasNavigation } from "./usecanvasnavigation";
 import {
   PRICE_RANGE_OPTIONS,
   PRIORITY_OPTIONS,
+  MIN_BOOK_PRICE,
+  MAX_BOOK_PRICE,
 } from "@/components/overlay-navigators/constants";
 
 export const useShortlistMenu = () => {
@@ -68,20 +70,11 @@ export const useShortlistMenu = () => {
     setShortlistFocusedIndex(null);
   }, []);
 
-  const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([
+    MIN_BOOK_PRICE,
+    MAX_BOOK_PRICE,
+  ]);
   const [selectedPriorities, setSelectedPriorities] = useState<string[]>([]);
-
-  const togglePriceRange = useCallback((priceId: string) => {
-    if (priceId === "all") {
-      setSelectedPriceRanges([]);
-      return;
-    }
-    setSelectedPriceRanges((prev) =>
-      prev.includes(priceId)
-        ? prev.filter((p) => p !== priceId)
-        : [...prev, priceId]
-    );
-  }, []);
 
   const togglePriority = useCallback((priorityId: string) => {
     if (priorityId === "all") {
@@ -95,17 +88,18 @@ export const useShortlistMenu = () => {
     );
   }, []);
 
-  // Active filter chips list shown above the shortlist menu (multi-select: each item counts as 1 filter)
+  // Active filter chips list shown above the shortlist menu
   const activeFilters = useMemo(() => {
     const list: { id: string; label: string; onRemove: () => void }[] = [];
-    selectedPriceRanges.forEach((pId) => {
-      const priceObj = PRICE_RANGE_OPTIONS.find((p) => p.id === pId);
+    if (priceRange[0] > MIN_BOOK_PRICE || priceRange[1] < MAX_BOOK_PRICE) {
+      const maxLabel =
+        priceRange[1] >= MAX_BOOK_PRICE ? "₹1000+" : `₹${priceRange[1]}`;
       list.push({
-        id: `price-${pId}`,
-        label: priceObj ? priceObj.label : pId,
-        onRemove: () => togglePriceRange(pId),
+        id: "price-range",
+        label: `₹${priceRange[0]} - ${maxLabel}`,
+        onRemove: () => setPriceRange([MIN_BOOK_PRICE, MAX_BOOK_PRICE]),
       });
-    });
+    }
     selectedPriorities.forEach((prId) => {
       const priorityObj = PRIORITY_OPTIONS.find((pr) => pr.id === prId);
       list.push({
@@ -115,12 +109,7 @@ export const useShortlistMenu = () => {
       });
     });
     return list;
-  }, [
-    selectedPriceRanges,
-    selectedPriorities,
-    togglePriceRange,
-    togglePriority,
-  ]);
+  }, [priceRange, selectedPriorities, togglePriority]);
 
   // Horizontal wheel scroll handler for options drawer
   const handleHorizontalWheel = useCallback(
@@ -160,14 +149,16 @@ export const useShortlistMenu = () => {
   }, [isShortlistMenuOpen, closeShortlistMenu]);
 
   const [isResetFlashing, setIsResetFlashing] = useState<boolean>(false);
+  const [resetSpinCount, setResetSpinCount] = useState<number>(0);
   const flashTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const triggerResetFlash = useCallback(() => {
     setIsResetFlashing(true);
+    setResetSpinCount((prev) => prev + 1);
     if (flashTimeoutRef.current) clearTimeout(flashTimeoutRef.current);
     flashTimeoutRef.current = setTimeout(() => {
       setIsResetFlashing(false);
-    }, 400);
+    }, 550);
   }, []);
 
   useEffect(() => {
@@ -177,7 +168,7 @@ export const useShortlistMenu = () => {
   }, []);
 
   const resetAllFilters = useCallback(() => {
-    setSelectedPriceRanges([]);
+    setPriceRange([MIN_BOOK_PRICE, MAX_BOOK_PRICE]);
     setSelectedPriorities([]);
     setExpandedShortlistSection(null);
     setShortlistFocusedIndex(null);
@@ -188,7 +179,7 @@ export const useShortlistMenu = () => {
   // - When shortlist menu is open:
   //     'm' -> Toggle Price Range submenu, 'p' -> Toggle Priority submenu,
   //     'r' -> Reset all shortlist filters (with neon flash), Escape -> Close shortlist menu
-  //     Arrow keys + Enter: Navigate and toggle options inside an open submenu drawer
+  //     Arrow keys: Adjust price slider (when price open) or navigate priority options (when priority open)
   // - When resting (neither menu open) and shortlist is visible in Wishlist:
   //     's' -> Open shortlist menu
   useEffect(() => {
@@ -211,12 +202,23 @@ export const useShortlistMenu = () => {
 
       // Shortlist menu is open
       if (isShortlistMenuOpen) {
-        // Arrow navigation and Enter selection when a submenu drawer is open
-        if (expandedShortlistSection !== null) {
-          const optionsCount =
-            expandedShortlistSection === "price"
-              ? PRICE_RANGE_OPTIONS.length
-              : PRIORITY_OPTIONS.length;
+        // Arrow navigation and controls when a submenu drawer is open
+        if (expandedShortlistSection === "price") {
+          if (key === "arrowleft" || key === "arrowdown") {
+            event.preventDefault();
+            setPriceRange(([min, max]) => [
+              Math.max(MIN_BOOK_PRICE, min - 25),
+              max,
+            ]);
+            return;
+          }
+          if (key === "arrowright" || key === "arrowup") {
+            event.preventDefault();
+            setPriceRange(([min, max]) => [Math.min(max - 25, min + 25), max]);
+            return;
+          }
+        } else if (expandedShortlistSection === "priority") {
+          const optionsCount = PRIORITY_OPTIONS.length;
 
           if (key === "arrowright" || key === "arrowdown") {
             event.preventDefault();
@@ -237,13 +239,8 @@ export const useShortlistMenu = () => {
           if (key === "enter" || key === " ") {
             if (shortlistFocusedIndex !== null) {
               event.preventDefault();
-              if (expandedShortlistSection === "price") {
-                const selectedOpt = PRICE_RANGE_OPTIONS[shortlistFocusedIndex];
-                if (selectedOpt) togglePriceRange(selectedOpt.id);
-              } else if (expandedShortlistSection === "priority") {
-                const selectedOpt = PRIORITY_OPTIONS[shortlistFocusedIndex];
-                if (selectedOpt) togglePriority(selectedOpt.id);
-              }
+              const selectedOpt = PRIORITY_OPTIONS[shortlistFocusedIndex];
+              if (selectedOpt) togglePriority(selectedOpt.id);
               return;
             }
           }
@@ -296,7 +293,6 @@ export const useShortlistMenu = () => {
     openShortlistMenu,
     closeShortlistMenu,
     handleToggleSection,
-    togglePriceRange,
     togglePriority,
     resetAllFilters,
   ]);
@@ -312,13 +308,14 @@ export const useShortlistMenu = () => {
     shortlistFocusedIndex,
     handleToggleSection,
     handleHorizontalWheel,
-    selectedPriceRanges,
-    togglePriceRange,
+    priceRange,
+    setPriceRange,
     selectedPriorities,
     togglePriority,
     activeFilters,
     resetAllFilters,
     isResetFlashing,
+    resetSpinCount,
     toggleShortlistMenu,
     openShortlistMenu,
     closeShortlistMenu,

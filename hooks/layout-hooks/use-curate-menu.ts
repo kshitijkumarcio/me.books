@@ -2,7 +2,11 @@
 
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useCanvasNavigation } from "./usecanvasnavigation";
-import { GENRE_OPTIONS } from "@/components/overlay-navigators/constants";
+import {
+  GENRE_OPTIONS,
+  MIN_BOOK_LENGTH,
+  MAX_BOOK_LENGTH,
+} from "@/components/overlay-navigators/constants";
 
 export const useCurateMenu = () => {
   const {
@@ -74,7 +78,10 @@ export const useCurateMenu = () => {
   const [isClassicsActive, setIsClassicsActive] = useState<boolean>(false);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [selectedLengths, setSelectedLengths] = useState<string[]>([]);
-  const [pageRange, setPageRange] = useState<[number, number]>([50, 850]);
+  const [pageRange, setPageRange] = useState<[number, number]>([
+    MIN_BOOK_LENGTH,
+    MAX_BOOK_LENGTH,
+  ]);
 
   const toggleGenre = useCallback((genre: string) => {
     if (genre === "all") {
@@ -89,7 +96,7 @@ export const useCurateMenu = () => {
   const toggleLength = useCallback((lengthId: string) => {
     if (lengthId === "all") {
       setSelectedLengths([]);
-      setPageRange([50, 850]);
+      setPageRange([MIN_BOOK_LENGTH, MAX_BOOK_LENGTH]);
       return;
     }
     setSelectedLengths((prev) =>
@@ -116,22 +123,18 @@ export const useCurateMenu = () => {
         onRemove: () => toggleGenre(g),
       });
     });
-    // Interactive dual-thumb length range filter
-    if (pageRange[0] > 50 || pageRange[1] < 850) {
-      const maxLabel = pageRange[1] >= 850 ? "850p+" : `${pageRange[1]}p`;
+    // Interactive dual-thumb length range filter (10 to 900+)
+    if (pageRange[0] > MIN_BOOK_LENGTH || pageRange[1] < MAX_BOOK_LENGTH) {
+      const maxLabel =
+        pageRange[1] >= MAX_BOOK_LENGTH ? "900p+" : `${pageRange[1]}p`;
       list.push({
         id: "length-range",
         label: `${pageRange[0]} - ${maxLabel}`,
-        onRemove: () => setPageRange([50, 850]),
+        onRemove: () => setPageRange([MIN_BOOK_LENGTH, MAX_BOOK_LENGTH]),
       });
     }
     return list;
-  }, [
-    isClassicsActive,
-    selectedGenres,
-    pageRange,
-    toggleGenre,
-  ]);
+  }, [isClassicsActive, selectedGenres, pageRange, toggleGenre]);
 
   // Horizontal mouse wheel scrolling for compact options lists
   const handleHorizontalWheel = useCallback(
@@ -183,14 +186,16 @@ export const useCurateMenu = () => {
   ]);
 
   const [isResetFlashing, setIsResetFlashing] = useState<boolean>(false);
+  const [resetSpinCount, setResetSpinCount] = useState<number>(0);
   const flashTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const triggerResetFlash = useCallback(() => {
     setIsResetFlashing(true);
+    setResetSpinCount((prev) => prev + 1);
     if (flashTimeoutRef.current) clearTimeout(flashTimeoutRef.current);
     flashTimeoutRef.current = setTimeout(() => {
       setIsResetFlashing(false);
-    }, 400);
+    }, 550);
   }, []);
 
   useEffect(() => {
@@ -203,7 +208,7 @@ export const useCurateMenu = () => {
     setIsClassicsActive(false);
     setSelectedGenres([]);
     setSelectedLengths([]);
-    setPageRange([50, 850]);
+    setPageRange([MIN_BOOK_LENGTH, MAX_BOOK_LENGTH]);
     setExpandedCurateSection(null);
     setCurateFocusedIndex(null);
     triggerResetFlash();
@@ -305,12 +310,15 @@ export const useCurateMenu = () => {
         } else if (expandedCurateSection === "length") {
           if (key === "arrowleft" || key === "arrowdown") {
             event.preventDefault();
-            setPageRange(([min, max]) => [Math.max(50, min - 25), max]);
+            setPageRange(([min, max]) => [
+              Math.max(MIN_BOOK_LENGTH, min - 10),
+              max,
+            ]);
             return;
           }
           if (key === "arrowright" || key === "arrowup") {
             event.preventDefault();
-            setPageRange(([min, max]) => [Math.min(max - 25, min + 25), max]);
+            setPageRange(([min, max]) => [Math.min(max - 10, min + 10), max]);
             return;
           }
         }
@@ -405,6 +413,7 @@ export const useCurateMenu = () => {
     activeFilters,
     resetAllFilters,
     isResetFlashing,
+    resetSpinCount,
     toggleChaptersMenu,
     openChaptersMenu,
     toggleCurateMenu,

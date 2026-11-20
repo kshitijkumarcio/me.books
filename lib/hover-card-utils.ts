@@ -9,7 +9,8 @@ export interface HoverCardPositionOptions {
 /**
  * Calculates container-relative (x, y) coordinates for a hover card follower,
  * ensuring the card flips to the opposite side of the cursor when near screen edges
- * so it never overflows the viewport.
+ * so it never overflows the viewport, while maintaining identical distances
+ * from the cursor whether positioned below/above or left/right.
  */
 export const calculateHoverCardPosition = (
   clientX: number,
@@ -18,8 +19,8 @@ export const calculateHoverCardPosition = (
   options: HoverCardPositionOptions = {}
 ): { x: number; y: number } => {
   const {
-    cardWidth = 220,
-    cardHeight = 125,
+    cardWidth = 180,
+    cardHeight = 28,
     offsetX = 24,
     offsetY = 24,
     edgePadding = 16,
@@ -30,6 +31,8 @@ export const calculateHoverCardPosition = (
 
   // Horizontal: default to right of cursor (+offsetX).
   // If placing it to the right exceeds the right edge, flip to the left of the cursor (-cardWidth - offsetX).
+  // This ensures the distance from cursor to right edge on the left is offsetX,
+  // matching the distance from cursor to left edge on the right (+offsetX).
   let targetViewportX = clientX + offsetX;
   if (targetViewportX + cardWidth > windowWidth - edgePadding) {
     targetViewportX = clientX - cardWidth - offsetX;
@@ -42,6 +45,8 @@ export const calculateHoverCardPosition = (
 
   // Vertical: default to below cursor (+offsetY).
   // If placing it below exceeds the bottom edge, flip above the cursor (-cardHeight - offsetY).
+  // This ensures the distance from cursor to bottom edge when above is offsetY,
+  // matching the distance from cursor to top edge when below (+offsetY).
   let targetViewportY = clientY + offsetY;
   if (targetViewportY + cardHeight > windowHeight - edgePadding) {
     targetViewportY = clientY - cardHeight - offsetY;

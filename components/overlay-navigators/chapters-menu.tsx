@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { easing016 } from "@/constants";
 import { ChaptersIcon } from "./icons";
 import FlipTextButton from "../ui-components/flip-text-button";
+import { useMediaQuery } from "@/hooks/ui-hooks/use-media-query";
 
 interface ChaptersMenuProps {
   chaptersMenuRef: React.RefObject<HTMLDivElement | null>;
@@ -35,7 +36,11 @@ export const ChaptersMenu = ({
   goToZone,
   activeZoneId,
 }: ChaptersMenuProps) => {
-  const isHiddenByOtherMenu = isCurateMenuOpen || Boolean(isShortlistMenuOpen);
+  const isMobile = useMediaQuery("(max-width: 639px)");
+  // On mobile only: if curate or shortlist menu is open, chapters menu collapses to zero width.
+  // On desktop: chapters remains visible side-by-side with curate/shortlist.
+  const isHiddenByOtherMenu =
+    isMobile && (isCurateMenuOpen || Boolean(isShortlistMenuOpen));
 
   return (
     <AnimatePresence initial={false}>
@@ -47,7 +52,7 @@ export const ChaptersMenu = ({
           initial={{ opacity: 0, width: 0 }}
           animate={{
             opacity: 1,
-            width: isChaptersMenuOpen ? "100%" : "auto",
+            width: isChaptersMenuOpen && isMobile ? "100%" : "auto",
             transition: { duration: 0.4, ease: easing016 },
           }}
           exit={{
@@ -62,9 +67,11 @@ export const ChaptersMenu = ({
             setIsChaptersHovered(false);
           }}
           className={cn(
-            "flex items-center gap-x-1 max-w-[90vw]",
+            "flex max-w-[90vw] items-center gap-x-1",
             isChaptersMenuOpen
-              ? "w-max"
+              ? isMobile
+                ? "w-full max-w-full"
+                : "w-max"
               : "shrink-0",
             !isChaptersMenuOpen && "group/chapters cursor-pointer"
           )}
@@ -102,7 +109,7 @@ export const ChaptersMenu = ({
             layout
             transition={{ duration: 0.4, ease: easing016 }}
             className={cn(
-              "relative overflow-hidden max-w-[calc(90vw-44px)]",
+              "relative max-w-[calc(90vw-44px)] overflow-hidden",
               isChaptersMenuOpen ? "w-max" : "w-max shrink-0"
             )}
           >
@@ -157,16 +164,16 @@ export const ChaptersMenu = ({
                     opacity: 0,
                     transition: { duration: 0.15, ease: easing016 },
                   }}
-                  className="flex w-max items-center gap-x-1 overflow-x-auto no-scrollbar py-0.5"
+                  className="no-scrollbar flex w-max items-center gap-x-1 overflow-x-auto py-0.5"
                 >
                   {/* bookshelf */}
                   <button
                     type="button"
                     onClick={() => goToZone("books-read")}
-                    className="group/item hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-3 sm:px-4 text-white transition-colors duration-200 outline-none select-none hover:text-black"
+                    className="group/item hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-3 text-white transition-colors duration-200 outline-none select-none hover:text-black sm:px-4"
                   >
                     <FlipTextButton>
-                      <span className="font-mona-sans flex items-center justify-center text-[13px] sm:text-[14px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black">
+                      <span className="font-mona-sans flex items-center justify-center text-[13px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black sm:text-[14px]">
                         {activeZoneId === "books-read" && (
                           <span className="rounded-2xs mr-1.5 inline-block h-1.5 w-1.5 shrink-0 bg-current align-middle" />
                         )}
@@ -179,10 +186,10 @@ export const ChaptersMenu = ({
                   <button
                     type="button"
                     onClick={() => goToZone("current-reads")}
-                    className="group/item hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-3 sm:px-4 text-white transition-colors duration-200 outline-none select-none hover:text-black"
+                    className="group/item hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-3 text-white transition-colors duration-200 outline-none select-none hover:text-black sm:px-4"
                   >
                     <FlipTextButton>
-                      <span className="font-mona-sans flex items-center justify-center text-[13px] sm:text-[14px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black">
+                      <span className="font-mona-sans flex items-center justify-center text-[13px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black sm:text-[14px]">
                         {activeZoneId === "current-reads" && (
                           <span className="rounded-2xs mr-1.5 inline-block h-1.5 w-1.5 shrink-0 bg-current align-middle" />
                         )}
@@ -195,10 +202,10 @@ export const ChaptersMenu = ({
                   <button
                     type="button"
                     onClick={() => goToZone("wishlist")}
-                    className="group/item hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-3 sm:px-4 text-white transition-colors duration-200 outline-none select-none hover:text-black"
+                    className="group/item hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-3 text-white transition-colors duration-200 outline-none select-none hover:text-black sm:px-4"
                   >
                     <FlipTextButton>
-                      <span className="font-mona-sans flex items-center justify-center text-[13px] sm:text-[14px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black">
+                      <span className="font-mona-sans flex items-center justify-center text-[13px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black sm:text-[14px]">
                         {activeZoneId === "wishlist" && (
                           <span className="rounded-2xs mr-1.5 inline-block h-1.5 w-1.5 shrink-0 bg-current align-middle" />
                         )}
