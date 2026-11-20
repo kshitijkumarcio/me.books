@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useCanvasNavigation } from "./usecanvasnavigation";
-import { LENGTH_OPTIONS } from "@/components/overlay-navigators/constants";
+import { GENRE_OPTIONS } from "@/components/overlay-navigators/constants";
 
 export const useCurateMenu = () => {
   const {
@@ -15,15 +15,20 @@ export const useCurateMenu = () => {
     activeZoneId,
     isChaptersMenuOpen,
     isCurateMenuOpen,
+    isShortlistMenuOpen,
     goToZone,
   } = useCanvasNavigation();
 
-  // Curate button is visible in the shelf grid and wishlist, not in currently reading section.
-  // When entering 'current-reads', a 0.5s delay is applied before hiding to prevent
-  // flickering if the user is just quickly travelling/scrolling through the zone.
-  const isDirectlyVisible = activeZoneId !== "current-reads";
+  // Curate button is visible specifically in the Bookshelf (books-read) zone.
+  // In 'wishlist', the Shortlist button replaces it.
+  // In 'current-reads', if coming from 'books-read', a 0.5s delay is applied before hiding
+  // to prevent flickering during fast scroll travel through the zone.
+  const isDirectlyVisible = activeZoneId === "books-read";
   const [isCurrentReadsSettled, setIsCurrentReadsSettled] = useState<boolean>(
     () => activeZoneId === "current-reads"
+  );
+  const [lastNonCurrentZone, setLastNonCurrentZone] = useState<string>(() =>
+    activeZoneId === "current-reads" ? "books-read" : activeZoneId
   );
   const [prevZoneId, setPrevZoneId] = useState<string | null>(activeZoneId);
 
@@ -31,6 +36,7 @@ export const useCurateMenu = () => {
     setPrevZoneId(activeZoneId);
     if (activeZoneId !== "current-reads") {
       setIsCurrentReadsSettled(false);
+      setLastNonCurrentZone(activeZoneId);
     }
   }
 
@@ -42,7 +48,11 @@ export const useCurateMenu = () => {
     return () => clearTimeout(timer);
   }, [activeZoneId]);
 
-  const isCurateVisible = isDirectlyVisible || !isCurrentReadsSettled;
+  const isCurateVisible =
+    isDirectlyVisible ||
+    (activeZoneId === "current-reads" &&
+      lastNonCurrentZone === "books-read" &&
+      !isCurrentReadsSettled);
 
   const chaptersMenuRef = useRef<HTMLDivElement>(null);
   const curateMenuRef = useRef<HTMLDivElement>(null);
@@ -51,15 +61,43 @@ export const useCurateMenu = () => {
   const [expandedCurateSection, setExpandedCurateSection] = useState<
     "genre" | "length" | null
   >(null);
+  const [curateFocusedIndex, setCurateFocusedIndex] = useState<number | null>(
+    null
+  );
 
-  // Simultaneous toggle: clicking an active section closes it; clicking a different section switches simultaneously
+  // Toggle section
   const handleToggleSection = useCallback((section: "genre" | "length") => {
     setExpandedCurateSection((prev) => (prev === section ? null : section));
+    setCurateFocusedIndex(null);
   }, []);
 
   const [isClassicsActive, setIsClassicsActive] = useState<boolean>(false);
-  const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
-  const [selectedLength, setSelectedLength] = useState<string | null>(null);
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const [selectedLengths, setSelectedLengths] = useState<string[]>([]);
+  const [pageRange, setPageRange] = useState<[number, number]>([50, 850]);
+
+  const toggleGenre = useCallback((genre: string) => {
+    if (genre === "all") {
+      setSelectedGenres([]);
+      return;
+    }
+    setSelectedGenres((prev) =>
+      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
+    );
+  }, []);
+
+  const toggleLength = useCallback((lengthId: string) => {
+    if (lengthId === "all") {
+      setSelectedLengths([]);
+      setPageRange([50, 850]);
+      return;
+    }
+    setSelectedLengths((prev) =>
+      prev.includes(lengthId)
+        ? prev.filter((l) => l !== lengthId)
+        : [...prev, lengthId]
+    );
+  }, []);
 
   // Active filter chips list shown above the curate menu
   const activeFilters = useMemo(() => {
@@ -71,23 +109,29 @@ export const useCurateMenu = () => {
         onRemove: () => setIsClassicsActive(false),
       });
     }
-    if (selectedGenre && selectedGenre !== "all") {
+    selectedGenres.forEach((g) => {
       list.push({
-        id: "genre",
-        label: selectedGenre,
-        onRemove: () => setSelectedGenre(null),
+        id: `genre-${g}`,
+        label: g,
+        onRemove: () => toggleGenre(g),
       });
-    }
-    if (selectedLength && selectedLength !== "all") {
-      const lengthObj = LENGTH_OPTIONS.find((l) => l.id === selectedLength);
+    });
+    // Interactive dual-thumb length range filter
+    if (pageRange[0] > 50 || pageRange[1] < 850) {
+      const maxLabel = pageRange[1] >= 850 ? "850p+" : `${pageRange[1]}p`;
       list.push({
-        id: "length",
-        label: lengthObj ? lengthObj.label : selectedLength,
-        onRemove: () => setSelectedLength(null),
+        id: "length-range",
+        label: `${pageRange[0]} - ${maxLabel}`,
+        onRemove: () => setPageRange([50, 850]),
       });
     }
     return list;
-  }, [isClassicsActive, selectedGenre, selectedLength]);
+  }, [
+    isClassicsActive,
+    selectedGenres,
+    pageRange,
+    toggleGenre,
+  ]);
 
   // Horizontal mouse wheel scrolling for compact options lists
   const handleHorizontalWheel = useCallback(
@@ -113,7 +157,6 @@ export const useCurateMenu = () => {
     const handlePointerDown = (event: PointerEvent) => {
       const target = event.target as Node;
 
-      // If clicking inside either chapters or curate menu, let their own click handlers handle it
       if (
         chaptersMenuRef.current?.contains(target) ||
         curateMenuRef.current?.contains(target)
@@ -139,21 +182,34 @@ export const useCurateMenu = () => {
     closeCurateMenu,
   ]);
 
-  const resetAllFilters = useCallback(() => {
-    setIsClassicsActive(false);
-    setSelectedGenre(null);
-    setSelectedLength(null);
-    setExpandedCurateSection(null);
+  const [isResetFlashing, setIsResetFlashing] = useState<boolean>(false);
+  const flashTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const triggerResetFlash = useCallback(() => {
+    setIsResetFlashing(true);
+    if (flashTimeoutRef.current) clearTimeout(flashTimeoutRef.current);
+    flashTimeoutRef.current = setTimeout(() => {
+      setIsResetFlashing(false);
+    }, 400);
   }, []);
 
-  // Contextual keyboard shortcuts:
-  // - When chapters menu is open:
-  //     'w' -> Wishlist, 's' -> Bookshelf, 'c' -> Currently Reading, 'm' / Escape -> Close chapters
-  // - When curate menu is open:
-  //     'c' -> Toggle Classics, 'g' -> Open/toggle Genre submenu, 'l' -> Open/toggle Length submenu,
-  //     'r' -> Reset all curate filters, 'm' -> Switch to chapters menu, Escape -> Close curate menu
-  // - When resting (neither menu open):
-  //     'm' -> Open chapters menu, 'c' -> Open curate menu (if curate is visible)
+  useEffect(() => {
+    return () => {
+      if (flashTimeoutRef.current) clearTimeout(flashTimeoutRef.current);
+    };
+  }, []);
+
+  const resetAllFilters = useCallback(() => {
+    setIsClassicsActive(false);
+    setSelectedGenres([]);
+    setSelectedLengths([]);
+    setPageRange([50, 850]);
+    setExpandedCurateSection(null);
+    setCurateFocusedIndex(null);
+    triggerResetFlash();
+  }, [triggerResetFlash]);
+
+  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
@@ -173,6 +229,12 @@ export const useCurateMenu = () => {
       const key = event.key.toLowerCase();
 
       if (key === "escape") {
+        if (expandedCurateSection !== null) {
+          event.preventDefault();
+          setExpandedCurateSection(null);
+          setCurateFocusedIndex(null);
+          return;
+        }
         if (isChaptersMenuOpen) {
           event.preventDefault();
           closeChaptersMenu();
@@ -180,6 +242,7 @@ export const useCurateMenu = () => {
           event.preventDefault();
           closeCurateMenu();
           setExpandedCurateSection(null);
+          setCurateFocusedIndex(null);
         }
         return;
       }
@@ -211,7 +274,48 @@ export const useCurateMenu = () => {
 
       // 2. Curate menu is open
       if (isCurateMenuOpen) {
-        if (key === "c") {
+        // Arrow navigation and Enter selection inside an open submenu popup
+        if (expandedCurateSection === "genre") {
+          const optionsCount = GENRE_OPTIONS.length;
+
+          if (key === "arrowright" || key === "arrowdown") {
+            event.preventDefault();
+            setCurateFocusedIndex((prev) =>
+              prev === null ? 0 : (prev + 1) % optionsCount
+            );
+            return;
+          }
+          if (key === "arrowleft" || key === "arrowup") {
+            event.preventDefault();
+            setCurateFocusedIndex((prev) =>
+              prev === null
+                ? optionsCount - 1
+                : (prev - 1 + optionsCount) % optionsCount
+            );
+            return;
+          }
+          if (key === "enter" || key === " ") {
+            if (curateFocusedIndex !== null) {
+              event.preventDefault();
+              const selectedOpt = GENRE_OPTIONS[curateFocusedIndex];
+              if (selectedOpt) toggleGenre(selectedOpt);
+              return;
+            }
+          }
+        } else if (expandedCurateSection === "length") {
+          if (key === "arrowleft" || key === "arrowdown") {
+            event.preventDefault();
+            setPageRange(([min, max]) => [Math.max(50, min - 25), max]);
+            return;
+          }
+          if (key === "arrowright" || key === "arrowup") {
+            event.preventDefault();
+            setPageRange(([min, max]) => [Math.min(max - 25, min + 25), max]);
+            return;
+          }
+        }
+
+        if (key === "c" && expandedCurateSection === null) {
           event.preventDefault();
           setIsClassicsActive((prev) => !prev);
           return;
@@ -242,15 +346,17 @@ export const useCurateMenu = () => {
       }
 
       // 3. Resting state (neither menu is open)
-      if (key === "m") {
-        event.preventDefault();
-        openChaptersMenu();
-        return;
-      }
-      if (key === "c" && isCurateVisible) {
-        event.preventDefault();
-        openCurateMenu();
-        return;
+      if (!isChaptersMenuOpen && !isCurateMenuOpen && !isShortlistMenuOpen) {
+        if (key === "m") {
+          event.preventDefault();
+          openChaptersMenu();
+          return;
+        }
+        if (key === "c" && isCurateVisible) {
+          event.preventDefault();
+          openCurateMenu();
+          return;
+        }
       }
     };
 
@@ -259,13 +365,17 @@ export const useCurateMenu = () => {
   }, [
     isChaptersMenuOpen,
     isCurateMenuOpen,
+    isShortlistMenuOpen,
     isCurateVisible,
+    expandedCurateSection,
+    curateFocusedIndex,
     openChaptersMenu,
     closeChaptersMenu,
     openCurateMenu,
     closeCurateMenu,
     goToZone,
     handleToggleSection,
+    toggleGenre,
     resetAllFilters,
   ]);
 
@@ -281,20 +391,25 @@ export const useCurateMenu = () => {
     isCurateMenuOpen,
     expandedCurateSection,
     setExpandedCurateSection,
+    curateFocusedIndex,
     handleToggleSection,
     handleHorizontalWheel,
     isClassicsActive,
     setIsClassicsActive,
-    selectedGenre,
-    setSelectedGenre,
-    selectedLength,
-    setSelectedLength,
+    selectedGenres,
+    toggleGenre,
+    selectedLengths,
+    toggleLength,
+    pageRange,
+    setPageRange,
     activeFilters,
     resetAllFilters,
+    isResetFlashing,
     toggleChaptersMenu,
     openChaptersMenu,
     toggleCurateMenu,
     openCurateMenu,
     goToZone,
+    activeZoneId,
   };
 };

@@ -280,3 +280,76 @@ export const CurateIcon = ({
     </div>
   );
 };
+
+export const ShortlistIcon = ({
+  isOpen = false,
+  isParentHovered = false,
+}: {
+  isOpen?: boolean;
+  isParentHovered?: boolean;
+}) => {
+  const isHovered = !isOpen && isParentHovered;
+
+  return (
+    <div className="relative flex aspect-square w-10 items-center justify-center">
+      {/* Shortlist Bookmark Ribbon Icon (visible when closed, rotates and scales out when open) */}
+      <motion.div
+        initial={false}
+        animate={
+          isOpen
+            ? { scale: 0, rotate: 45, opacity: 0 }
+            : { scale: 1, rotate: 0, opacity: 1 }
+        }
+        transition={{ duration: 0.5, ease: easing016 }}
+        className="pointer-events-none absolute inset-0 flex items-center justify-center"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          className="h-4.5 w-4.5 origin-center text-black"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.75"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path
+            d="M 6.5 3 C 6.5 2.44772 6.94772 2 7.5 2 H 16.5 C 17.0523 2 17.5 2.44772 17.5 3 V 21.5 L 12 17.5 L 6.5 21.5 Z"
+            className={cn(
+              "transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]",
+              isHovered
+                ? "fill-black"
+                : "fill-transparent group-hover/shortlist:fill-black"
+            )}
+          />
+        </svg>
+      </motion.div>
+
+      {/* Close Cross Icon (scales and rotates in when open) */}
+      <motion.div
+        initial={false}
+        animate={
+          isOpen
+            ? { scale: 1, rotate: 0, opacity: 1 }
+            : { scale: 0, rotate: -45, opacity: 0 }
+        }
+        transition={{ duration: 0.5, ease: easing016 }}
+        className="pointer-events-none absolute inset-0 flex items-center justify-center"
+      >
+        <svg
+          viewBox="0 0 16 16"
+          className="h-3.5 w-3.5 origin-center transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover/shortlistclose:rotate-90"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M 3.5 3.5 L 12.5 12.5 M 12.5 3.5 L 3.5 12.5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </motion.div>
+    </div>
+  );
+};

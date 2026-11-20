@@ -8,9 +8,11 @@ import FlipTextButton from "./ui-components/flip-text-button";
 import { useOverlayButtons } from "@/hooks/layout-hooks/useoverlaybuttons";
 import { useActiveBookRoute } from "@/hooks/layout-hooks/use-active-book-route";
 import { useCurateMenu } from "@/hooks/layout-hooks/use-curate-menu";
+import { useShortlistMenu } from "@/hooks/layout-hooks/use-shortlist-menu";
 import { ViewDotsIcon } from "./overlay-navigators/icons";
 import { ChaptersMenu } from "./overlay-navigators/chapters-menu";
 import { CurateMenu } from "./overlay-navigators/curate-menu";
+import { ShortlistMenu } from "./overlay-navigators/shortlist-menu";
 import { BookModalBottomButtons } from "./overlay-navigators/book-modal-bottom-buttons";
 
 const OverlayNavigators = () => {
@@ -47,18 +49,46 @@ const OverlayNavigators = () => {
     handleHorizontalWheel,
     isClassicsActive,
     setIsClassicsActive,
-    selectedGenre,
-    setSelectedGenre,
-    selectedLength,
-    setSelectedLength,
+    selectedGenres,
+    toggleGenre,
+    selectedLengths,
+    toggleLength,
+    pageRange,
+    setPageRange,
+    curateFocusedIndex,
     activeFilters,
     resetAllFilters,
+    isResetFlashing: isCurateResetFlashing,
     toggleChaptersMenu,
     openChaptersMenu,
     toggleCurateMenu,
     openCurateMenu,
     goToZone,
+    activeZoneId,
   } = useCurateMenu();
+
+  // Shortlist menu controller (for wishlist zone)
+  const {
+    shortlistMenuRef,
+    isShortlistHovered,
+    setIsShortlistHovered,
+    isShortlistVisible,
+    isShortlistMenuOpen,
+    expandedShortlistSection,
+    setExpandedShortlistSection,
+    shortlistFocusedIndex,
+    handleToggleSection: handleToggleShortlistSection,
+    handleHorizontalWheel: handleShortlistHorizontalWheel,
+    selectedPriceRanges,
+    togglePriceRange,
+    selectedPriorities,
+    togglePriority,
+    activeFilters: activeShortlistFilters,
+    resetAllFilters: resetAllShortlistFilters,
+    isResetFlashing: isShortlistResetFlashing,
+    toggleShortlistMenu,
+    openShortlistMenu,
+  } = useShortlistMenu();
 
   const [isMoodboardHovered, setIsMoodboardHovered] = useState<boolean>(false);
   const [isMoodboardClickLocked, setIsMoodboardClickLocked] =
@@ -76,7 +106,7 @@ const OverlayNavigators = () => {
   };
 
   return (
-    <div className="pointer-events-none fixed top-0 left-0 z-999 flex h-dvh w-full flex-col justify-between px-9 pt-6 pb-10 lg:px-6 lg:pt-4">
+    <div className="pointer-events-none fixed top-0 left-0 z-999 flex h-dvh w-full flex-col justify-between px-4 pt-4 pb-6 sm:px-6 sm:pt-6 sm:pb-8 lg:px-6 lg:pt-4 lg:pb-10">
       {/* top bar */}
       <div className="flex items-center justify-between">
         <div>
@@ -128,8 +158,8 @@ const OverlayNavigators = () => {
                     </FlipTextButton>
                   </div>
                   <div
-                    className={cn("cursor-pointer")}
                     onClick={() => toggleUseCase()}
+                    className={cn("cursor-pointer")}
                   >
                     <FlipTextButton>
                       <p className="font-mona-sans relative text-[14px] font-semibold">
@@ -210,7 +240,7 @@ const OverlayNavigators = () => {
       </AnimatePresence>
 
       {/* bottom buttons */}
-      <div className="relative flex items-center justify-center">
+      <div className="relative flex w-full items-center justify-center sm:w-auto">
         <AnimatePresence mode="wait" initial={false}>
           {!isShowingBookControls ? (
             <motion.div
@@ -226,7 +256,7 @@ const OverlayNavigators = () => {
                 opacity: 0,
                 transition: { duration: 0.4, delay: 0.2, ease: easing016 },
               }}
-              className="flex items-center justify-center"
+              className="flex w-full items-center justify-center max-w-[calc(100vw-32px)] sm:w-auto sm:max-w-none"
             >
               <ChaptersMenu
                 chaptersMenuRef={chaptersMenuRef}
@@ -235,9 +265,12 @@ const OverlayNavigators = () => {
                 setIsChaptersHovered={setIsChaptersHovered}
                 isCurateMenuOpen={isCurateMenuOpen}
                 setExpandedCurateSection={setExpandedCurateSection}
+                isShortlistMenuOpen={isShortlistMenuOpen}
+                setExpandedShortlistSection={setExpandedShortlistSection}
                 openChaptersMenu={openChaptersMenu}
                 toggleChaptersMenu={toggleChaptersMenu}
                 goToZone={goToZone}
+                activeZoneId={activeZoneId}
               />
 
               <CurateMenu
@@ -253,14 +286,41 @@ const OverlayNavigators = () => {
                 activeFilters={activeFilters}
                 isClassicsActive={isClassicsActive}
                 setIsClassicsActive={setIsClassicsActive}
-                selectedGenre={selectedGenre}
-                setSelectedGenre={setSelectedGenre}
-                selectedLength={selectedLength}
-                setSelectedLength={setSelectedLength}
+                selectedGenres={selectedGenres}
+                toggleGenre={toggleGenre}
+                selectedLengths={selectedLengths}
+                toggleLength={toggleLength}
+                pageRange={pageRange}
+                setPageRange={setPageRange}
                 expandedCurateSection={expandedCurateSection}
+                curateFocusedIndex={curateFocusedIndex}
                 handleToggleSection={handleToggleSection}
                 handleHorizontalWheel={handleHorizontalWheel}
                 resetAllFilters={resetAllFilters}
+                isResetFlashing={isCurateResetFlashing}
+              />
+
+              <ShortlistMenu
+                shortlistMenuRef={shortlistMenuRef}
+                isShortlistVisible={isShortlistVisible}
+                isShortlistMenuOpen={isShortlistMenuOpen}
+                isShortlistHovered={isShortlistHovered}
+                setIsShortlistHovered={setIsShortlistHovered}
+                isChaptersMenuOpen={isChaptersMenuOpen}
+                openShortlistMenu={openShortlistMenu}
+                toggleShortlistMenu={toggleShortlistMenu}
+                setExpandedShortlistSection={setExpandedShortlistSection}
+                activeFilters={activeShortlistFilters}
+                selectedPriceRanges={selectedPriceRanges}
+                togglePriceRange={togglePriceRange}
+                selectedPriorities={selectedPriorities}
+                togglePriority={togglePriority}
+                expandedShortlistSection={expandedShortlistSection}
+                shortlistFocusedIndex={shortlistFocusedIndex}
+                handleToggleSection={handleToggleShortlistSection}
+                handleHorizontalWheel={handleShortlistHorizontalWheel}
+                resetAllFilters={resetAllShortlistFilters}
+                isResetFlashing={isShortlistResetFlashing}
               />
             </motion.div>
           ) : (

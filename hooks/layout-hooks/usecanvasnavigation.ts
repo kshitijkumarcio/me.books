@@ -61,6 +61,7 @@ interface CanvasNavigationState {
   activeZoneId: string;
   isChaptersMenuOpen: boolean;
   isCurateMenuOpen: boolean;
+  isShortlistMenuOpen: boolean;
   setPanToFn: (fn: (x: number, y: number) => void) => void;
   setScrollToTargetFn: (
     fn:
@@ -77,8 +78,12 @@ interface CanvasNavigationState {
   toggleCurateMenu: () => void;
   openCurateMenu: () => void;
   closeCurateMenu: () => void;
+  toggleShortlistMenu: () => void;
+  openShortlistMenu: () => void;
+  closeShortlistMenu: () => void;
   setIsChaptersMenuOpen: (isOpen: boolean) => void;
   setIsCurateMenuOpen: (isOpen: boolean) => void;
+  setIsShortlistMenuOpen: (isOpen: boolean) => void;
   goToZone: (
     zoneId: string,
     options?: { lerp?: number; duration?: number; offset?: number }
@@ -99,6 +104,7 @@ export const useCanvasNavigation = create<CanvasNavigationState>(
     activeZoneId: "books-read",
     isChaptersMenuOpen: false,
     isCurateMenuOpen: false,
+    isShortlistMenuOpen: false,
     setPanToFn: (fn) => set({ panToFn: fn }),
     setScrollToTargetFn: (fn) => set({ scrollToTargetFn: fn }),
     setActiveZoneId: (id) => set({ activeZoneId: id }),
@@ -106,33 +112,59 @@ export const useCanvasNavigation = create<CanvasNavigationState>(
       set((state) => ({
         isChaptersMenuOpen: !state.isChaptersMenuOpen,
         isCurateMenuOpen: false,
+        isShortlistMenuOpen: false,
       })),
     openChaptersMenu: () =>
       set({
         isChaptersMenuOpen: true,
         isCurateMenuOpen: false,
+        isShortlistMenuOpen: false,
       }),
     closeChaptersMenu: () => set({ isChaptersMenuOpen: false }),
     toggleCurateMenu: () =>
       set((state) => ({
         isCurateMenuOpen: !state.isCurateMenuOpen,
         isChaptersMenuOpen: false,
+        isShortlistMenuOpen: false,
       })),
     openCurateMenu: () =>
       set({
         isCurateMenuOpen: true,
         isChaptersMenuOpen: false,
+        isShortlistMenuOpen: false,
       }),
     closeCurateMenu: () => set({ isCurateMenuOpen: false }),
+    toggleShortlistMenu: () =>
+      set((state) => ({
+        isShortlistMenuOpen: !state.isShortlistMenuOpen,
+        isChaptersMenuOpen: false,
+        isCurateMenuOpen: false,
+      })),
+    openShortlistMenu: () =>
+      set({
+        isShortlistMenuOpen: true,
+        isChaptersMenuOpen: false,
+        isCurateMenuOpen: false,
+      }),
+    closeShortlistMenu: () => set({ isShortlistMenuOpen: false }),
     setIsChaptersMenuOpen: (open) =>
       set({
         isChaptersMenuOpen: open,
-        ...(open ? { isCurateMenuOpen: false } : {}),
+        ...(open
+          ? { isCurateMenuOpen: false, isShortlistMenuOpen: false }
+          : {}),
       }),
     setIsCurateMenuOpen: (open) =>
       set({
         isCurateMenuOpen: open,
-        ...(open ? { isChaptersMenuOpen: false } : {}),
+        ...(open
+          ? { isChaptersMenuOpen: false, isShortlistMenuOpen: false }
+          : {}),
+      }),
+    setIsShortlistMenuOpen: (open) =>
+      set({
+        isShortlistMenuOpen: open,
+        ...(open ? { isChaptersMenuOpen: false, isCurateMenuOpen: false } : {}),
       }),
 
     scrollToTarget: (target, options) => {
@@ -191,6 +223,7 @@ export const useCanvasNavigation = create<CanvasNavigationState>(
             activeZoneId: zoneId,
             isChaptersMenuOpen: false,
             isCurateMenuOpen: false,
+            isShortlistMenuOpen: false,
           });
           return;
         }
@@ -213,6 +246,7 @@ export const useCanvasNavigation = create<CanvasNavigationState>(
         activeZoneId: zoneId,
         isChaptersMenuOpen: false,
         isCurateMenuOpen: false,
+        isShortlistMenuOpen: false,
       });
     },
   })

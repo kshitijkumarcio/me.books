@@ -194,7 +194,7 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
       onMouseLeave={handleMouseLeave}
       className={cn(
         "w-cell-6 h-cell-6 relative select-none",
-        isHovered ? "z-[60]" : isElevated ? "z-[50]" : "isolate",
+        isHovered ? "z-100" : isElevated ? "z-50" : "isolate",
         className
       )}
     >
