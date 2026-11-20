@@ -157,7 +157,10 @@ export const renderLayoutElement = (
     <div
       key={element.id || `layout-el-${element.type}-${index}`}
       style={posStyle}
-      className={cn(posClass, element.type !== "cover" && "pointer-events-none")}
+      className={cn(
+        posClass,
+        element.type !== "cover" && "pointer-events-none"
+      )}
     >
       {node}
     </div>
