@@ -267,18 +267,16 @@ export const CurateMenu = ({
           </button>
 
           {/* Curate text button OR Curate menu items */}
-          {/* Curate text button OR Curate menu items */}
           <div
             className={cn(
-              "relative max-w-[calc(90vw-44px)] overflow-hidden",
-              isCurateMenuOpen ? "w-max" : "w-max shrink-0"
+              "relative max-w-[calc(90vw-44px)]",
+              isCurateMenuOpen ? "w-max overflow-hidden" : "w-max shrink-0"
             )}
           >
             <AnimatePresence mode="popLayout" initial={false}>
               {!isCurateMenuOpen ? (
                 <motion.div
                   key="curate-text-button"
-                  layout="position"
                   initial={{ opacity: 0 }}
                   animate={{
                     opacity: 1,
@@ -318,7 +316,6 @@ export const CurateMenu = ({
               ) : (
                 <motion.div
                   key="curate-menu-items"
-                  layout="position"
                   initial={{ opacity: 0 }}
                   animate={{
                     opacity: 1,
@@ -383,9 +380,7 @@ export const CurateMenu = ({
                             ? "genre"
                             : selectedGenres.length === 0
                               ? "genre +"
-                              : selectedGenres.length === 1
-                                ? `genre: ${selectedGenres[0]}`
-                                : `genre (${String(selectedGenres.length).padStart(2, "0")})`}
+                              : `genre (${String(selectedGenres.length).padStart(2, "0")})`}
                         </p>
                       </FlipTextButton>
                     </button>
@@ -500,7 +495,7 @@ export const CurateMenu = ({
                             ? "length"
                             : !isLengthFiltered
                               ? "length +"
-                              : `length: ${pageRange[0]}-${pageRange[1] >= MAX_BOOK_LENGTH ? "900p+" : `${pageRange[1]}p`}`}
+                              : "length (01)"}
                         </p>
                       </FlipTextButton>
                     </button>
@@ -583,7 +578,7 @@ export const CurateMenu = ({
                     </motion.svg>
                     {!isMobile && (
                       <FlipTextButton>
-                        <span className="font-mona-sans text-[13px] font-semibold whitespace-nowrap sm:text-[14px]">
+                        <span className="font-mona-sans text-[13px] font-semibold whitespace-nowrap">
                           reset
                         </span>
                       </FlipTextButton>

@@ -265,15 +265,15 @@ export const ShortlistMenu = ({
           {/* Shortlist text button OR Shortlist menu items */}
           <div
             className={cn(
-              "relative max-w-[calc(90vw-44px)] overflow-hidden",
-              isShortlistMenuOpen ? "w-max" : "w-max shrink-0"
+              "relative max-w-[calc(90vw-44px)]",
+              isShortlistMenuOpen ? "w-max overflow-hidden" : "w-max shrink-0"
             )}
           >
             <AnimatePresence mode="popLayout" initial={false}>
               {!isShortlistMenuOpen ? (
                 <motion.div
                   key="shortlist-text-button"
-                  layout="position"
+                  // layout="position"
                   initial={{ opacity: 0 }}
                   animate={{
                     opacity: 1,
@@ -313,7 +313,7 @@ export const ShortlistMenu = ({
               ) : (
                 <motion.div
                   key="shortlist-menu-items"
-                  layout="position"
+                  // layout="position"
                   initial={{ opacity: 0 }}
                   animate={{
                     opacity: 1,
@@ -358,7 +358,7 @@ export const ShortlistMenu = ({
                             ? "price"
                             : !isPriceFiltered
                               ? "price range +"
-                              : `price: ₹${priceRange[0]}-${priceRange[1] >= MAX_BOOK_PRICE ? "₹1000+" : `₹${priceRange[1]}`}`}
+                              : "price (01)"}
                         </p>
                       </FlipTextButton>
                     </button>
@@ -434,13 +434,7 @@ export const ShortlistMenu = ({
                             ? "priority"
                             : selectedPriorities.length === 0
                               ? "priority +"
-                              : selectedPriorities.length === 1
-                                ? `priority: ${
-                                    PRIORITY_OPTIONS.find(
-                                      (pr) => pr.id === selectedPriorities[0]
-                                    )?.label || selectedPriorities[0]
-                                  }`
-                                : `priority (${String(selectedPriorities.length).padStart(2, "0")})`}
+                              : `priority (${String(selectedPriorities.length).padStart(2, "0")})`}
                         </p>
                       </FlipTextButton>
                     </button>
@@ -562,7 +556,7 @@ export const ShortlistMenu = ({
                     </motion.svg>
                     {!isMobile && (
                       <FlipTextButton>
-                        <span className="font-mona-sans text-[13px] font-semibold whitespace-nowrap sm:text-[14px]">
+                        <span className="font-mona-sans text-[13px] font-semibold whitespace-nowrap">
                           reset
                         </span>
                       </FlipTextButton>
