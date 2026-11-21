@@ -17,17 +17,17 @@ const variants: Variants = {
   },
 };
 
-interface VisibleByStateProps {
+interface ScaleWrapperProps {
   children?: ReactNode;
   className?: string;
   visibleOn?: "index" | "moodboard";
 }
 
-const VisibleByState = ({
+const ScaleWrapper = ({
   children,
   className,
   visibleOn = "moodboard",
-}: VisibleByStateProps) => {
+}: ScaleWrapperProps) => {
   const { pageView } = useOverlayButtons();
 
   return (
@@ -43,4 +43,4 @@ const VisibleByState = ({
   );
 };
 
-export default VisibleByState;
+export default ScaleWrapper;

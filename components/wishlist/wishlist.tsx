@@ -1,20 +1,26 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { PrefetchKind } from "next/dist/client/components/router-reducer/router-reducer-types";
+import { motion, LayoutGroup } from "motion/react";
+import { easing022 } from "@/constants";
 import { cn } from "@/lib/utils";
 import { wishlistBooks, allBooks } from "@/books/books-index";
 import type { WishlistBook } from "@/books/books-index";
 import {
   calculateShelfGridDimensions,
   formatGridPosition,
-  parseGridExplicitBooks,
+  parseGridPosition,
 } from "@/components/shelf-grid/grid-utils";
-import { EmptyBlock } from "@/components/shelf-grid/shelf-grid";
 import { useRegisterGrid } from "@/components/shelf-grid/grid-registry";
 import { useDevMode } from "@/hooks/ui-hooks/use-dev-mode";
+import {
+  useShortlistStore,
+  isWishlistBookMatchingFilters,
+} from "@/hooks/layout-hooks/use-shortlist-store";
 import WishListBlock from "./wishlist-block";
+import ScaleWrapper from "./scale-wrapper";
 
 export const WishListBlockSize = 5.5;
 
@@ -59,6 +65,90 @@ const Wishlist = ({
       }
     });
   }, [books, router]);
+
+  // Subscribe to real-time shortlist filter state (price range & priority)
+  const priceRange = useShortlistStore((state) => state.priceRange);
+  const selectedPriorities = useShortlistStore(
+    (state) => state.selectedPriorities
+  );
+
+  // Set of book IDs that satisfy the current filter criteria
+  const matchingBookIds = useMemo(() => {
+    const set = new Set<string>();
+    books.forEach((b) => {
+      if (isWishlistBookMatchingFilters(b, priceRange, selectedPriorities)) {
+        set.add(b.id);
+      }
+    });
+    return set;
+  }, [books, priceRange, selectedPriorities]);
+
+  // Set of book IDs that are currently scaling out (Phase 1 before unmounting)
+  const [exitingBookIds, setExitingBookIds] = useState<Set<string>>(
+    () => new Set()
+  );
+
+  // Set of newly mounted book IDs that should animate in from scale 0
+  const [newlyMountedIds, setNewlyMountedIds] = useState<Set<string>>(
+    () => new Set()
+  );
+
+  // Track previous matching IDs to detect filter transitions during render
+  const [prevMatchingBookIds, setPrevMatchingBookIds] =
+    useState<Set<string>>(matchingBookIds);
+
+  if (matchingBookIds !== prevMatchingBookIds) {
+    setPrevMatchingBookIds(matchingBookIds);
+
+    const nextExiting = new Set(exitingBookIds);
+    const nextNewlyMounted = new Set(newlyMountedIds);
+
+    // Books that were previously matching, but now aren't, enter the exiting (scale-out) state
+    prevMatchingBookIds.forEach((id) => {
+      if (!matchingBookIds.has(id)) {
+        nextExiting.add(id);
+      }
+    });
+
+    // Books that newly match:
+    matchingBookIds.forEach((id) => {
+      // If it was in exiting state, cancel exiting
+      if (nextExiting.has(id)) {
+        nextExiting.delete(id);
+      }
+      // If it wasn't matching before, mark as newly mounted so it scales in
+      if (!prevMatchingBookIds.has(id)) {
+        nextNewlyMounted.add(id);
+      }
+    });
+
+    setExitingBookIds(nextExiting);
+    setNewlyMountedIds(nextNewlyMounted);
+  }
+
+  // Called when a book's scale-to-0 animation finishes: unmount it from the layout
+  const handleScaleOutComplete = useCallback((bookId: string) => {
+    setExitingBookIds((prev) => {
+      if (!prev.has(bookId)) return prev;
+      const next = new Set(prev);
+      next.delete(bookId);
+      return next;
+    });
+    setNewlyMountedIds((prev) => {
+      if (!prev.has(bookId)) return prev;
+      const next = new Set(prev);
+      next.delete(bookId);
+      return next;
+    });
+  }, []);
+
+  // The active list of books passed to the grid layout calculation.
+  // Includes all matching books PLUS books currently completing their scale-out animation.
+  const displayedBooks = useMemo(() => {
+    return books.filter(
+      (b) => matchingBookIds.has(b.id) || exitingBookIds.has(b.id)
+    );
+  }, [books, matchingBookIds, exitingBookIds]);
 
   // Local coordinate toggle state
   const [localShowCoordinates, setLocalShowCoordinates] =
@@ -107,24 +197,134 @@ const Wishlist = ({
     return Math.max(1, targetCols);
   }, [cols, effectiveBlockSize, horizontalGap, shelfWidthCells, shelfCols]);
 
-  // 3. Parse explicit positions & detect min columns/rows (like ShelfGrid)
-  const { explicitMap, unpositionedBooks, minRequiredK, minRequiredR } =
-    useMemo(() => {
-      return parseGridExplicitBooks(books, "Wishlist");
-    }, [books]);
+  const effectiveCols = dynamicCols;
 
-  const effectiveCols = Math.max(dynamicCols, minRequiredK);
-
-  // Calculate total rows needed to accommodate all books and explicit placements
-  const totalRows = useMemo(() => {
-    let cap = 0;
+  // 3. Calculate total rows and grid height for all books before filtering
+  // This baseline height is maintained across filtering so the zone never contracts.
+  const initialTotalRows = useMemo(() => {
+    let remaining = books.length;
     let r = 0;
-    while (cap < books.length || r < minRequiredR) {
-      cap += r % 2 === 0 ? effectiveCols : Math.max(1, effectiveCols - 1);
+    while (remaining > 0) {
+      const cap = r % 2 === 0 ? effectiveCols : Math.max(1, effectiveCols - 1);
+      const countInRow = Math.min(remaining, cap);
+      remaining -= countInRow;
       r++;
     }
     return Math.max(1, r);
-  }, [books.length, minRequiredR, effectiveCols]);
+  }, [books.length, effectiveCols]);
+
+  const initialGridHeightCells = useMemo(() => {
+    return (
+      initialTotalRows * effectiveBlockSize +
+      Math.max(0, initialTotalRows - 1) * verticalGap
+    );
+  }, [initialTotalRows, effectiveBlockSize, verticalGap]);
+
+  // Overall wishlist zone min-height based on all books before filtering:
+  // header height leading `calc(12px + 5dvw)` + `mt-cell-2` gap (2 cells) + grid height (`initialGridHeightCells`)
+  const initialZoneHeight = useMemo(() => {
+    const totalCells = 2 + initialGridHeightCells;
+    return `max(100dvh, calc(12px + 5dvw + var(--cell-size) * ${totalCells}))`;
+  }, [initialGridHeightCells]);
+
+  // Grid width calculated to match the full ShelfGrid zone width
+  const defaultGridWidth = useMemo(() => {
+    return `calc(var(--cell-size) * ${shelfWidthCells})`;
+  }, [shelfWidthCells]);
+
+  // Group wishlist books into alternating rows (effectiveCols, effectiveCols - 1):
+  // 1. Always fills the entire width of the zone size (as set by ShelfGrid) first.
+  // 2. Rows with fewer books than their capacity are centered with NO empty gaps.
+  // 3. Honors explicit book positions (book.position) where they fall inside the occupied slots,
+  //    and auto-flows remaining books into all open slots so zero blank spaces exist.
+  const brickRows = useMemo(() => {
+    const totalBooks = displayedBooks.length;
+    if (totalBooks === 0) return [];
+
+    // Step 1: Calculate capacities for each row (alternating effectiveCols, effectiveCols - 1)
+    const rowCapacities: number[] = [];
+    let remaining = totalBooks;
+    let r = 0;
+    while (remaining > 0) {
+      const cap = r % 2 === 0 ? effectiveCols : Math.max(1, effectiveCols - 1);
+      const countInRow = Math.min(remaining, cap);
+      rowCapacities.push(countInRow);
+      remaining -= countInRow;
+      r++;
+    }
+
+    // Step 2: Separate explicit books that land in active slots from overflow/unpositioned books
+    const slotMap = new Map<string, WishlistBook>();
+    const overflowExplicitBooks: WishlistBook[] = [];
+    const unpositionedBooks: WishlistBook[] = [];
+
+    displayedBooks.forEach((book) => {
+      if (book.position) {
+        const parsed = parseGridPosition(book.position);
+        if (
+          parsed &&
+          parsed.row >= 0 &&
+          parsed.row < rowCapacities.length &&
+          parsed.colIndex >= 0 &&
+          parsed.colIndex < rowCapacities[parsed.row] &&
+          !slotMap.has(`${parsed.row}-${parsed.colIndex}`)
+        ) {
+          slotMap.set(`${parsed.row}-${parsed.colIndex}`, book);
+        } else {
+          overflowExplicitBooks.push(book);
+        }
+      } else {
+        unpositionedBooks.push(book);
+      }
+    });
+
+    // Pool of books to auto-flow into remaining unassigned slots
+    const autoflowPool = [...overflowExplicitBooks, ...unpositionedBooks];
+    let autoflowIdx = 0;
+
+    // Step 3: Populate each row contiguously without any blank gaps
+    const rows: Array<
+      Array<{
+        key: string;
+        coordinate: string;
+        book: WishlistBook;
+      }>
+    > = [];
+
+    for (let rowIdx = 0; rowIdx < rowCapacities.length; rowIdx++) {
+      const count = rowCapacities[rowIdx];
+      const rowItems: Array<{
+        key: string;
+        coordinate: string;
+        book: WishlistBook;
+      }> = [];
+
+      for (let c = 0; c < count; c++) {
+        const key = `${rowIdx}-${c}`;
+        let bookToPlace: WishlistBook | undefined;
+
+        if (slotMap.has(key)) {
+          bookToPlace = slotMap.get(key);
+        } else if (autoflowIdx < autoflowPool.length) {
+          bookToPlace = autoflowPool[autoflowIdx++];
+        }
+
+        if (bookToPlace) {
+          rowItems.push({
+            key: `wishlist-slot-${bookToPlace.id}`,
+            coordinate: formatGridPosition(rowIdx, c),
+            book: bookToPlace,
+          });
+        }
+      }
+
+      if (rowItems.length > 0) {
+        rows.push(rowItems);
+      }
+    }
+
+    return rows;
+  }, [displayedBooks, effectiveCols]);
 
   // Register Wishlist with unified Grid Registry for the developer indicator
   useRegisterGrid(
@@ -133,120 +333,40 @@ const Wishlist = ({
         id: "wishlist",
         name: "Wishlist",
         cols: effectiveCols,
-        rows: totalRows,
+        rows: Math.max(1, brickRows.length),
         blockSize: effectiveBlockSize,
         gapX: horizontalGap,
         gapY: verticalGap,
-        totalBooks: books.length,
-        explicitBooksCount: explicitMap.size,
-        unpositionedBooksCount: unpositionedBooks.length,
+        totalBooks: displayedBooks.length,
+        explicitBooksCount: displayedBooks.filter((b) => Boolean(b.position))
+          .length,
+        unpositionedBooksCount: displayedBooks.filter(
+          (b) => !b.position
+        ).length,
         isCoordinatesVisible,
         onToggleCoordinates: () => setLocalShowCoordinates((prev) => !prev),
         enableGridSizeDisplay: shouldShowGridSizeIndicator,
       }),
       [
         effectiveCols,
-        totalRows,
+        brickRows.length,
         effectiveBlockSize,
         horizontalGap,
         verticalGap,
-        books.length,
-        explicitMap.size,
-        unpositionedBooks.length,
+        displayedBooks,
         isCoordinatesVisible,
         shouldShowGridSizeIndicator,
       ]
     )
   );
 
-  // Group wishlist books into alternating rows to create the masonry brick pattern:
-  // - Even rows (0, 2, ...): effectiveCols
-  // - Odd rows (1, 3, ...): effectiveCols - 1 (centered)
-  const brickRows = useMemo(() => {
-    let unpositionedIndex = 0;
-    const rows: Array<
-      Array<{
-        key: string;
-        coordinate: string;
-        book?: WishlistBook;
-      }>
-    > = [];
-
-    for (let r = 0; r < totalRows; r++) {
-      const rowCapacity =
-        r % 2 === 0 ? effectiveCols : Math.max(1, effectiveCols - 1);
-
-      // Find which unassigned slots in this row should be filled.
-      // If there are not enough books to fill the complete row, fill from the center instead of an edge.
-      const center = (rowCapacity - 1) / 2;
-      const unassignedCols: number[] = [];
-
-      for (let c = 0; c < rowCapacity; c++) {
-        const key = `${r}-${c}`;
-        if (!explicitMap.has(key)) {
-          unassignedCols.push(c);
-        }
-      }
-
-      // How many unpositioned books can we place in this row?
-      const unpositionedRemaining =
-        unpositionedBooks.length - unpositionedIndex;
-      const booksToPlaceCount = Math.max(
-        0,
-        Math.min(unpositionedRemaining, unassignedCols.length)
-      );
-
-      // Sort unassigned columns by distance to center so partial rows are filled from the center
-      unassignedCols.sort(
-        (a, b) => Math.abs(a - center) - Math.abs(b - center) || a - b
-      );
-
-      // The chosen columns are the ones closest to the center
-      const chosenCols = new Set(unassignedCols.slice(0, booksToPlaceCount));
-
-      const rowItems: Array<{
-        key: string;
-        coordinate: string;
-        book?: WishlistBook;
-      }> = [];
-
-      for (let c = 0; c < rowCapacity; c++) {
-        const coord = formatGridPosition(r, c);
-        const key = `${r}-${c}`;
-
-        let bookToPlace: WishlistBook | undefined;
-
-        if (explicitMap.has(key)) {
-          bookToPlace = explicitMap.get(key);
-        } else if (chosenCols.has(c)) {
-          bookToPlace = unpositionedBooks[unpositionedIndex++];
-        }
-
-        rowItems.push({
-          key: bookToPlace ? `book-${bookToPlace.id}` : `empty-${coord}`,
-          coordinate: coord,
-          book: bookToPlace,
-        });
-      }
-
-      rows.push(rowItems);
-    }
-
-    // Trim trailing rows if all slots in them are empty
-    while (
-      rows.length > 1 &&
-      rows[rows.length - 1].every((item) => !item.book)
-    ) {
-      rows.pop();
-    }
-
-    return rows;
-  }, [totalRows, effectiveCols, explicitMap, unpositionedBooks]);
-
   return (
     <div
       id="wishlist"
-      className={cn("mt-cell-[1.7] relative min-h-dvh w-full", className)}
+      style={{
+        minHeight: initialZoneHeight,
+      }}
+      className={cn("mt-cell-[1.7] relative w-full", className)}
     >
       <div className="pointer-events-none sticky left-0 w-screen px-9 lg:px-5">
         <div className="flex w-full items-center justify-between">
@@ -261,47 +381,76 @@ const Wishlist = ({
       </div>
 
       <div className="pointer-events-auto">
-        {/* Wishlist Alternating Brick Grid matching BooksRead page width */}
-        <div
-          className="mt-cell-2 relative flex flex-col items-center select-none"
-          style={{
-            rowGap: `calc(var(--cell-size) * ${verticalGap})`,
-          }}
-        >
-          {brickRows.map((row, r) => (
-            <div
-              key={`wishlist-row-${r}`}
-              className="relative flex flex-row justify-center focus-within:z-40 hover:z-40 has-[[data-hovered]]:z-40"
+        <LayoutGroup id="wishlist-brick-grid">
+          {displayedBooks.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: easing022 }}
               style={{
-                columnGap: `calc(var(--cell-size) * ${horizontalGap})`,
+                minHeight: `calc(var(--cell-size) * ${initialGridHeightCells})`,
+                minWidth: defaultGridWidth,
+              }}
+              className="mt-cell-4 flex flex-col items-center justify-center py-20 text-center select-none"
+            >
+              <p className="font-mona-sans text-[15px] font-medium text-black/50">
+                no books match the selected filters
+              </p>
+            </motion.div>
+          ) : (
+            /* Wishlist Alternating Brick Grid matching BooksRead page width */
+            <div
+              className="mt-cell-2 relative flex flex-col items-center select-none"
+              style={{
+                rowGap: `calc(var(--cell-size) * ${verticalGap})`,
+                minHeight: `calc(var(--cell-size) * ${initialGridHeightCells})`,
+                minWidth: defaultGridWidth,
               }}
             >
-              {row.map((item) => (
-                <div
-                  key={item.key}
-                  className="relative flex shrink-0 items-center justify-center focus-within:z-50 hover:z-50 has-[[data-hovered]]:z-50"
+              {brickRows.map((row, r) => (
+                <motion.div
+                  key={`wishlist-row-${r}`}
+                  layout
+                  transition={{ duration: 0.55, ease: easing022 }}
+                  className="relative flex flex-row justify-center focus-within:z-40 hover:z-40 has-data-hovered:z-40"
+                  style={{
+                    columnGap: `calc(var(--cell-size) * ${horizontalGap})`,
+                  }}
                 >
-                  {item.book ? (
-                    <WishListBlock book={item.book} size={effectiveBlockSize} />
-                  ) : (
-                    <EmptyBlock
-                      size={effectiveBlockSize}
-                      coordinate={item.coordinate}
-                      showCoordinate={isCoordinatesVisible}
-                    />
-                  )}
+                  {row.map((item) => (
+                    <motion.div
+                      key={item.key}
+                      layoutId={`wishlist-card-${item.book.id}`}
+                      layout
+                      transition={{ duration: 1, ease: easing022 }}
+                      className="relative flex shrink-0 items-center justify-center focus-within:z-50 hover:z-50 has-data-hovered:z-50"
+                    >
+                      <ScaleWrapper
+                        isScalingOut={exitingBookIds.has(item.book.id)}
+                        isNewlyMounted={newlyMountedIds.has(item.book.id)}
+                        onScaleOutComplete={() =>
+                          handleScaleOutComplete(item.book.id)
+                        }
+                      >
+                        <WishListBlock
+                          book={item.book}
+                          size={effectiveBlockSize}
+                        />
+                      </ScaleWrapper>
 
-                  {/* Co-ordinates badge for occupied wishlist book blocks */}
-                  {isCoordinatesVisible && item.book && (
-                    <div className="pointer-events-none absolute top-2 left-2 z-40 rounded bg-black/80 px-1.5 py-0.5 font-mono text-[10px] font-bold text-white shadow backdrop-blur-xs select-none">
-                      {item.coordinate}
-                    </div>
-                  )}
-                </div>
+                      {/* Co-ordinates badge for occupied wishlist book blocks */}
+                      {isCoordinatesVisible && (
+                        <div className="pointer-events-none absolute top-2 left-2 z-40 rounded bg-black/80 px-1.5 py-0.5 font-mono text-[10px] font-bold text-white shadow backdrop-blur-xs select-none">
+                          {item.coordinate}
+                        </div>
+                      )}
+                    </motion.div>
+                  ))}
+                </motion.div>
               ))}
             </div>
-          ))}
-        </div>
+          )}
+        </LayoutGroup>
       </div>
     </div>
   );

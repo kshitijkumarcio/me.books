@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useCanvasNavigation } from "./usecanvasnavigation";
+import { useShortlistStore } from "./use-shortlist-store";
 import {
   PRIORITY_OPTIONS,
   MIN_BOOK_PRICE,
@@ -69,23 +70,15 @@ export const useShortlistMenu = () => {
     setShortlistFocusedIndex(null);
   }, []);
 
-  const [priceRange, setPriceRange] = useState<[number, number]>([
-    MIN_BOOK_PRICE,
-    MAX_BOOK_PRICE,
-  ]);
-  const [selectedPriorities, setSelectedPriorities] = useState<string[]>([]);
-
-  const togglePriority = useCallback((priorityId: string) => {
-    if (priorityId === "all") {
-      setSelectedPriorities([]);
-      return;
-    }
-    setSelectedPriorities((prev) =>
-      prev.includes(priorityId)
-        ? prev.filter((pr) => pr !== priorityId)
-        : [...prev, priorityId]
-    );
-  }, []);
+  const priceRange = useShortlistStore((state) => state.priceRange);
+  const setPriceRange = useShortlistStore((state) => state.setPriceRange);
+  const selectedPriorities = useShortlistStore(
+    (state) => state.selectedPriorities
+  );
+  const togglePriority = useShortlistStore((state) => state.togglePriority);
+  const storeResetAllFilters = useShortlistStore(
+    (state) => state.resetAllFilters
+  );
 
   // Active filter chips list shown above the shortlist menu
   const activeFilters = useMemo(() => {
@@ -108,7 +101,7 @@ export const useShortlistMenu = () => {
       });
     });
     return list;
-  }, [priceRange, selectedPriorities, togglePriority]);
+  }, [priceRange, selectedPriorities, setPriceRange, togglePriority]);
 
   // Horizontal wheel scroll handler for options drawer
   const handleHorizontalWheel = useCallback(
@@ -167,12 +160,11 @@ export const useShortlistMenu = () => {
   }, []);
 
   const resetAllFilters = useCallback(() => {
-    setPriceRange([MIN_BOOK_PRICE, MAX_BOOK_PRICE]);
-    setSelectedPriorities([]);
+    storeResetAllFilters();
     setExpandedShortlistSection(null);
     setShortlistFocusedIndex(null);
     triggerResetFlash();
-  }, [triggerResetFlash]);
+  }, [storeResetAllFilters, triggerResetFlash]);
 
   // Contextual keyboard shortcuts for Shortlist:
   // - When shortlist menu is open:
@@ -289,6 +281,7 @@ export const useShortlistMenu = () => {
     isCurateMenuOpen,
     expandedShortlistSection,
     shortlistFocusedIndex,
+    setPriceRange,
     openShortlistMenu,
     closeShortlistMenu,
     handleToggleSection,
