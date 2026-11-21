@@ -48,11 +48,10 @@ export const ChaptersMenu = ({
         <motion.div
           key="chapters-main-container"
           ref={chaptersMenuRef}
-          layout
           initial={{ opacity: 0, width: 0 }}
           animate={{
             opacity: 1,
-            width: isChaptersMenuOpen && isMobile ? "100%" : "auto",
+            width: "auto",
             transition: { duration: 0.4, ease: easing016 },
           }}
           exit={{
@@ -67,12 +66,7 @@ export const ChaptersMenu = ({
             setIsChaptersHovered(false);
           }}
           className={cn(
-            "flex max-w-[90vw] items-center gap-x-1",
-            isChaptersMenuOpen
-              ? isMobile
-                ? "w-full max-w-full"
-                : "w-max"
-              : "shrink-0",
+            "flex max-w-[90vw] shrink-0 items-center gap-x-1",
             !isChaptersMenuOpen && "group/chapters cursor-pointer"
           )}
         >
@@ -105,118 +99,127 @@ export const ChaptersMenu = ({
           </button>
 
           {/* Chapters text button OR Chapter menu items */}
-          <motion.div
-            layout
-            transition={{ duration: 0.4, ease: easing016 }}
-            className={cn(
-              "relative max-w-[calc(90vw-44px)] overflow-hidden",
-              isChaptersMenuOpen ? "w-max" : "w-max shrink-0"
-            )}
-          >
-            <AnimatePresence mode="popLayout" initial={false}>
+          <div className="relative flex max-w-[calc(90vw-44px)] items-center">
+            <AnimatePresence initial={false}>
               {!isChaptersMenuOpen ? (
                 <motion.div
                   key="chapters-text-button"
-                  initial={{ opacity: 0 }}
+                  initial={{ width: 0, opacity: 0 }}
                   animate={{
+                    width: "auto",
                     opacity: 1,
-                    transition: { duration: 0.4, ease: easing016 },
+                    transition: {
+                      width: { duration: 0.4, ease: easing016 },
+                      opacity: { duration: 0.25, delay: 0.05, ease: easing016 },
+                    },
                   }}
                   exit={{
+                    width: 0,
                     opacity: 0,
-                    transition: { duration: 0.4, ease: easing016 },
+                    transition: {
+                      opacity: { duration: 0.15, ease: easing016 },
+                      width: { duration: 0.35, ease: easing016 },
+                    },
                   }}
-                  className="w-max shrink-0"
+                  className="overflow-hidden"
                 >
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (isCurateMenuOpen || isShortlistMenuOpen) {
-                        setExpandedCurateSection(null);
-                        setExpandedShortlistSection?.(null);
-                        openChaptersMenu();
-                      } else {
-                        toggleChaptersMenu();
-                      }
-                    }}
-                    className="pointer-events-auto flex h-10 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-4 outline-none select-none"
-                  >
-                    <FlipTextButton isHovered={isChaptersHovered}>
-                      <p className="font-mona-sans text-[14px] font-semibold whitespace-nowrap text-white">
-                        chapters
-                      </p>
-                    </FlipTextButton>
-                  </button>
+                  <div className="w-max shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (isCurateMenuOpen || isShortlistMenuOpen) {
+                          setExpandedCurateSection(null);
+                          setExpandedShortlistSection?.(null);
+                          openChaptersMenu();
+                        } else {
+                          toggleChaptersMenu();
+                        }
+                      }}
+                      className="pointer-events-auto flex h-10 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-4 outline-none select-none"
+                    >
+                      <FlipTextButton isHovered={isChaptersHovered}>
+                        <p className="font-mona-sans text-[14px] font-semibold whitespace-nowrap text-white">
+                          chapters
+                        </p>
+                      </FlipTextButton>
+                    </button>
+                  </div>
                 </motion.div>
               ) : (
                 <motion.div
                   key="chapters-menu-items"
-                  initial={{ opacity: 0 }}
+                  initial={{ width: 0, opacity: 0 }}
                   animate={{
+                    width: "auto",
                     opacity: 1,
                     transition: {
-                      duration: 0.3,
-                      delay: 0.08,
-                      ease: easing016,
+                      width: { duration: 0.4, ease: easing016 },
+                      opacity: { duration: 0.25, delay: 0.06, ease: easing016 },
                     },
                   }}
                   exit={{
+                    width: 0,
                     opacity: 0,
-                    transition: { duration: 0.15, ease: easing016 },
+                    transition: {
+                      opacity: { duration: 0.15, ease: easing016 },
+                      width: { duration: 0.35, ease: easing016 },
+                    },
                   }}
-                  className="no-scrollbar flex w-max items-center gap-x-1 overflow-x-auto py-0.5"
+                  className="overflow-hidden"
                 >
-                  {/* bookshelf */}
-                  <button
-                    type="button"
-                    onClick={() => goToZone("books-read")}
-                    className="group/item hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-3 text-white transition-colors duration-200 outline-none select-none hover:text-black sm:px-4"
-                  >
-                    <FlipTextButton>
-                      <span className="font-mona-sans flex items-center justify-center text-[13px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black sm:text-[14px]">
-                        {activeZoneId === "books-read" && (
-                          <span className="rounded-2xs mr-1.5 inline-block h-1.5 w-1.5 shrink-0 bg-current align-middle" />
-                        )}
-                        bookshelf
-                      </span>
-                    </FlipTextButton>
-                  </button>
+                  <div className="no-scrollbar flex w-max max-w-[calc(90vw-44px)] items-center gap-x-1 overflow-x-auto py-0.5">
+                    {/* bookshelf */}
+                    <button
+                      type="button"
+                      onClick={() => goToZone("books-read")}
+                      className="group/item hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-3 text-white transition-colors duration-200 outline-none select-none hover:text-black sm:px-4"
+                    >
+                      <FlipTextButton>
+                        <span className="font-mona-sans flex items-center justify-center text-[13px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black sm:text-[14px]">
+                          {activeZoneId === "books-read" && (
+                            <span className="rounded-2xs mr-1.5 inline-block h-1.5 w-1.5 shrink-0 bg-current align-middle" />
+                          )}
+                          bookshelf
+                        </span>
+                      </FlipTextButton>
+                    </button>
 
-                  {/* current reads */}
-                  <button
-                    type="button"
-                    onClick={() => goToZone("current-reads")}
-                    className="group/item hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-3 text-white transition-colors duration-200 outline-none select-none hover:text-black sm:px-4"
-                  >
-                    <FlipTextButton>
-                      <span className="font-mona-sans flex items-center justify-center text-[13px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black sm:text-[14px]">
-                        {activeZoneId === "current-reads" && (
-                          <span className="rounded-2xs mr-1.5 inline-block h-1.5 w-1.5 shrink-0 bg-current align-middle" />
-                        )}
-                        current reads
-                      </span>
-                    </FlipTextButton>
-                  </button>
+                    {/* current reads */}
+                    <button
+                      type="button"
+                      onClick={() => goToZone("current-reads")}
+                      className="group/item hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-3 text-white transition-colors duration-200 outline-none select-none hover:text-black sm:px-4"
+                    >
+                      <FlipTextButton>
+                        <span className="font-mona-sans flex items-center justify-center text-[13px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black sm:text-[14px]">
+                          {activeZoneId === "current-reads" && (
+                            <span className="rounded-2xs mr-1.5 inline-block h-1.5 w-1.5 shrink-0 bg-current align-middle" />
+                          )}
+                          current reads
+                        </span>
+                      </FlipTextButton>
+                    </button>
 
-                  {/* wishlist */}
-                  <button
-                    type="button"
-                    onClick={() => goToZone("wishlist")}
-                    className="group/item hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-3 text-white transition-colors duration-200 outline-none select-none hover:text-black sm:px-4"
-                  >
-                    <FlipTextButton>
-                      <span className="font-mona-sans flex items-center justify-center text-[13px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black sm:text-[14px]">
-                        {activeZoneId === "wishlist" && (
-                          <span className="rounded-2xs mr-1.5 inline-block h-1.5 w-1.5 shrink-0 bg-current align-middle" />
-                        )}
-                        wishlist
-                      </span>
-                    </FlipTextButton>
-                  </button>
+                    {/* wishlist */}
+                    <button
+                      type="button"
+                      onClick={() => goToZone("wishlist")}
+                      className="group/item hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-3 text-white transition-colors duration-200 outline-none select-none hover:text-black sm:px-4"
+                    >
+                      <FlipTextButton>
+                        <span className="font-mona-sans flex items-center justify-center text-[13px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black sm:text-[14px]">
+                          {activeZoneId === "wishlist" && (
+                            <span className="rounded-2xs mr-1.5 inline-block h-1.5 w-1.5 shrink-0 bg-current align-middle" />
+                          )}
+                          wishlist
+                        </span>
+                      </FlipTextButton>
+                    </button>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
-          </motion.div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
