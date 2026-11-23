@@ -73,6 +73,9 @@ import WildDarkShore from "@/public/images/wild-dark-shore.jpg";
 import Orbital from "@/public/images/orbital.jpg";
 import Kairos from "@/public/images/kairos.jpg";
 
+import BoyWithBook from "@/public/images/boy-w-book.png";
+import WishlistAmazonQr from "@/public/images/wishlist-amazon-qr.png";
+
 import chapter1a from "@/public/images/chapters-popup-1a.png";
 import chapter1b from "@/public/images/chapters-popup-1b.png";
 import chapter2a from "@/public/images/chapters-popup-2a.png";
@@ -342,6 +345,8 @@ export const images = {
   chapter2b,
   chapter3a,
   chapter3b,
+  BoyWithBook,
+  WishlistAmazonQr,
 };
 
 export default images;

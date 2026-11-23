@@ -24,7 +24,7 @@ const RootPage = () => {
           verticalGap={1}
           showGridSize={false}
         />
-        <CurrentReads />
+        <CurrentReads  />
         <Wishlist horizontalGap={0.25} verticalGap={1} />
       </main>
     </InfiniteCanvas>

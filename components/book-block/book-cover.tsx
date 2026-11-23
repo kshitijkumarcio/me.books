@@ -89,7 +89,7 @@ const BookCover = ({
     <div
       className={cn(
         "group/cover relative cursor-pointer transition-all duration-500 ease-out",
-        "hover:z-30 hover:scale-[1.03]",
+        "hover:z-30 hover:scale-[1.1]",
         rotation,
         className
       )}

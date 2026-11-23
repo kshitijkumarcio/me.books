@@ -21,6 +21,7 @@ import {
 } from "@/hooks/layout-hooks/use-shortlist-store";
 import WishListBlock from "./wishlist-block";
 import ScaleWrapper from "./scale-wrapper";
+import WishlistStampTicket from "./wishlist-stamp-ticket";
 
 export const WishListBlockSize = 5.5;
 
@@ -340,9 +341,8 @@ const Wishlist = ({
         totalBooks: displayedBooks.length,
         explicitBooksCount: displayedBooks.filter((b) => Boolean(b.position))
           .length,
-        unpositionedBooksCount: displayedBooks.filter(
-          (b) => !b.position
-        ).length,
+        unpositionedBooksCount: displayedBooks.filter((b) => !b.position)
+          .length,
         isCoordinatesVisible,
         onToggleCoordinates: () => setLocalShowCoordinates((prev) => !prev),
         enableGridSizeDisplay: shouldShowGridSizeIndicator,
@@ -371,11 +371,32 @@ const Wishlist = ({
       <div className="pointer-events-none sticky left-0 w-screen px-9 lg:px-5">
         <div className="flex w-full items-center justify-between">
           <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-medium text-black uppercase">
-            (WISHLIST
+            {"I'D LOVEEE"}
           </p>
-          <div className="mx-8 h-1 w-full bg-black" />
-          <p className="font-mona-sans -translate-y-1 text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-medium text-black lowercase">
-            muhehe)
+          {/* <div className="mx-8 h-1 w-full bg-black" /> */}
+          <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-medium text-black uppercase">
+            RECEIVING
+          </p>
+        </div>
+        <div className="relative z-10 flex w-full items-center justify-between">
+          <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-medium text-black uppercase">
+            ANY OF
+          </p>
+          <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-medium text-black uppercase">
+            (&nbsp;THESE&nbsp;)
+          </p>
+          <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-medium text-black uppercase">
+            BOOKS
+          </p>
+        </div>
+        <div className="mt-cell-[1.9] relative flex items-start justify-between">
+          {/* 3D Interactive Postage Stamp Ticket */}
+          <WishlistStampTicket className="aspect-2/3 max-w-30 absolute right-[16.5%] bottom-0" />
+          <p className="font-mona-sans relative text-[14px] font-semibold">
+            (below is my
+          </p>
+          <p className="font-mona-sans relative text-[14px] font-semibold">
+            wishlist for books)
           </p>
         </div>
       </div>

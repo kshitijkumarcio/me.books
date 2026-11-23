@@ -139,7 +139,7 @@ const Introduction = () => {
               targetId="#wishlist"
               duration={2.5}
               lerp={1.5}
-              offset={-42}
+              offset={-102}
             />
           </div>
         </div>
