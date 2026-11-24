@@ -110,11 +110,11 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Review pill cycles text & random position every 3.8s (frequency increased by half)
+  // Review pill cycles text & random position every 3.2s
   useEffect(() => {
     if (pills.length < 2) return;
 
-    const startDelay = (bookNum % 5) * 400;
+    const startDelay = (bookNum % 5) * 200;
     let intervalId: NodeJS.Timeout;
 
     const timeoutId = setTimeout(() => {
@@ -124,7 +124,7 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
           index: (current.index + 1) % pills.length,
           coord: getRandomSidePosition(current.side),
         }));
-      }, 9000);
+      }, 3200);
     }, startDelay);
 
     return () => {
@@ -133,11 +133,11 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
     };
   }, [bookNum, pills.length]);
 
-  // Genre pill cycles text & random position every 5.2s (frequency increased by half)
+  // Genre pill cycles text & random position every 2.8s
   useEffect(() => {
     if (genres.length < 2) return;
 
-    const startDelay = (bookNum % 5) * 600 + 1900;
+    const startDelay = (bookNum % 5) * 250 + 800;
     let intervalId: NodeJS.Timeout;
 
     const timeoutId = setTimeout(() => {
@@ -147,7 +147,7 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
           index: (current.index + 1) % genres.length,
           coord: getRandomSidePosition(current.side),
         }));
-      }, 7500);
+      }, 2800);
     }, startDelay);
 
     return () => {
@@ -156,7 +156,7 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
     };
   }, [bookNum, genres.length]);
 
-  // Periodically swap sides every 12s so both review phrases and genres visit both flanks
+  // Periodically swap sides every 7s so both review phrases and genres visit both flanks quicker
   useEffect(() => {
     const swapInterval = setInterval(() => {
       setReviewPill((current) => {
@@ -175,7 +175,7 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
           coord: getRandomSidePosition(nextSide),
         };
       });
-    }, 18000);
+    }, 7000);
 
     return () => clearInterval(swapInterval);
   }, []);
@@ -233,7 +233,7 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
+            transition={{ duration: 0.35, ease: "easeInOut" }}
             className="pointer-events-auto absolute z-20"
             style={{
               top: reviewPill.coord.top,
@@ -260,7 +260,7 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
+            transition={{ duration: 0.35, ease: "easeInOut" }}
             className="pointer-events-auto absolute z-20"
             style={{
               top: genrePill.coord.top,

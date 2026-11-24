@@ -366,7 +366,7 @@ const Wishlist = ({
       style={{
         minHeight: initialZoneHeight,
       }}
-      className={cn("mt-cell-[1.7] relative w-full", className)}
+      className={cn("mt-cell-[1.93] relative w-full", className)}
     >
       <div className="pointer-events-none sticky left-0 w-screen px-9 lg:px-5">
         <div className="flex w-full items-center justify-between">
