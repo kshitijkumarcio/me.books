@@ -1,9 +1,11 @@
 "use client";
 
-import { type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { motion, type Variants } from "motion/react";
 import { easing022 } from "@/constants";
 import { cn } from "@/lib/utils";
+
+const HIDE_DURATION_MS = 700;
 
 const scaleVariants: Variants = {
   show: {
@@ -18,7 +20,7 @@ const scaleVariants: Variants = {
     scale: 0,
     opacity: 0,
     transition: {
-      duration: 0.7,
+      duration: HIDE_DURATION_MS / 1000,
       ease: easing022,
     },
   },
@@ -39,14 +41,32 @@ export const ScaleWrapper = ({
   isNewlyMounted = false,
   onScaleOutComplete,
 }: ScaleWrapperProps) => {
+  const onCompleteRef = useRef(onScaleOutComplete);
+  useEffect(() => {
+    onCompleteRef.current = onScaleOutComplete;
+  }, [onScaleOutComplete]);
+
+  // Preempts ghost slots: if a book shifts rows mid-exit (remounting with
+  // initial={false} + animate="hide"), Motion skips the animation and never
+  // fires onAnimationComplete. This guarantees the slot always unmounts.
+  useEffect(() => {
+    if (!isScalingOut) return;
+
+    const timer = setTimeout(() => {
+      onCompleteRef.current?.();
+    }, HIDE_DURATION_MS + 60);
+
+    return () => clearTimeout(timer);
+  }, [isScalingOut]);
+
   return (
     <motion.div
       variants={scaleVariants}
       initial={isNewlyMounted ? "hide" : false}
       animate={isScalingOut ? "hide" : "show"}
       onAnimationComplete={(definition) => {
-        if (definition === "hide" && onScaleOutComplete) {
-          onScaleOutComplete();
+        if (definition === "hide") {
+          onCompleteRef.current?.();
         }
       }}
       style={{ originX: 0.5, originY: 0.5 }}
