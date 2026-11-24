@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { easing016 } from "@/constants";
 import { ChaptersIcon } from "./icons";
 import FlipTextButton from "../ui-components/flip-text-button";
+import { NavButton } from "../ui-components/nav-button";
 import { useMediaQuery } from "@/hooks/ui-hooks/use-media-query";
 
 interface ChaptersMenuProps {
@@ -18,7 +19,6 @@ interface ChaptersMenuProps {
   setExpandedShortlistSection?: (section: "price" | "priority" | null) => void;
   openChaptersMenu: () => void;
   toggleChaptersMenu: () => void;
-  goToZone: (zoneId: "books-read" | "current-reads" | "wishlist") => void;
   activeZoneId?: string;
 }
 
@@ -33,7 +33,6 @@ export const ChaptersMenu = ({
   setExpandedShortlistSection,
   openChaptersMenu,
   toggleChaptersMenu,
-  goToZone,
   activeZoneId,
 }: ChaptersMenuProps) => {
   const isMobile = useMediaQuery("(max-width: 639px)");
@@ -169,52 +168,55 @@ export const ChaptersMenu = ({
                 >
                   <div className="no-scrollbar flex w-max max-w-[calc(90vw-44px)] items-center gap-x-1 overflow-x-auto py-0.5">
                     {/* bookshelf */}
-                    <button
-                      type="button"
-                      onClick={() => goToZone("books-read")}
+                    <NavButton
+                      targetId="#books-read"
+                      offset={-42}
+                      duration={2}
+                      lerp={1}
+                      onClick={toggleChaptersMenu}
                       className="group/item hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-3 text-white transition-colors duration-200 outline-none select-none hover:text-black sm:px-4"
                     >
-                      <FlipTextButton>
-                        <span className="font-mona-sans flex items-center justify-center text-[13px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black sm:text-[14px]">
-                          {activeZoneId === "books-read" && (
-                            <span className="rounded-2xs mr-1.5 inline-block h-1.5 w-1.5 shrink-0 bg-current align-middle" />
-                          )}
-                          bookshelf
-                        </span>
-                      </FlipTextButton>
-                    </button>
+                      <span className="font-mona-sans flex items-center justify-center text-[13px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black sm:text-[14px]">
+                        {activeZoneId === "books-read" && (
+                          <span className="rounded-2xs mr-1.5 inline-block h-1.5 w-1.5 shrink-0 bg-current align-middle" />
+                        )}
+                        bookshelf
+                      </span>
+                    </NavButton>
 
                     {/* current reads */}
-                    <button
-                      type="button"
-                      onClick={() => goToZone("current-reads")}
+                    <NavButton
+                      targetId="#current-reads"
+                      offset={-42}
+                      duration={2}
+                      lerp={1}
+                      onClick={toggleChaptersMenu}
                       className="group/item hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-3 text-white transition-colors duration-200 outline-none select-none hover:text-black sm:px-4"
                     >
-                      <FlipTextButton>
-                        <span className="font-mona-sans flex items-center justify-center text-[13px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black sm:text-[14px]">
-                          {activeZoneId === "current-reads" && (
-                            <span className="rounded-2xs mr-1.5 inline-block h-1.5 w-1.5 shrink-0 bg-current align-middle" />
-                          )}
-                          current reads
-                        </span>
-                      </FlipTextButton>
-                    </button>
+                      <span className="font-mona-sans flex items-center justify-center text-[13px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black sm:text-[14px]">
+                        {activeZoneId === "current-reads" && (
+                          <span className="rounded-2xs mr-1.5 inline-block h-1.5 w-1.5 shrink-0 bg-current align-middle" />
+                        )}
+                        current reads
+                      </span>
+                    </NavButton>
 
                     {/* wishlist */}
-                    <button
-                      type="button"
-                      onClick={() => goToZone("wishlist")}
+                    <NavButton
+                      targetId="#wishlist"
+                      offset={-42}
+                      duration={2}
+                      lerp={1}
+                      onClick={toggleChaptersMenu}
                       className="group/item hover:bg-neon pointer-events-auto flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-black bg-black px-3 text-white transition-colors duration-200 outline-none select-none hover:text-black sm:px-4"
                     >
-                      <FlipTextButton>
-                        <span className="font-mona-sans flex items-center justify-center text-[13px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black sm:text-[14px]">
-                          {activeZoneId === "wishlist" && (
-                            <span className="rounded-2xs mr-1.5 inline-block h-1.5 w-1.5 shrink-0 bg-current align-middle" />
-                          )}
-                          wishlist
-                        </span>
-                      </FlipTextButton>
-                    </button>
+                      <span className="font-mona-sans flex items-center justify-center text-[13px] font-semibold whitespace-nowrap text-white transition-colors duration-200 group-hover/item:text-black sm:text-[14px]">
+                        {activeZoneId === "wishlist" && (
+                          <span className="rounded-2xs mr-1.5 inline-block h-1.5 w-1.5 shrink-0 bg-current align-middle" />
+                        )}
+                        wishlist
+                      </span>
+                    </NavButton>
                   </div>
                 </motion.div>
               )}

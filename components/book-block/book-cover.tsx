@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -39,7 +39,25 @@ const BookCover = ({
   href,
 }: BookCoverProps) => {
   const router = useRouter();
-  const { openModal } = useReadBookModal();
+  const { openModal, startCoverTransition, activeBookId, transitionPhase } =
+    useReadBookModal();
+  const coverInnerRef = useRef<HTMLDivElement>(null);
+
+  const effectiveId =
+    id ||
+    (href ? href.split("/").filter(Boolean).pop()?.split("?")[0] : undefined);
+
+  const isTransitioningCurrent = Boolean(
+    effectiveId && activeBookId === effectiveId && transitionPhase !== "idle"
+  );
+
+  // Restore visibility when transition ends back to idle
+  useEffect(() => {
+    if (coverInnerRef.current && !isTransitioningCurrent) {
+      coverInnerRef.current.style.visibility = "visible";
+      coverInnerRef.current.style.opacity = "1";
+    }
+  }, [isTransitioningCurrent]);
 
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -49,25 +67,64 @@ const BookCover = ({
       if (!href) return;
       e.preventDefault();
 
+      const el = coverInnerRef.current;
+      const rect = el?.getBoundingClientRect();
+      const bookId = effectiveId;
+
+      if (rect && bookId && src && el) {
+        // The clicked book cover in the grid is hovered at scale 1.1
+        // We compute its true 1.0 resting dimensions and position:
+        const HOVER_SCALE = 1.1;
+        const restingWidth = rect.width / HOVER_SCALE;
+        const restingHeight = rect.height / HOVER_SCALE;
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const restingRect = {
+          top: centerY - restingHeight / 2,
+          left: centerX - restingWidth / 2,
+          width: restingWidth,
+          height: restingHeight,
+        };
+
+        // Instantly hide the grid book cover so ONLY 1 book cover exists at all times
+        el.style.visibility = "hidden";
+        el.style.opacity = "0";
+
+        startCoverTransition({
+          bookId,
+          initialRect: {
+            top: rect.top,
+            left: rect.left,
+            width: rect.width,
+            height: rect.height,
+          },
+          restingRect,
+          coverImage: src,
+          coverAlt: alt,
+          format,
+          rotation,
+        });
+      }
+
       if (href.includes("/read/")) {
-        const bookId = id || href.split("/read/")[1]?.split("?")[0];
-        const book = getReadBookById(bookId);
+        const readId = id || href.split("/read/")[1]?.split("?")[0];
+        const book = getReadBookById(readId);
         if (book) {
           openModal({ type: "read", book, href });
           router.push(href, { scroll: false });
           return;
         }
       } else if (href.includes("/reading/")) {
-        const bookId = id || href.split("/reading/")[1]?.split("?")[0];
-        const book = getCurrentReadBookById(bookId);
+        const readingId = id || href.split("/reading/")[1]?.split("?")[0];
+        const book = getCurrentReadBookById(readingId);
         if (book) {
           openModal({ type: "reading", book, href });
           router.push(href, { scroll: false });
           return;
         }
       } else if (href.includes("/wishlist/")) {
-        const bookId = id || href.split("/wishlist/")[1]?.split("?")[0];
-        const book = getWishlistBookById(bookId);
+        const wishlistId = id || href.split("/wishlist/")[1]?.split("?")[0];
+        const book = getWishlistBookById(wishlistId);
         if (book) {
           openModal({ type: "wishlist", book, href });
           router.push(href, { scroll: false });
@@ -77,7 +134,18 @@ const BookCover = ({
 
       router.push(href, { scroll: false });
     },
-    [href, id, openModal, router]
+    [
+      alt,
+      effectiveId,
+      format,
+      href,
+      id,
+      openModal,
+      rotation,
+      router,
+      src,
+      startCoverTransition,
+    ]
   );
 
   if (!src) return null;
@@ -95,7 +163,13 @@ const BookCover = ({
       )}
     >
       <div
-        style={cellWidth ? { width: cellWidth } : undefined}
+        ref={coverInnerRef}
+        data-book-id={effectiveId}
+        style={{
+          ...(cellWidth ? { width: cellWidth } : {}),
+          visibility: isTransitioningCurrent ? "hidden" : "visible",
+          opacity: isTransitioningCurrent ? 0 : 1,
+        }}
         className={cn(
           "shadow-book relative overflow-hidden",
           !cellWidth && effectiveWidthClass

@@ -29,7 +29,9 @@ export const useActiveBookRoute = () => {
   const isWishlistRoute =
     Boolean(pathname?.includes("/wishlist/")) ||
     activeModal?.type === "wishlist";
-  const isAnyModalRoute = isReadBookRoute || isReadingRoute || isWishlistRoute;
+  const isAboutRoute = pathname === "/about" || activeModal?.type === "about";
+  const isAnyModalRoute =
+    isReadBookRoute || isReadingRoute || isWishlistRoute || isAboutRoute;
   const isShowingBookControls = isAnyModalRoute && !isClosing;
 
   let currentReadBook: ReadBook | undefined =
@@ -121,6 +123,7 @@ export const useActiveBookRoute = () => {
     isReadBookRoute,
     isReadingRoute,
     isWishlistRoute,
+    isAboutRoute,
     isShowingBookControls,
     handleCloseBook,
     borrowUrl,

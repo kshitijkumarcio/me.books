@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { motion } from "motion/react";
+import { motion, AnimatePresence, LayoutGroup } from "motion/react";
 import { cn } from "@/lib/utils";
 import {
   useReadBookModal,
@@ -12,6 +12,8 @@ import {
 import ReadBookDetail from "@/components/read-book-detail/read-book-detail";
 import CRBookDetail from "@/components/current-reads/cr-book-detail";
 import WishlistBookDetail from "@/components/wishlist/wishlist-book-detail";
+import AboutDetail from "@/components/about/about-detail";
+import SharedBookCoverTransitionLayer from "@/components/read-book-detail/shared-book-cover-transition";
 import {
   getReadBookById,
   getCurrentReadBookById,
@@ -35,9 +37,10 @@ export const BookShelfAnimator = ({
     activeModal,
     openModal,
     clearActiveModal,
+    triggerClose,
   } = useReadBookModal();
 
-  // Route matches any intercepted detail view (/read/, /reading/, /wishlist/) or active native modal
+  // Route matches any intercepted detail view (/read/, /reading/, /wishlist/, /about) or active native modal
   const isReadBookRoute =
     Boolean(pathname?.includes("/read/")) || activeModal?.type === "read";
   const isReadingRoute =
@@ -45,7 +48,9 @@ export const BookShelfAnimator = ({
   const isWishlistRoute =
     Boolean(pathname?.includes("/wishlist/")) ||
     activeModal?.type === "wishlist";
-  const isModalRoute = isReadBookRoute || isReadingRoute || isWishlistRoute;
+  const isAboutRoute = pathname === "/about" || activeModal?.type === "about";
+  const isModalRoute =
+    isReadBookRoute || isReadingRoute || isWishlistRoute || isAboutRoute;
 
   // Reset isClosing once the route has actually navigated away from modal views
   useEffect(() => {
@@ -85,13 +90,24 @@ export const BookShelfAnimator = ({
             return;
           }
         }
+      } else if (path === "/about") {
+        openModal({ type: "about", href: "/about" });
+        return;
       }
-      clearActiveModal();
+
+      // If navigating back to shelf root, trigger smooth exit transition if active
+      if (activeModal && !isClosing) {
+        triggerClose(() => {
+          clearActiveModal();
+        });
+      } else {
+        clearActiveModal();
+      }
     };
 
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
-  }, [clearActiveModal, openModal]);
+  }, [activeModal, clearActiveModal, isClosing, openModal, triggerClose]);
 
   // The shelf should shift up ONLY when an intercepted modal is actively open over the shelf.
   // On a direct visit or refresh to a standalone book route, activeModal and isInterceptedOpen are false,
@@ -126,54 +142,61 @@ export const BookShelfAnimator = ({
           isIntercepted={true}
         />
       );
+    } else if (activeModal.type === "about") {
+      modalContent = <AboutDetail key="about-modal" isIntercepted={true} />;
     }
   }
 
   return (
-    <div className="relative isolate min-h-screen w-full overflow-hidden">
-      {/* Main page content wrapper - shifts up only when an intercepted modal is opened over the shelf */}
-      <motion.div
-        initial="closed"
-        animate={shouldShiftUp ? "opened" : "closed"}
-        style={
-          shouldShiftUp
-            ? {
-                willChange: "transform",
-                transform: "translateZ(0)",
-                WebkitTransform: "translateZ(0)",
-                backfaceVisibility: "hidden",
-                WebkitBackfaceVisibility: "hidden",
-              }
-            : undefined
-        }
-        variants={{
-          opened: {
-            y: "-55%",
-            transition: {
-              duration: READ_BOOK_TRANSITION_DURATION,
-              ease: READ_BOOK_TRANSITION_EASE,
+    <LayoutGroup id="book-shelf-shared">
+      <div className="relative isolate min-h-screen w-full overflow-hidden">
+        {/* Main page content wrapper - shifts up only when an intercepted modal is opened over the shelf */}
+        <motion.div
+          initial="closed"
+          animate={shouldShiftUp ? "opened" : "closed"}
+          style={
+            shouldShiftUp
+              ? {
+                  willChange: "transform",
+                  transform: "translateZ(0)",
+                  WebkitTransform: "translateZ(0)",
+                  backfaceVisibility: "hidden",
+                  WebkitBackfaceVisibility: "hidden",
+                }
+              : undefined
+          }
+          variants={{
+            opened: {
+              y: "-55%",
+              transition: {
+                duration: READ_BOOK_TRANSITION_DURATION,
+                ease: READ_BOOK_TRANSITION_EASE,
+              },
             },
-          },
-          closed: {
-            y: "0%",
-            transition: {
-              duration: READ_BOOK_TRANSITION_DURATION,
-              ease: READ_BOOK_TRANSITION_EASE,
+            closed: {
+              y: "0%",
+              transition: {
+                duration: READ_BOOK_TRANSITION_DURATION,
+                ease: READ_BOOK_TRANSITION_EASE,
+              },
             },
-          },
-        }}
-        className={cn(
-          "relative min-h-screen w-full",
-          shouldShiftUp &&
-            "pointer-events-none transform-gpu will-change-transform select-none backface-hidden"
-        )}
-      >
-        {children}
-      </motion.div>
+          }}
+          className={cn(
+            "relative min-h-screen w-full",
+            shouldShiftUp &&
+              "pointer-events-none transform-gpu will-change-transform select-none backface-hidden"
+          )}
+        >
+          {children}
+        </motion.div>
 
-      {/* Intercepted modal slot or immediate native-feel modal */}
-      {modalContent}
-    </div>
+        {/* Intercepted modal slot or immediate native-feel modal */}
+        <AnimatePresence mode="wait">{modalContent}</AnimatePresence>
+
+        {/* Shared Element Transition (FLIP) Layer */}
+        <SharedBookCoverTransitionLayer />
+      </div>
+    </LayoutGroup>
   );
 };
 

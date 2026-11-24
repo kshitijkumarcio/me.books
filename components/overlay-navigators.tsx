@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, type Transition } from "motion/react";
 import { cn } from "@/lib/utils";
 import { easing016, easing065 } from "@/constants";
 import FlipTextButton from "./ui-components/flip-text-button";
 import { useOverlayButtons } from "@/hooks/layout-hooks/useoverlaybuttons";
+import { useReadBookModal } from "@/hooks/layout-hooks/use-read-book-modal";
 import { useActiveBookRoute } from "@/hooks/layout-hooks/use-active-book-route";
 import { useCurateMenu } from "@/hooks/layout-hooks/use-curate-menu";
 import { useShortlistMenu } from "@/hooks/layout-hooks/use-shortlist-menu";
@@ -16,13 +19,15 @@ import { ShortlistMenu } from "./overlay-navigators/shortlist-menu";
 import { BookModalBottomButtons } from "./overlay-navigators/book-modal-bottom-buttons";
 
 const OverlayNavigators = () => {
-  const { toggleUseCase, toggleAbout, pageView, setPageView } =
-    useOverlayButtons();
+  const router = useRouter();
+  const { openModal } = useReadBookModal();
+  const { toggleUseCase, pageView, setPageView } = useOverlayButtons();
 
   // Active book route detection & URL generation
   const {
     isWishlistRoute,
     isReadingRoute,
+    isAboutRoute,
     isShowingBookControls,
     handleCloseBook,
     borrowUrl,
@@ -64,7 +69,6 @@ const OverlayNavigators = () => {
     openChaptersMenu,
     toggleCurateMenu,
     openCurateMenu,
-    goToZone,
     activeZoneId,
   } = useCurateMenu();
 
@@ -149,8 +153,24 @@ const OverlayNavigators = () => {
                   transition={{ duration: 0.45, ease: easing065 }}
                   className="hidden gap-x-6 lg:flex"
                 >
-                  <div
-                    onClick={() => toggleAbout()}
+                  <Link
+                    href="/about"
+                    prefetch={true}
+                    scroll={false}
+                    onClick={(e) => {
+                      if (
+                        e.metaKey ||
+                        e.ctrlKey ||
+                        e.shiftKey ||
+                        e.altKey ||
+                        e.button !== 0
+                      ) {
+                        return; // Allow new tab navigation
+                      }
+                      e.preventDefault();
+                      openModal({ type: "about", href: "/about" });
+                      router.push("/about", { scroll: false });
+                    }}
                     className={cn("cursor-pointer")}
                   >
                     <FlipTextButton>
@@ -158,7 +178,7 @@ const OverlayNavigators = () => {
                         about.
                       </p>
                     </FlipTextButton>
-                  </div>
+                  </Link>
                   <div
                     onClick={() => toggleUseCase()}
                     className={cn("cursor-pointer")}
@@ -271,7 +291,6 @@ const OverlayNavigators = () => {
                 setExpandedShortlistSection={setExpandedShortlistSection}
                 openChaptersMenu={openChaptersMenu}
                 toggleChaptersMenu={toggleChaptersMenu}
-                goToZone={goToZone}
                 activeZoneId={activeZoneId}
               />
 
@@ -327,7 +346,7 @@ const OverlayNavigators = () => {
                 resetSpinCount={shortlistResetSpinCount}
               />
             </motion.div>
-          ) : (
+          ) : isAboutRoute ? null : (
             <BookModalBottomButtons
               isWishlistRoute={isWishlistRoute}
               isReadingRoute={isReadingRoute}

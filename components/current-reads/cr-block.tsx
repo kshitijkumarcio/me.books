@@ -208,6 +208,7 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
           <div className="relative inline-block cursor-pointer">
             <BookCover
               src={book.coverImage}
+              id={book.id}
               alt={book.title}
               widthClass={widthClass}
               format={book.format}
@@ -221,7 +222,11 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
           className="mt-[calc(26px*var(--book-scale))]"
           style={cellWidth ? { width: cellWidth } : undefined}
         >
-          <ReadingProgressBar progress={progress} totalPages={totalPages} />
+          <ReadingProgressBar
+            progress={progress}
+            totalPages={totalPages}
+            isHovered={isHovered}
+          />
         </div>
       </div>
 

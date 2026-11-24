@@ -89,12 +89,21 @@ export function getReadingProgress(
   book?: CurrentlyReadingBook | BookItem | null
 ) {
   if (!book) return { progress: 0, totalPages: 100 };
+  const candidate = book as unknown as Record<string, unknown>;
   const progress =
-    "progress" in book && typeof book.progress === "number" ? book.progress : 0;
+    typeof candidate.progress === "number"
+      ? candidate.progress
+      : typeof candidate.pagesRead === "number"
+        ? candidate.pagesRead
+        : 0;
   const totalPages =
-    "total_pages" in book && typeof book.total_pages === "number"
-      ? book.total_pages
-      : 100;
+    typeof candidate.total_pages === "number"
+      ? candidate.total_pages
+      : typeof candidate.totalPages === "number"
+        ? candidate.totalPages
+        : typeof candidate.pages === "number"
+          ? candidate.pages
+          : 100;
 
   return { progress, totalPages };
 }

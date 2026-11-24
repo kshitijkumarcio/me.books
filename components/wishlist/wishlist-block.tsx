@@ -185,6 +185,7 @@ export const WishListBlock = ({
         <div className="bottom-cell-[1.05] absolute left-1/2 inline-block -translate-x-1/2 cursor-pointer">
           <BookCover
             src={book.coverImage}
+            id={book.id}
             alt={book.title}
             widthClass={widthClass}
             format={book.format}

@@ -3,57 +3,15 @@
 import { images } from "@/constants";
 import Image from "next/image";
 import React from "react";
-import FlipTextButton from "../ui-components/flip-text-button";
-import { useCanvasNavigation } from "@/hooks/layout-hooks/usecanvasnavigation";
-import { cn } from "@/lib/utils";
+import {
+  NavButton,
+  LinkNav,
+  type NavButtonProps,
+  type LinkNavProps,
+} from "../ui-components/nav-button";
 
-export interface NavButtonProps {
-  title?: string;
-  targetId: string;
-  duration?: number;
-  lerp?: number;
-  offset?: number;
-  className?: string;
-  children?: React.ReactNode;
-}
-
-export type LinkNavProps = NavButtonProps;
-
-export const NavButton = ({
-  title,
-  targetId,
-  duration,
-  lerp,
-  offset,
-  className,
-  children,
-}: NavButtonProps) => {
-  const { scrollToTarget } = useCanvasNavigation();
-
-  const handleClick = () => {
-    scrollToTarget(targetId, { duration, lerp, offset });
-  };
-
-  return (
-    <div className={cn("pointer-events-auto", className)}>
-      <button
-        type="button"
-        onClick={handleClick}
-        className="block cursor-pointer border-none bg-transparent p-0 text-left outline-none select-none focus:outline-none focus-visible:outline-none"
-      >
-        <FlipTextButton>
-          {children || (
-            <p className="font-mona-sans relative text-[14px] font-semibold">
-              {title}
-            </p>
-          )}
-        </FlipTextButton>
-      </button>
-    </div>
-  );
-};
-
-export const LinkNav = NavButton;
+export { NavButton, LinkNav };
+export type { NavButtonProps, LinkNavProps };
 
 const Introduction = () => {
   return (
