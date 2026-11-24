@@ -122,6 +122,8 @@ export interface BaseBookItem {
   firstPublishedYear?: number;
   synopsis?: string | string[];
   availability?: "available" | "taken" | "not for borrowing";
+  total_pages?: number;
+  pages?: number;
 }
 
 export interface CurrentlyReadingPill {
@@ -153,6 +155,8 @@ export interface ReadBook extends BaseBookItem {
   goodreads?: string;
   borrowUrl?: string;
   borrowMessage?: string;
+  total_pages?: number;
+  pages?: number;
 }
 
 export interface WishlistBook extends BaseBookItem {

@@ -22,6 +22,7 @@ import {
 import WishListBlock from "./wishlist-block";
 import ScaleWrapper from "./scale-wrapper";
 import WishlistStampTicket from "./wishlist-stamp-ticket";
+import { SmoothHeight } from "@/components/ui-components/smooth-height";
 
 export const WishListBlockSize = 5.5;
 
@@ -200,34 +201,6 @@ const Wishlist = ({
 
   const effectiveCols = dynamicCols;
 
-  // 3. Calculate total rows and grid height for all books before filtering
-  // This baseline height is maintained across filtering so the zone never contracts.
-  const initialTotalRows = useMemo(() => {
-    let remaining = books.length;
-    let r = 0;
-    while (remaining > 0) {
-      const cap = r % 2 === 0 ? effectiveCols : Math.max(1, effectiveCols - 1);
-      const countInRow = Math.min(remaining, cap);
-      remaining -= countInRow;
-      r++;
-    }
-    return Math.max(1, r);
-  }, [books.length, effectiveCols]);
-
-  const initialGridHeightCells = useMemo(() => {
-    return (
-      initialTotalRows * effectiveBlockSize +
-      Math.max(0, initialTotalRows - 1) * verticalGap
-    );
-  }, [initialTotalRows, effectiveBlockSize, verticalGap]);
-
-  // Overall wishlist zone min-height based on all books before filtering:
-  // header height leading `calc(12px + 5dvw)` + `mt-cell-2` gap (2 cells) + grid height (`initialGridHeightCells`)
-  const initialZoneHeight = useMemo(() => {
-    const totalCells = 2 + initialGridHeightCells;
-    return `max(100dvh, calc(12px + 5dvw + var(--cell-size) * ${totalCells}))`;
-  }, [initialGridHeightCells]);
-
   // Grid width calculated to match the full ShelfGrid zone width
   const defaultGridWidth = useMemo(() => {
     return `calc(var(--cell-size) * ${shelfWidthCells})`;
@@ -363,9 +336,6 @@ const Wishlist = ({
   return (
     <div
       id="wishlist"
-      style={{
-        minHeight: initialZoneHeight,
-      }}
       className={cn("mt-cell-[1.93] relative w-full", className)}
     >
       <div className="pointer-events-none sticky left-0 w-screen px-9 lg:px-5">
@@ -391,7 +361,7 @@ const Wishlist = ({
         </div>
         <div className="mt-cell-[1.9] relative flex items-start justify-between">
           {/* 3D Interactive Postage Stamp Ticket */}
-          <WishlistStampTicket className="aspect-2/3 max-w-30 absolute right-[16.5%] bottom-0" />
+          <WishlistStampTicket className="absolute right-[16.5%] bottom-0 aspect-2/3 max-w-30" />
           <p className="font-mona-sans relative text-[14px] font-semibold">
             (below is my
           </p>
@@ -402,76 +372,76 @@ const Wishlist = ({
       </div>
 
       <div className="pointer-events-auto">
-        <LayoutGroup id="wishlist-brick-grid">
-          {displayedBooks.length === 0 ? (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, ease: easing022 }}
-              style={{
-                minHeight: `calc(var(--cell-size) * ${initialGridHeightCells})`,
-                minWidth: defaultGridWidth,
-              }}
-              className="mt-cell-4 flex flex-col items-center justify-center py-20 text-center select-none"
-            >
-              <p className="font-mona-sans text-[15px] font-medium text-black/50">
-                no books match the selected filters
-              </p>
-            </motion.div>
-          ) : (
-            /* Wishlist Alternating Brick Grid matching BooksRead page width */
-            <div
-              className="mt-cell-2 relative flex flex-col items-center select-none"
-              style={{
-                rowGap: `calc(var(--cell-size) * ${verticalGap})`,
-                minHeight: `calc(var(--cell-size) * ${initialGridHeightCells})`,
-                minWidth: defaultGridWidth,
-              }}
-            >
-              {brickRows.map((row, r) => (
-                <motion.div
-                  key={`wishlist-row-${r}`}
-                  layout
-                  transition={{ duration: 0.55, ease: easing022 }}
-                  className="relative flex flex-row justify-center focus-within:z-40 hover:z-40 has-data-hovered:z-40"
-                  style={{
-                    columnGap: `calc(var(--cell-size) * ${horizontalGap})`,
-                  }}
-                >
-                  {row.map((item) => (
-                    <motion.div
-                      key={item.key}
-                      layoutId={`wishlist-card-${item.book.id}`}
-                      layout
-                      transition={{ duration: 1, ease: easing022 }}
-                      className="relative flex shrink-0 items-center justify-center focus-within:z-50 hover:z-50 has-data-hovered:z-50"
-                    >
-                      <ScaleWrapper
-                        isScalingOut={exitingBookIds.has(item.book.id)}
-                        isNewlyMounted={newlyMountedIds.has(item.book.id)}
-                        onScaleOutComplete={() =>
-                          handleScaleOutComplete(item.book.id)
-                        }
+        <SmoothHeight>
+          <LayoutGroup id="wishlist-brick-grid">
+            {displayedBooks.length === 0 ? (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: easing022 }}
+                style={{
+                  minWidth: defaultGridWidth,
+                }}
+                className="mt-cell-4 flex flex-col items-center justify-center py-16 text-center select-none"
+              >
+                <p className="font-mona-sans text-[15px] font-medium text-black/50">
+                  no books match the selected filters
+                </p>
+              </motion.div>
+            ) : (
+              /* Wishlist Alternating Brick Grid matching BooksRead page width */
+              <div
+                className="mt-cell-1.25 relative flex flex-col items-center select-none"
+                style={{
+                  rowGap: `calc(var(--cell-size) * ${verticalGap})`,
+                  minWidth: defaultGridWidth,
+                }}
+              >
+                {brickRows.map((row, r) => (
+                  <motion.div
+                    key={`wishlist-row-${r}`}
+                    layout
+                    transition={{ duration: 0.55, ease: easing022 }}
+                    className="relative flex flex-row justify-center focus-within:z-40 hover:z-40 has-data-hovered:z-40"
+                    style={{
+                      columnGap: `calc(var(--cell-size) * ${horizontalGap})`,
+                    }}
+                  >
+                    {row.map((item) => (
+                      <motion.div
+                        key={item.key}
+                        layoutId={`wishlist-card-${item.book.id}`}
+                        layout
+                        transition={{ duration: 1, ease: easing022 }}
+                        className="relative flex shrink-0 items-center justify-center focus-within:z-50 hover:z-50 has-data-hovered:z-50"
                       >
-                        <WishListBlock
-                          book={item.book}
-                          size={effectiveBlockSize}
-                        />
-                      </ScaleWrapper>
+                        <ScaleWrapper
+                          isScalingOut={exitingBookIds.has(item.book.id)}
+                          isNewlyMounted={newlyMountedIds.has(item.book.id)}
+                          onScaleOutComplete={() =>
+                            handleScaleOutComplete(item.book.id)
+                          }
+                        >
+                          <WishListBlock
+                            book={item.book}
+                            size={effectiveBlockSize}
+                          />
+                        </ScaleWrapper>
 
-                      {/* Co-ordinates badge for occupied wishlist book blocks */}
-                      {isCoordinatesVisible && (
-                        <div className="pointer-events-none absolute top-2 left-2 z-40 rounded bg-black/80 px-1.5 py-0.5 font-mono text-[10px] font-bold text-white shadow backdrop-blur-xs select-none">
-                          {item.coordinate}
-                        </div>
-                      )}
-                    </motion.div>
-                  ))}
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </LayoutGroup>
+                        {/* Co-ordinates badge for occupied wishlist book blocks */}
+                        {isCoordinatesVisible && (
+                          <div className="pointer-events-none absolute top-2 left-2 z-40 rounded bg-black/80 px-1.5 py-0.5 font-mono text-[10px] font-bold text-white shadow backdrop-blur-xs select-none">
+                            {item.coordinate}
+                          </div>
+                        )}
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </LayoutGroup>
+        </SmoothHeight>
       </div>
     </div>
   );

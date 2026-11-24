@@ -268,7 +268,9 @@ export const BooksRead: ReadBook[] = [
     format: "little-penguin-classic",
     country: "Germany",
     publishedYear: 1929,
-    genres: ["Essays", "Poetry", "Philosophy"],
+    genres: ["Essays", "Poetry", "Philosophy", "Classic"],
+    total_pages: 52,
+    pages: 52,
     layout: [
       {
         type: "cover",
@@ -341,7 +343,9 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "Turkey",
     publishedYear: 1943,
-    genres: ["Romance", "Turkish Classic", "Literary Fiction"],
+    genres: ["Romance", "Turkish Classic", "Literary Fiction", "Classic"],
+    total_pages: 168,
+    pages: 168,
     layout: [
       {
         type: "cover",
@@ -407,7 +411,9 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "UK",
     publishedYear: 1945,
-    genres: ["Political Satire", "Classic", "Dystopian"],
+    genres: ["Political Satire", "Classic", "Dystopian", "Fiction"],
+    total_pages: 95,
+    pages: 95,
     layout: [
       {
         type: "cover",
@@ -467,7 +473,9 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "Syria",
     publishedYear: 2022,
-    genres: ["YA Fiction", "Contemporary", "War Drama"],
+    genres: ["YA Fiction", "Contemporary", "War Drama", "Fiction"],
+    total_pages: 417,
+    pages: 417,
     layout: [
       {
         type: "cover",
@@ -534,7 +542,9 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "UK",
     publishedYear: 1980,
-    genres: ["Historical Fiction", "Classic", "Pastoral"],
+    genres: ["Historical Fiction", "Classic", "Pastoral", "Fiction"],
+    total_pages: 104,
+    pages: 104,
     layout: [
       {
         type: "cover",
@@ -596,7 +606,9 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "USA",
     publishedYear: 2020,
-    genres: ["Romance", "Contemporary", "Rom-Com"],
+    genres: ["Romance", "Contemporary", "Rom-Com", "Fiction"],
+    total_pages: 358,
+    pages: 358,
     layout: [
       {
         type: "cover",
@@ -656,7 +668,9 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "USA",
     publishedYear: 2023,
-    genres: ["Dark Fantasy", "Dark Academia", "Mystery"],
+    genres: ["Dark Fantasy", "Dark Academia", "Mystery", "Fantasy"],
+    total_pages: 428,
+    pages: 428,
     layout: [
       {
         type: "cover",
@@ -717,7 +731,9 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "USA",
     publishedYear: 2021,
-    genres: ["Sci-Fi", "Hard Sci-Fi", "Space Adventure"],
+    genres: ["Sci-Fi", "Hard Sci-Fi", "Space Adventure", "Adventure"],
+    total_pages: 476,
+    pages: 476,
     layout: [
       {
         type: "cover",
@@ -776,7 +792,9 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "UK",
     publishedYear: 1897,
-    genres: ["Adventure", "Classic", "Sea Story"],
+    genres: ["Adventure", "Classic", "Sea Story", "Fiction"],
+    total_pages: 161,
+    pages: 161,
     layout: [
       {
         type: "cover",
@@ -835,7 +853,9 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "USA",
     publishedYear: 2018,
-    genres: ["Mythological Fiction", "Fantasy", "Greek Myth"],
+    genres: ["Mythological Fiction", "Fantasy", "Greek Myth", "Fiction"],
+    total_pages: 393,
+    pages: 393,
     layout: [
       {
         type: "cover",
@@ -902,6 +922,8 @@ export const BooksRead: ReadBook[] = [
     country: "USA",
     publishedYear: 2014,
     genres: ["Sci-Fi", "Dystopian", "Space Opera"],
+    total_pages: 382,
+    pages: 382,
     layout: [
       {
         type: "cover",
@@ -985,6 +1007,8 @@ export const BooksRead: ReadBook[] = [
     country: "USA",
     publishedYear: 2015,
     genres: ["Sci-Fi", "Space Opera", "Dystopian"],
+    total_pages: 442,
+    pages: 442,
     layout: [
       {
         type: "cover",
@@ -1051,6 +1075,8 @@ export const BooksRead: ReadBook[] = [
     country: "USA",
     publishedYear: 2016,
     genres: ["Sci-Fi", "Space Opera", "Action"],
+    total_pages: 524,
+    pages: 524,
     layout: [
       {
         type: "cover",
@@ -1131,6 +1157,8 @@ export const BooksRead: ReadBook[] = [
     country: "USA",
     publishedYear: 2018,
     genres: ["Sci-Fi", "Space Opera", "Military Sci-Fi"],
+    total_pages: 602,
+    pages: 602,
     layout: [
       {
         type: "cover",
@@ -1212,7 +1240,9 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "USA",
     publishedYear: 2019,
-    genres: ["Sci-Fi", "Space Opera", "Dark Fantasy"],
+    genres: ["Sci-Fi", "Space Opera", "Dark Fantasy", "Fantasy"],
+    total_pages: 704,
+    pages: 704,
     layout: [
       {
         type: "cover",
@@ -1292,6 +1322,8 @@ export const BooksRead: ReadBook[] = [
     country: "USA",
     publishedYear: 2023,
     genres: ["Sci-Fi", "Space Opera", "Epic"],
+    total_pages: 682,
+    pages: 682,
     layout: [
       {
         type: "cover",
@@ -1370,7 +1402,9 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "USA",
     publishedYear: 2023,
-    genres: ["Fantasy", "Romantasy", "Dragons"],
+    genres: ["Fantasy", "Romantasy", "Dragons", "Romance"],
+    total_pages: 528,
+    pages: 528,
     layout: [
       {
         type: "cover",
@@ -1460,7 +1494,9 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "USA",
     publishedYear: 2023,
-    genres: ["Fantasy", "Romantasy", "Dragons"],
+    genres: ["Fantasy", "Romantasy", "Dragons", "Romance"],
+    total_pages: 623,
+    pages: 623,
     layout: [
       {
         type: "cover",
@@ -1528,7 +1564,9 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "USA",
     publishedYear: 2005,
-    genres: ["YA Fiction", "Coming-of-Age", "Contemporary"],
+    genres: ["YA Fiction", "Coming-of-Age", "Contemporary", "Fiction"],
+    total_pages: 221,
+    pages: 221,
     layout: [
       {
         type: "cover",
@@ -1595,7 +1633,9 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "Austria",
     publishedYear: 1946,
-    genres: ["Psychology", "Memoir", "Philosophy"],
+    genres: ["Psychology", "Memoir", "Philosophy", "Non-Fiction"],
+    total_pages: 165,
+    pages: 165,
     layout: [
       {
         type: "cover",
@@ -1661,7 +1701,9 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "India",
     publishedYear: 2025,
-    genres: ["Essays", "Technology", "Culture"],
+    genres: ["Essays", "Technology", "Culture", "Non-Fiction"],
+    total_pages: 234,
+    pages: 234,
     layout: [
       {
         type: "cover",
@@ -1721,7 +1763,9 @@ export const BooksRead: ReadBook[] = [
     format: "little-penguin-classic",
     country: "USA",
     publishedYear: 1952,
-    genres: ["Classic", "Literary Fiction", "Novella"],
+    genres: ["Classic", "Literary Fiction", "Novella", "Fiction"],
+    total_pages: 128,
+    pages: 128,
     layout: [
       {
         type: "cover",
@@ -1790,6 +1834,8 @@ export const BooksRead: ReadBook[] = [
     country: "India",
     publishedYear: 2012,
     genres: ["Non-Fiction", "Inspiration", "Business"],
+    total_pages: 204,
+    pages: 204,
     layout: [
       {
         type: "cover",
@@ -1849,7 +1895,9 @@ export const BooksRead: ReadBook[] = [
     format: "little-penguin-classic",
     country: "UK",
     publishedYear: 2016,
-    genres: ["Classic", "Essays & Aphorisms", "Humor"],
+    genres: ["Classic", "Essays & Aphorisms", "Humor", "Essays"],
+    total_pages: 64,
+    pages: 64,
     layout: [
       {
         type: "cover",
@@ -1915,7 +1963,9 @@ export const BooksRead: ReadBook[] = [
     format: "standard",
     country: "USA",
     publishedYear: 2018,
-    genres: ["YA Fantasy", "Faerie", "Romance"],
+    genres: ["YA Fantasy", "Faerie", "Romance", "Fantasy"],
+    total_pages: 384,
+    pages: 384,
     layout: [
       {
         type: "cover",
@@ -1975,7 +2025,9 @@ export const BooksRead: ReadBook[] = [
     format: "little-penguin-classic",
     country: "USA",
     publishedYear: 2005,
-    genres: ["History", "Environment", "Essays"],
+    genres: ["History", "Environment", "Essays", "Non-Fiction"],
+    total_pages: 87,
+    pages: 87,
     layout: [
       {
         type: "cover",
@@ -2037,6 +2089,8 @@ export const BooksRead: ReadBook[] = [
     country: "Nigeria",
     publishedYear: 2014,
     genres: ["Essays", "Non-Fiction", "Feminism"],
+    total_pages: 52,
+    pages: 52,
     layout: [
       {
         type: "cover",
@@ -2101,7 +2155,9 @@ export const BooksRead: ReadBook[] = [
     format: "little-penguin-classic",
     country: "Russia",
     publishedYear: 1848,
-    genres: ["Classic", "Russian Literature", "Novella"],
+    genres: ["Classic", "Russian Literature", "Novella", "Fiction", "Romance"],
+    total_pages: 113,
+    pages: 113,
     layout: [
       {
         type: "cover",

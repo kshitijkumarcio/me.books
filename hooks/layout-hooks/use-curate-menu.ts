@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useCanvasNavigation } from "./usecanvasnavigation";
+import { useCurateStore } from "./use-curate-store";
 import {
   GENRE_OPTIONS,
   MIN_BOOK_LENGTH,
@@ -75,36 +76,33 @@ export const useCurateMenu = () => {
     setCurateFocusedIndex(null);
   }, []);
 
-  const [isClassicsActive, setIsClassicsActive] = useState<boolean>(false);
-  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const isClassicsActive = useCurateStore((state) => state.isClassicsActive);
+  const setIsClassicsActive = useCurateStore(
+    (state) => state.setIsClassicsActive
+  );
+  const selectedGenres = useCurateStore((state) => state.selectedGenres);
+  const toggleGenre = useCurateStore((state) => state.toggleGenre);
+  const pageRange = useCurateStore((state) => state.pageRange);
+  const setPageRange = useCurateStore((state) => state.setPageRange);
+  const storeResetAllFilters = useCurateStore((state) => state.resetAllFilters);
+
   const [selectedLengths, setSelectedLengths] = useState<string[]>([]);
-  const [pageRange, setPageRange] = useState<[number, number]>([
-    MIN_BOOK_LENGTH,
-    MAX_BOOK_LENGTH,
-  ]);
 
-  const toggleGenre = useCallback((genre: string) => {
-    if (genre === "all") {
-      setSelectedGenres([]);
-      return;
-    }
-    setSelectedGenres((prev) =>
-      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
-    );
-  }, []);
-
-  const toggleLength = useCallback((lengthId: string) => {
-    if (lengthId === "all") {
-      setSelectedLengths([]);
-      setPageRange([MIN_BOOK_LENGTH, MAX_BOOK_LENGTH]);
-      return;
-    }
-    setSelectedLengths((prev) =>
-      prev.includes(lengthId)
-        ? prev.filter((l) => l !== lengthId)
-        : [...prev, lengthId]
-    );
-  }, []);
+  const toggleLength = useCallback(
+    (lengthId: string) => {
+      if (lengthId === "all") {
+        setSelectedLengths([]);
+        setPageRange([MIN_BOOK_LENGTH, MAX_BOOK_LENGTH]);
+        return;
+      }
+      setSelectedLengths((prev) =>
+        prev.includes(lengthId)
+          ? prev.filter((l) => l !== lengthId)
+          : [...prev, lengthId]
+      );
+    },
+    [setPageRange]
+  );
 
   // Active filter chips list shown above the curate menu
   const activeFilters = useMemo(() => {
@@ -134,7 +132,14 @@ export const useCurateMenu = () => {
       });
     }
     return list;
-  }, [isClassicsActive, selectedGenres, pageRange, toggleGenre]);
+  }, [
+    isClassicsActive,
+    selectedGenres,
+    pageRange,
+    toggleGenre,
+    setIsClassicsActive,
+    setPageRange,
+  ]);
 
   // Horizontal mouse wheel scrolling for compact options lists
   const handleHorizontalWheel = useCallback(
@@ -205,14 +210,12 @@ export const useCurateMenu = () => {
   }, []);
 
   const resetAllFilters = useCallback(() => {
-    setIsClassicsActive(false);
-    setSelectedGenres([]);
+    storeResetAllFilters();
     setSelectedLengths([]);
-    setPageRange([MIN_BOOK_LENGTH, MAX_BOOK_LENGTH]);
     setExpandedCurateSection(null);
     setCurateFocusedIndex(null);
     triggerResetFlash();
-  }, [triggerResetFlash]);
+  }, [storeResetAllFilters, triggerResetFlash]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -385,6 +388,8 @@ export const useCurateMenu = () => {
     handleToggleSection,
     toggleGenre,
     resetAllFilters,
+    setIsClassicsActive,
+    setPageRange,
   ]);
 
   return {

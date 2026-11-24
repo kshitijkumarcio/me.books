@@ -4,20 +4,22 @@ import { useEffect, type RefObject } from "react";
 import { useCanvasNavigation } from "./usecanvasnavigation";
 
 /**
- * Maps DOM section IDs to their corresponding canvas zone IDs.
- * Both 'introduction' and 'books-read' correspond to the shelf grid zone.
- */
-const SECTION_TO_ZONE: Record<string, string> = {
-  introduction: "books-read",
-  "books-read": "books-read",
-  "current-reads": "current-reads",
-  wishlist: "wishlist",
-};
-
-/**
- * High-performance, off-thread section detection using IntersectionObserver.
- * Tracks which section is currently dominant in the viewport's vertical focus band
- * (middle 50% of the screen) and keeps `useCanvasNavigation.activeZoneId` in sync.
+ * Robust, high-performance canvas zone detection.
+ * Tracks the boundary positions of the canvas sections relative to the viewport focus line
+ * to determine whether the user is in 'books-read' (Bookshelf), 'current-reads', or 'wishlist'.
+ *
+ * Section layout in DOM:
+ * 1. 'introduction' + 'books-read' -> 'books-read' zone (the Bookshelf)
+ * 2. 'current-reads'              -> 'current-reads' zone
+ * 3. 'wishlist'                   -> 'wishlist' zone
+ *
+ * Boundary rules with hysteresis:
+ * - Above 'current-reads'                 -> 'books-read'
+ * - Between 'current-reads' and 'wishlist' -> 'current-reads'
+ * - At or below 'wishlist'                -> 'wishlist'
+ *
+ * This geometry-based detection is completely immune to dynamic section resizing and filtering
+ * (e.g. when books are filtered in shelf-grid and its height shrinks from ~4000px to ~400px).
  */
 export function useCanvasZoneObserver(
   wrapperRef: RefObject<HTMLDivElement | null>
@@ -26,81 +28,102 @@ export function useCanvasZoneObserver(
     const wrapper = wrapperRef.current;
     if (!wrapper) return;
 
-    const observedIds = Object.keys(SECTION_TO_ZONE);
-    const visibleHeights = new Map<string, number>();
+    let rafId: number | null = null;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            visibleHeights.set(entry.target.id, entry.intersectionRect.height);
-          } else {
-            visibleHeights.delete(entry.target.id);
-          }
-        });
+    const checkActiveZone = () => {
+      const crEl = document.getElementById("current-reads");
+      const wlEl = document.getElementById("wishlist");
 
-        // Tally visible height by canvas zone
-        const zoneScores: Record<string, number> = {
-          "books-read": 0,
-          "current-reads": 0,
-          wishlist: 0,
-        };
+      const wrapperRect = wrapper.getBoundingClientRect();
+      const viewportHeight = wrapper.clientHeight || window.innerHeight;
 
-        visibleHeights.forEach((height, elId) => {
-          const zone = SECTION_TO_ZONE[elId];
-          if (zone) {
-            zoneScores[zone] = (zoneScores[zone] || 0) + height;
-          }
-        });
+      const currentActive = useCanvasNavigation.getState().activeZoneId;
 
-        let highestZone = "books-read";
-        let maxScore = 0;
+      let crTop = Infinity;
+      let wlTop = Infinity;
 
-        for (const [zone, score] of Object.entries(zoneScores)) {
-          if (score > maxScore) {
-            maxScore = score;
-            highestZone = zone;
-          }
-        }
-
-        if (maxScore > 0) {
-          const currentActive = useCanvasNavigation.getState().activeZoneId;
-          if (highestZone !== currentActive) {
-            useCanvasNavigation.getState().setActiveZoneId(highestZone);
-          }
-        }
-      },
-      {
-        root: wrapper,
-        rootMargin: "-25% 0px -25% 0px",
-        threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+      if (crEl) {
+        crTop = crEl.getBoundingClientRect().top - wrapperRect.top;
       }
-    );
+      if (wlEl) {
+        wlTop = wlEl.getBoundingClientRect().top - wrapperRect.top;
+      }
 
-    const observeElements = () => {
-      let count = 0;
-      observedIds.forEach((id) => {
-        const el = document.getElementById(id);
-        if (el) {
-          observer.observe(el);
-          count++;
+      // Hysteresis thresholds to avoid jitter at boundary lines:
+      // When moving forward (downward): enter section when its top passes 45% of viewport
+      // When moving backward (upward): leave section when its top drops below 55% of viewport
+      let targetZone = currentActive;
+
+      if (currentActive === "books-read") {
+        if (wlTop <= viewportHeight * 0.45) {
+          targetZone = "wishlist";
+        } else if (crTop <= viewportHeight * 0.45) {
+          targetZone = "current-reads";
         }
-      });
-      return count;
+      } else if (currentActive === "current-reads") {
+        if (wlTop <= viewportHeight * 0.45) {
+          targetZone = "wishlist";
+        } else if (crTop >= viewportHeight * 0.55) {
+          targetZone = "books-read";
+        }
+      } else if (currentActive === "wishlist") {
+        if (wlTop >= viewportHeight * 0.55) {
+          if (crTop >= viewportHeight * 0.55) {
+            targetZone = "books-read";
+          } else {
+            targetZone = "current-reads";
+          }
+        }
+      } else {
+        // Fallback for initial state
+        if (wlTop <= viewportHeight * 0.5) {
+          targetZone = "wishlist";
+        } else if (crTop <= viewportHeight * 0.5) {
+          targetZone = "current-reads";
+        } else {
+          targetZone = "books-read";
+        }
+      }
+
+      if (targetZone && targetZone !== currentActive) {
+        useCanvasNavigation.getState().setActiveZoneId(targetZone);
+      }
     };
 
-    const initialCount = observeElements();
-    let retryTimer: NodeJS.Timeout | null = null;
+    const scheduleCheck = () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        checkActiveZone();
+      });
+    };
 
-    if (initialCount < observedIds.length) {
-      retryTimer = setTimeout(() => {
-        observeElements();
-      }, 200);
+    // 1. Initial check immediately, plus a brief timeout in case elements mount asynchronously
+    scheduleCheck();
+    const retryTimer = setTimeout(checkActiveZone, 150);
+
+    // 2. Listen to scroll events on wrapper (dispatched continuously as Lenis scrolls)
+    wrapper.addEventListener("scroll", scheduleCheck, { passive: true });
+
+    // 3. Listen to window resize
+    window.addEventListener("resize", scheduleCheck, { passive: true });
+
+    // 4. ResizeObserver on content container to immediately re-check when filtering changes section sizes
+    let resizeObserver: ResizeObserver | null = null;
+    const content = wrapper.firstElementChild;
+    if (content && typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(() => {
+        scheduleCheck();
+      });
+      resizeObserver.observe(content);
     }
 
     return () => {
-      if (retryTimer) clearTimeout(retryTimer);
-      observer.disconnect();
+      clearTimeout(retryTimer);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      wrapper.removeEventListener("scroll", scheduleCheck);
+      window.removeEventListener("resize", scheduleCheck);
+      resizeObserver?.disconnect();
     };
   }, [wrapperRef]);
 }

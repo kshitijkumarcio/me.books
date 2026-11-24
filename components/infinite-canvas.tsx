@@ -361,7 +361,50 @@ const InfiniteCanvas = ({
     // Smooth out frame drops / CPU spikes so frames don't drop abruptly
     gsap.ticker.lagSmoothing(500, 33);
 
+    // 4. Synchronous Overscroll Clamp: recalculate Lenis bounds and clamp immediately when content shrinks
+    let isInitialResize = true;
+    const resizeObserver = new ResizeObserver(() => {
+      lenisX.resize();
+      lenisY.resize();
+
+      if (isInitialResize) {
+        isInitialResize = false;
+        return;
+      }
+
+      const m = getMax();
+
+      const currentScrollY = Math.max(
+        wrapper.scrollTop,
+        lenisY.scroll,
+        lenisY.targetScroll ?? 0
+      );
+      if (currentScrollY > m.y) {
+        lenisY.scrollTo(m.y, { immediate: true, force: true });
+        wrapper.scrollTop = m.y;
+        p.current.rawY = m.y;
+        p.current.ey = 0;
+        p.current.tey = 0;
+      }
+
+      const currentScrollX = Math.max(
+        wrapper.scrollLeft,
+        lenisX.scroll,
+        lenisX.targetScroll ?? 0
+      );
+      if (currentScrollX > m.x) {
+        lenisX.scrollTo(m.x, { immediate: true, force: true });
+        wrapper.scrollLeft = m.x;
+        p.current.rawX = m.x;
+        p.current.ex = 0;
+        p.current.tex = 0;
+      }
+    });
+
+    resizeObserver.observe(content);
+
     return () => {
+      resizeObserver.disconnect();
       gsap.ticker.remove(update);
       lenisY.destroy();
       lenisX.destroy();

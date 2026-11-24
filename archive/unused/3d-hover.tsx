@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useRef, useState } from 'react';
-import { useMotionValue, useSpring, useTransform, motion } from 'motion/react';
+import { useRef, useState } from "react";
+import { useMotionValue, useSpring, useTransform, motion } from "motion/react";
 
 interface Props {
   children: React.ReactNode;
@@ -88,7 +88,7 @@ const ATFDesktopTicketWrapper = ({ children }: Props) => {
         rotateY: isHovered ? rotateY : 0,
         translateX: isHovered ? translateX : 0, // ✅ Added translateX
         translateY: isHovered ? translateY : 0, // ✅ Added translateY
-        transformStyle: 'preserve-3d',
+        transformStyle: "preserve-3d",
       }}
       transition={{ duration: 0.4, ease: [0.65, 0, 0.35, 1] }}
       className="flex h-full w-full"

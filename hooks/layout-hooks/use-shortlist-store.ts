@@ -11,9 +11,7 @@ interface ShortlistStoreState {
   priceRange: [number, number];
   selectedPriorities: string[];
   setPriceRange: (
-    range:
-      | [number, number]
-      | ((prev: [number, number]) => [number, number])
+    range: [number, number] | ((prev: [number, number]) => [number, number])
   ) => void;
   setSelectedPriorities: (
     priorities: string[] | ((prev: string[]) => string[])
@@ -28,8 +26,7 @@ export const useShortlistStore = create<ShortlistStoreState>((set) => ({
 
   setPriceRange: (range) =>
     set((state) => ({
-      priceRange:
-        typeof range === "function" ? range(state.priceRange) : range,
+      priceRange: typeof range === "function" ? range(state.priceRange) : range,
     })),
 
   setSelectedPriorities: (priorities) =>

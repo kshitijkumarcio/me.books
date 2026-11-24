@@ -1,10 +1,14 @@
 export const GENRE_OPTIONS = [
   "all",
   "sci-fi",
+  "fantasy",
   "fiction",
-  "philosophy",
+  "romance",
   "dystopian",
-  "thriller",
+  "essays",
+  "non-fiction",
+  "philosophy",
+  "adventure",
 ] as const;
 
 export const MIN_BOOK_LENGTH = 10;

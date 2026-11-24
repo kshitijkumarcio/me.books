@@ -9,12 +9,10 @@ import { cn } from "@/lib/utils";
 
 export interface WishlistStampTicketProps {
   className?: string;
-  href?: string;
 }
 
 export const WishlistStampTicket = ({
   className,
-  href = "https://www.amazon.in/hz/wishlist/ls/12HOKZPESP747",
 }: WishlistStampTicketProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
