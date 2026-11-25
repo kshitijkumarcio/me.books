@@ -30,8 +30,14 @@ export const useActiveBookRoute = () => {
     Boolean(pathname?.includes("/wishlist/")) ||
     activeModal?.type === "wishlist";
   const isAboutRoute = pathname === "/about" || activeModal?.type === "about";
+  const isUseCaseRoute =
+    pathname === "/use-case" || activeModal?.type === "use-case";
   const isAnyModalRoute =
-    isReadBookRoute || isReadingRoute || isWishlistRoute || isAboutRoute;
+    isReadBookRoute ||
+    isReadingRoute ||
+    isWishlistRoute ||
+    isAboutRoute ||
+    isUseCaseRoute;
   const isShowingBookControls = isAnyModalRoute && !isClosing;
 
   let currentReadBook: ReadBook | undefined =
@@ -124,6 +130,7 @@ export const useActiveBookRoute = () => {
     isReadingRoute,
     isWishlistRoute,
     isAboutRoute,
+    isUseCaseRoute,
     isShowingBookControls,
     handleCloseBook,
     borrowUrl,

@@ -51,19 +51,19 @@ const Introduction = () => {
         <div className="hidden lg:block">
           <div className="pb-cell-3">
             <div className="flex w-dvw items-center justify-between px-4 lg:px-6">
-              <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-medium text-black uppercase">
+              <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-semibold text-black uppercase">
                 BOOKS YOU
               </p>
-              <p className="font-mona-sans text-right text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-medium text-black uppercase">
+              <p className="font-mona-sans text-right text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-semibold text-black uppercase">
                 CAN BORROW
               </p>
             </div>
             <div className="relative flex w-dvw items-center justify-between px-4 lg:px-6">
-              <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-medium text-black uppercase">
+              <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-semibold text-black uppercase">
                 FROM
               </p>
               <div className="absolute left-1/2 flex -translate-x-1/2 items-center justify-center">
-                <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-medium text-black uppercase">
+                <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-semibold text-black uppercase">
                   (&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MY&nbsp;&nbsp;&nbsp;&nbsp;)
                 </p>
                 <Image
@@ -72,7 +72,7 @@ const Introduction = () => {
                   className="w-cell-4 absolute top-[80%] left-1/2 aspect-[1.3/1] -translate-x-1/2 object-cover object-top"
                 />
               </div>
-              <p className="font-mona-sans text-right text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-medium text-black uppercase">
+              <p className="font-mona-sans text-right text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-semibold text-black uppercase">
                 SHELF
               </p>
             </div>

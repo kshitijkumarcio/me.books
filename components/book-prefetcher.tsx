@@ -24,7 +24,7 @@ export function AllBooksPrefetcher() {
     const readHrefs = BooksRead.map((book) => `/read/${book.id}`);
     const crHrefs = currentReads.map((book) => `/reading/${book.id}`);
     const wlHrefs = wishlistBooks.map((book) => `/wishlist/${book.id}`);
-    return [...readHrefs, ...crHrefs, ...wlHrefs];
+    return [...readHrefs, ...crHrefs, ...wlHrefs, "/about", "/use-case"];
   }, []);
 
   useEffect(() => {
@@ -32,6 +32,8 @@ export function AllBooksPrefetcher() {
     import("@/components/read-book-detail/read-book-detail");
     import("@/components/current-reads/cr-book-detail");
     import("@/components/wishlist/wishlist-book-detail");
+    import("@/components/about/about-detail");
+    import("@/components/use-case/use-case-detail");
 
     // 2. Pre-fetch every single route with full prefetch kind
     allHrefs.forEach((href) => {

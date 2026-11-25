@@ -21,13 +21,14 @@ import { BookModalBottomButtons } from "./overlay-navigators/book-modal-bottom-b
 const OverlayNavigators = () => {
   const router = useRouter();
   const { openModal } = useReadBookModal();
-  const { toggleUseCase, pageView, setPageView } = useOverlayButtons();
+  const { pageView, setPageView } = useOverlayButtons();
 
   // Active book route detection & URL generation
   const {
     isWishlistRoute,
     isReadingRoute,
     isAboutRoute,
+    isUseCaseRoute,
     isShowingBookControls,
     handleCloseBook,
     borrowUrl,
@@ -179,8 +180,24 @@ const OverlayNavigators = () => {
                       </p>
                     </FlipTextButton>
                   </Link>
-                  <div
-                    onClick={() => toggleUseCase()}
+                  <Link
+                    href="/use-case"
+                    prefetch={true}
+                    scroll={false}
+                    onClick={(e) => {
+                      if (
+                        e.metaKey ||
+                        e.ctrlKey ||
+                        e.shiftKey ||
+                        e.altKey ||
+                        e.button !== 0
+                      ) {
+                        return; // Allow new tab navigation
+                      }
+                      e.preventDefault();
+                      openModal({ type: "use-case", href: "/use-case" });
+                      router.push("/use-case", { scroll: false });
+                    }}
                     className={cn("cursor-pointer")}
                   >
                     <FlipTextButton>
@@ -188,7 +205,7 @@ const OverlayNavigators = () => {
                         use case.
                       </p>
                     </FlipTextButton>
-                  </div>
+                  </Link>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -346,7 +363,7 @@ const OverlayNavigators = () => {
                 resetSpinCount={shortlistResetSpinCount}
               />
             </motion.div>
-          ) : isAboutRoute ? null : (
+          ) : isAboutRoute || isUseCaseRoute ? null : (
             <BookModalBottomButtons
               isWishlistRoute={isWishlistRoute}
               isReadingRoute={isReadingRoute}

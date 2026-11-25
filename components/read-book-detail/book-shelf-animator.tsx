@@ -13,12 +13,14 @@ import ReadBookDetail from "@/components/read-book-detail/read-book-detail";
 import CRBookDetail from "@/components/current-reads/cr-book-detail";
 import WishlistBookDetail from "@/components/wishlist/wishlist-book-detail";
 import AboutDetail from "@/components/about/about-detail";
+import UseCaseDetail from "@/components/use-case/use-case-detail";
 import SharedBookCoverTransitionLayer from "@/components/read-book-detail/shared-book-cover-transition";
 import {
   getReadBookById,
   getCurrentReadBookById,
   getWishlistBookById,
 } from "@/books/books-index";
+import { useMediaQuery } from "@/hooks/ui-hooks/use-media-query";
 
 interface BookShelfAnimatorProps {
   children: React.ReactNode;
@@ -30,8 +32,11 @@ export const BookShelfAnimator = ({
   modal,
 }: BookShelfAnimatorProps) => {
   const pathname = usePathname();
+
+  const isMobile = useMediaQuery("(max-width: 641px)");
   const {
     isClosing,
+    isDrawerClosing,
     setIsClosing,
     isInterceptedOpen,
     activeModal,
@@ -40,7 +45,7 @@ export const BookShelfAnimator = ({
     triggerClose,
   } = useReadBookModal();
 
-  // Route matches any intercepted detail view (/read/, /reading/, /wishlist/, /about) or active native modal
+  // Route matches any intercepted detail view (/read/, /reading/, /wishlist/, /about, /use-case) or active native modal
   const isReadBookRoute =
     Boolean(pathname?.includes("/read/")) || activeModal?.type === "read";
   const isReadingRoute =
@@ -49,15 +54,21 @@ export const BookShelfAnimator = ({
     Boolean(pathname?.includes("/wishlist/")) ||
     activeModal?.type === "wishlist";
   const isAboutRoute = pathname === "/about" || activeModal?.type === "about";
+  const isUseCaseRoute =
+    pathname === "/use-case" || activeModal?.type === "use-case";
   const isModalRoute =
-    isReadBookRoute || isReadingRoute || isWishlistRoute || isAboutRoute;
+    isReadBookRoute ||
+    isReadingRoute ||
+    isWishlistRoute ||
+    isAboutRoute ||
+    isUseCaseRoute;
 
   // Reset isClosing once the route has actually navigated away from modal views
   useEffect(() => {
-    if (!isModalRoute && isClosing) {
+    if (!isModalRoute && (isClosing || isDrawerClosing)) {
       setIsClosing(false);
     }
-  }, [isModalRoute, isClosing, setIsClosing]);
+  }, [isModalRoute, isClosing, isDrawerClosing, setIsClosing]);
 
   // Synchronize browser history navigation (back/forward) with modal state
   useEffect(() => {
@@ -93,6 +104,9 @@ export const BookShelfAnimator = ({
       } else if (path === "/about") {
         openModal({ type: "about", href: "/about" });
         return;
+      } else if (path === "/use-case") {
+        openModal({ type: "use-case", href: "/use-case" });
+        return;
       }
 
       // If navigating back to shelf root, trigger smooth exit transition if active
@@ -100,7 +114,7 @@ export const BookShelfAnimator = ({
         triggerClose(() => {
           clearActiveModal();
         });
-      } else {
+      } else if (!isClosing) {
         clearActiveModal();
       }
     };
@@ -113,7 +127,7 @@ export const BookShelfAnimator = ({
   // On a direct visit or refresh to a standalone book route, activeModal and isInterceptedOpen are false,
   // so the standalone book page in `children` stays at y: "0%" without any offset or push off-screen.
   const isInterceptedModalActive = Boolean(activeModal) || isInterceptedOpen;
-  const shouldShiftUp = isInterceptedModalActive && !isClosing;
+  const shouldShiftUp = isInterceptedModalActive && !isDrawerClosing;
 
   // Instant native-feel modal rendered immediately on click, falling back to Next.js parallel route modal
   let modalContent = modal;
@@ -144,6 +158,10 @@ export const BookShelfAnimator = ({
       );
     } else if (activeModal.type === "about") {
       modalContent = <AboutDetail key="about-modal" isIntercepted={true} />;
+    } else if (activeModal.type === "use-case") {
+      modalContent = (
+        <UseCaseDetail key="use-case-modal" isIntercepted={true} />
+      );
     }
   }
 
@@ -167,14 +185,15 @@ export const BookShelfAnimator = ({
           }
           variants={{
             opened: {
-              y: "-55%",
+              y: isMobile === true ? "-65dvh" : "-65dvh",
               transition: {
                 duration: READ_BOOK_TRANSITION_DURATION,
+                delay: 0.025,
                 ease: READ_BOOK_TRANSITION_EASE,
               },
             },
             closed: {
-              y: "0%",
+              y: 0,
               transition: {
                 duration: READ_BOOK_TRANSITION_DURATION,
                 ease: READ_BOOK_TRANSITION_EASE,

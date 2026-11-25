@@ -234,23 +234,23 @@ const CurrentReads = ({
     >
       <div className="pointer-events-none sticky left-0 w-screen px-9 lg:px-5">
         <div className="flex w-full items-center justify-between">
-          <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-medium text-black uppercase">
+          <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-semibold text-black uppercase">
             ALL BOOKS
           </p>
           {/* <div className="mx-8 h-1 w-full bg-black" /> */}
-          <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-medium whitespace-nowrap text-black uppercase">
+          <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-semibold whitespace-nowrap text-black uppercase">
             THAT MAKE
           </p>
         </div>
         <div className="flex w-full items-center justify-between">
-          <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-medium text-black uppercase">
+          <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-semibold text-black uppercase">
             UP MY
           </p>
-          <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-medium text-black uppercase">
+          <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-semibold text-black uppercase">
             (&nbsp;CURRENT&nbsp;)
           </p>
           {/* <div className="mx-8 h-1 w-full bg-black" /> */}
-          <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-medium text-black uppercase">
+          <p className="font-mona-sans text-[calc(12px+4dvw)] leading-[calc(12px+5dvw)] font-semibold text-black uppercase">
             READS
           </p>
         </div>

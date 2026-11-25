@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import type { StaticImageData } from "next/image";
+import { easing076 } from "@/constants";
 import type {
   ReadBook,
   CurrentlyReadingBook,
@@ -11,7 +12,22 @@ import type {
 
 export const READ_BOOK_TRANSITION_DURATION = 0.8;
 export const READ_BOOK_TRANSITION_DURATION_MS = 800;
-export const READ_BOOK_TRANSITION_EASE = [0.76, 0, 0.24, 1] as const;
+export const MODAL_EXIT_DELAY_MS = 200;
+export const READ_BOOK_TRANSITION_EASE = easing076;
+
+let closeDelayTimer: ReturnType<typeof setTimeout> | null = null;
+let fallbackCompleteTimer: ReturnType<typeof setTimeout> | null = null;
+
+function clearCloseTimers() {
+  if (closeDelayTimer !== null) {
+    clearTimeout(closeDelayTimer);
+    closeDelayTimer = null;
+  }
+  if (fallbackCompleteTimer !== null) {
+    clearTimeout(fallbackCompleteTimer);
+    fallbackCompleteTimer = null;
+  }
+}
 
 export interface CoverRect {
   top: number;
@@ -24,7 +40,8 @@ export type ActiveModalBook =
   | { type: "read"; book: ReadBook; href: string }
   | { type: "reading"; book: CurrentlyReadingBook; href: string }
   | { type: "wishlist"; book: WishlistBook; href: string }
-  | { type: "about"; href: string };
+  | { type: "about"; href: string }
+  | { type: "use-case"; href: string };
 
 export type SharedCoverPhase = "idle" | "entering" | "entered" | "exiting";
 
@@ -40,6 +57,7 @@ export interface SharedCoverPayload {
 
 interface ReadBookModalState {
   isClosing: boolean;
+  isDrawerClosing: boolean;
   isInterceptedOpen: boolean;
   activeModal: ActiveModalBook | null;
 
@@ -69,6 +87,7 @@ interface ReadBookModalState {
 
 export const useReadBookModal = create<ReadBookModalState>((set, get) => ({
   isClosing: false,
+  isDrawerClosing: false,
   isInterceptedOpen: false,
   activeModal: null,
 
@@ -83,13 +102,17 @@ export const useReadBookModal = create<ReadBookModalState>((set, get) => ({
   transitionPhase: "idle",
   onCloseCallback: null,
 
-  openModal: (activeModal) =>
+  openModal: (activeModal) => {
+    clearCloseTimers();
     set({
       activeModal,
       isInterceptedOpen: true,
       isClosing: false,
-    }),
-  clearActiveModal: () =>
+      isDrawerClosing: false,
+    });
+  },
+  clearActiveModal: () => {
+    clearCloseTimers();
     set({
       activeModal: null,
       transitionPhase: "idle",
@@ -98,31 +121,58 @@ export const useReadBookModal = create<ReadBookModalState>((set, get) => ({
       restingCoverRect: null,
       heroCoverRect: null,
       coverImage: null,
+      isClosing: false,
+      isDrawerClosing: false,
       onCloseCallback: null,
-    }),
-  setIsClosing: (isClosing) => set({ isClosing }),
+    });
+  },
+  setIsClosing: (isClosing) => {
+    if (!isClosing) {
+      clearCloseTimers();
+      set({ isClosing: false, isDrawerClosing: false });
+    } else {
+      set({ isClosing: true });
+    }
+  },
   setIsInterceptedOpen: (isInterceptedOpen) => set({ isInterceptedOpen }),
 
   triggerClose: (onCloseComplete) => {
-    const { activeBookId } = get();
+    if (get().isClosing) return;
+
+    clearCloseTimers();
     set({
       isClosing: true,
-      transitionPhase: activeBookId ? "exiting" : "idle",
+      isDrawerClosing: false,
       onCloseCallback: onCloseComplete,
     });
 
-    // If there is no active shared cover transition (e.g. /about), complete via timeout
-    if (!activeBookId) {
-      setTimeout(() => {
-        onCloseComplete();
-        set({
-          isClosing: false,
-          isInterceptedOpen: false,
-          activeModal: null,
-          onCloseCallback: null,
-        });
-      }, READ_BOOK_TRANSITION_DURATION_MS);
-    }
+    // Wait for inner exit animations (e.g. FullWidthPageTitle) before dropping the drawer and returning the cover
+    closeDelayTimer = setTimeout(() => {
+      closeDelayTimer = null;
+      const { activeBookId } = get();
+      set({
+        isDrawerClosing: true,
+        transitionPhase: activeBookId ? "exiting" : "idle",
+      });
+
+      // If there is no active shared cover transition (e.g. /about), complete via timeout
+      if (!activeBookId) {
+        fallbackCompleteTimer = setTimeout(() => {
+          fallbackCompleteTimer = null;
+          const callback = get().onCloseCallback;
+          set({
+            isClosing: false,
+            isDrawerClosing: false,
+            isInterceptedOpen: false,
+            activeModal: null,
+            onCloseCallback: null,
+          });
+          if (callback) {
+            callback();
+          }
+        }, READ_BOOK_TRANSITION_DURATION_MS);
+      }
+    }, MODAL_EXIT_DELAY_MS);
   },
 
   startCoverTransition: (payload) =>
@@ -149,6 +199,7 @@ export const useReadBookModal = create<ReadBookModalState>((set, get) => ({
     }),
 
   completeExitTransition: () => {
+    clearCloseTimers();
     const callback = get().onCloseCallback;
     set({
       transitionPhase: "idle",
@@ -158,6 +209,7 @@ export const useReadBookModal = create<ReadBookModalState>((set, get) => ({
       heroCoverRect: null,
       coverImage: null,
       isClosing: false,
+      isDrawerClosing: false,
       isInterceptedOpen: false,
       activeModal: null,
       onCloseCallback: null,

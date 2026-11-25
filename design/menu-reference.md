@@ -80,12 +80,12 @@ return (
   <motion.div
     initial={{
       y: "-100dvh",
-      clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)",
+      clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
     }}
     animate={{
       scale: 1,
       y: 0,
-      clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+      clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
       transition: {
         duration: 0.8,
         ease: [0.76, 0, 0.24, 1],
