@@ -41,7 +41,7 @@ export const AboutDetail = ({ isIntercepted = true }: AboutDetailProps) => {
     triggerClose(() => {
       clearActiveModal();
       if (isIntercepted) {
-        router.back();
+        window.history.back();
       } else {
         router.push("/");
       }

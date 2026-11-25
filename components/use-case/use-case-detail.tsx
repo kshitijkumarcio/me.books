@@ -41,7 +41,7 @@ export const UseCaseDetail = ({ isIntercepted = true }: UseCaseDetailProps) => {
     triggerClose(() => {
       clearActiveModal();
       if (isIntercepted) {
-        router.back();
+        window.history.back();
       } else {
         router.push("/");
       }

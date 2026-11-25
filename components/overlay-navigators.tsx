@@ -185,7 +185,7 @@ const OverlayNavigators = () => {
                       }
                       e.preventDefault();
                       openModal({ type: "about", href: "/about" });
-                      router.push("/about", { scroll: false });
+                      window.history.pushState(null, "", "/book-shelf/about");
                     }}
                     className={cn("cursor-pointer")}
                   >
@@ -229,7 +229,11 @@ const OverlayNavigators = () => {
                       }
                       e.preventDefault();
                       openModal({ type: "use-case", href: "/use-case" });
-                      router.push("/use-case", { scroll: false });
+                      window.history.pushState(
+                        null,
+                        "",
+                        "/book-shelf/use-case"
+                      );
                     }}
                     className={cn("cursor-pointer")}
                   >

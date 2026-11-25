@@ -1,4 +1,3 @@
-
 export interface TitleMarqueeMetrics {
   fontSize: number;
   topTrim: number;
