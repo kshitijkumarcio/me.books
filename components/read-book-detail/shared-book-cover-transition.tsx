@@ -181,8 +181,9 @@ export const SharedBookCoverTransitionLayer = () => {
             alt={coverAlt || "Book Cover"}
             draggable={false}
             priority
+            decoding="sync"
             fill
-            sizes={`${returnRect.width}px`}
+            sizes="(min-width: 1024px) 240px, 200px"
             className="h-full w-full object-cover select-none"
           />
           {/* Subtle spine glare effect */}

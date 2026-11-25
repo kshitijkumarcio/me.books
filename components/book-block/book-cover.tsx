@@ -179,8 +179,9 @@ const BookCover = ({
           src={src}
           alt={alt}
           draggable={false}
+          priority
+          sizes="(min-width: 1024px) 240px, 200px"
           className={cn("h-auto w-full origin-center object-cover select-none")}
-          priority={false}
         />
         {/* Subtle spine glare effect */}
         <div className="pointer-events-none absolute inset-y-0 -left-0.5 w-[calc(8px*var(--book-scale))] bg-linear-to-r from-black/25 via-white/20 to-transparent" />

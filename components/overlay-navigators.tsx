@@ -114,16 +114,16 @@ const OverlayNavigators = () => {
   };
 
   return (
-    <div className="pointer-events-none fixed top-0 left-0 z-999 flex h-dvh w-full flex-col justify-between px-4 pt-4 pb-6 sm:px-6 sm:pt-6 sm:pb-8 lg:px-6 lg:pt-4 lg:pb-10">
-      {/* top bar */}
-      <div className="flex items-center justify-between">
+    <>
+      {/* Blended top-bar text layer (isolated fixed layer so mix-blend-difference blends with page/modals behind) */}
+      <div className="pointer-events-none fixed top-0 left-0 z-999 flex w-full items-center justify-between px-4 pt-4 mix-blend-difference sm:px-6 sm:pt-6 lg:px-6 lg:pt-4">
         <div>
-          <p className="font-mona-sans text-[16px] font-bold lg:text-[20px]">
+          <p className="font-mona-sans text-[16px] font-semibold text-white lg:text-[20px]">
             kshelf.
           </p>
         </div>
 
-        <div className="pointer-events-auto flex items-center gap-x-6">
+        <div className="pointer-events-auto flex items-center gap-x-6 text-white">
           <div className="overflow-hidden">
             <AnimatePresence mode="wait" initial={false}>
               {isShowingBookControls ? (
@@ -141,7 +141,7 @@ const OverlayNavigators = () => {
                     aria-label="Close book view"
                     className="group flex cursor-pointer items-center transition-opacity hover:opacity-70 focus:outline-none"
                   >
-                    <span className="font-mona-sans text-[13px] font-semibold text-black sm:text-[14px]">
+                    <span className="font-mona-sans text-[13px] font-medium text-white sm:text-[14px]">
                       Esc
                     </span>
                   </button>
@@ -190,7 +190,7 @@ const OverlayNavigators = () => {
                     className={cn("cursor-pointer")}
                   >
                     <FlipTextButton>
-                      <p className="font-mona-sans relative text-[14px] font-semibold">
+                      <p className="font-mona-sans relative text-[14px] font-medium">
                         about.
                       </p>
                     </FlipTextButton>
@@ -238,7 +238,7 @@ const OverlayNavigators = () => {
                     className={cn("cursor-pointer")}
                   >
                     <FlipTextButton>
-                      <p className="font-mona-sans relative text-[14px] font-semibold">
+                      <p className="font-mona-sans relative text-[14px] font-medium">
                         use case.
                       </p>
                     </FlipTextButton>
@@ -247,7 +247,13 @@ const OverlayNavigators = () => {
               )}
             </AnimatePresence>
           </div>
+        </div>
+      </div>
 
+      {/* Non-blended overlay controls layer */}
+      <div className="pointer-events-none fixed top-0 left-0 z-999 flex h-dvh w-full flex-col justify-between px-4 pt-4 pb-6 sm:px-6 sm:pt-6 sm:pb-8 lg:px-6 lg:pt-4 lg:pb-10">
+        {/* top bar mobile dot button */}
+        <div className="flex items-center justify-end">
           {/* mobile dot pattern button (without text, hidden during read book route) */}
           {!isShowingBookControls && (
             <div
@@ -263,7 +269,6 @@ const OverlayNavigators = () => {
             </div>
           )}
         </div>
-      </div>
 
       {/* Top Center Moodboard Toggle (Smoothly animated out during read book route) */}
       <AnimatePresence initial={false}>
@@ -414,6 +419,7 @@ const OverlayNavigators = () => {
         </AnimatePresence>
       </div>
     </div>
+    </>
   );
 };
 
