@@ -71,9 +71,10 @@ export const useActiveBookRoute = () => {
   }
 
   const handleCloseBook = () => {
+    const wasIntercepted = isInterceptedOpen || Boolean(activeModal);
     triggerClose(() => {
       clearActiveModal();
-      if (isInterceptedOpen || Boolean(activeModal)) {
+      if (wasIntercepted) {
         router.back();
       } else {
         router.push("/");

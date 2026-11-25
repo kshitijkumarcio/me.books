@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { PrefetchKind } from "next/dist/client/components/router-reducer/router-reducer-types";
 import { AnimatePresence, motion, type Transition } from "motion/react";
 import { cn } from "@/lib/utils";
 import { easing016, easing065 } from "@/constants";
@@ -158,6 +159,20 @@ const OverlayNavigators = () => {
                     href="/about"
                     prefetch={true}
                     scroll={false}
+                    onMouseEnter={() => {
+                      try {
+                        router.prefetch("/about", { kind: PrefetchKind.FULL });
+                      } catch {
+                        router.prefetch("/about");
+                      }
+                    }}
+                    onPointerDown={() => {
+                      try {
+                        router.prefetch("/about", { kind: PrefetchKind.FULL });
+                      } catch {
+                        router.prefetch("/about");
+                      }
+                    }}
                     onClick={(e) => {
                       if (
                         e.metaKey ||
@@ -184,6 +199,24 @@ const OverlayNavigators = () => {
                     href="/use-case"
                     prefetch={true}
                     scroll={false}
+                    onMouseEnter={() => {
+                      try {
+                        router.prefetch("/use-case", {
+                          kind: PrefetchKind.FULL,
+                        });
+                      } catch {
+                        router.prefetch("/use-case");
+                      }
+                    }}
+                    onPointerDown={() => {
+                      try {
+                        router.prefetch("/use-case", {
+                          kind: PrefetchKind.FULL,
+                        });
+                      } catch {
+                        router.prefetch("/use-case");
+                      }
+                    }}
                     onClick={(e) => {
                       if (
                         e.metaKey ||

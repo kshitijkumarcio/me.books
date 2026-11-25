@@ -24,7 +24,7 @@ export function AllBooksPrefetcher() {
     const readHrefs = BooksRead.map((book) => `/read/${book.id}`);
     const crHrefs = currentReads.map((book) => `/reading/${book.id}`);
     const wlHrefs = wishlistBooks.map((book) => `/wishlist/${book.id}`);
-    return [...readHrefs, ...crHrefs, ...wlHrefs, "/about", "/use-case"];
+    return ["/about", "/use-case", ...readHrefs, ...crHrefs, ...wlHrefs];
   }, []);
 
   useEffect(() => {

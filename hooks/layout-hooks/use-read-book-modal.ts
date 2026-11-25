@@ -121,8 +121,6 @@ export const useReadBookModal = create<ReadBookModalState>((set, get) => ({
       restingCoverRect: null,
       heroCoverRect: null,
       coverImage: null,
-      isClosing: false,
-      isDrawerClosing: false,
       onCloseCallback: null,
     });
   },
@@ -155,14 +153,14 @@ export const useReadBookModal = create<ReadBookModalState>((set, get) => ({
         transitionPhase: activeBookId ? "exiting" : "idle",
       });
 
-      // If there is no active shared cover transition (e.g. /about), complete via timeout
+      // If there is no active shared cover transition (e.g. /about, /use-case), complete via timeout.
+      // Keep isClosing & isDrawerClosing true so BookShelfAnimator / OverlayNavigators don't flicker
+      // while router.back() finishes; BookShelfAnimator resets them once !isModalRoute.
       if (!activeBookId) {
         fallbackCompleteTimer = setTimeout(() => {
           fallbackCompleteTimer = null;
           const callback = get().onCloseCallback;
           set({
-            isClosing: false,
-            isDrawerClosing: false,
             isInterceptedOpen: false,
             activeModal: null,
             onCloseCallback: null,

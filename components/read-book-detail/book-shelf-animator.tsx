@@ -73,7 +73,10 @@ export const BookShelfAnimator = ({
   // Synchronize browser history navigation (back/forward) with modal state
   useEffect(() => {
     const handlePopState = () => {
-      const path = window.location.pathname;
+      const rawPath = window.location.pathname;
+      const path = rawPath.startsWith("/book-shelf")
+        ? rawPath.slice("/book-shelf".length) || "/"
+        : rawPath;
       if (path.includes("/read/")) {
         const id = path.split("/read/")[1]?.split("?")[0];
         if (id) {

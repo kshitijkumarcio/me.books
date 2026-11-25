@@ -49,7 +49,7 @@ export const BookModalBottomButtons = ({
           className="group/ab pointer-events-auto flex cursor-pointer gap-x-1"
         >
           <div className="flex aspect-square w-10 items-center justify-center rounded-sm bg-black">
-            <AmazonIcon className="h-4.5 w-4.5 text-white" />
+            <Image src={icons.AmazonIcon} alt="amazon icon" className="h-5 w-5 filter bg-blend-difference" />
           </div>
           <div className="flex h-10 items-center justify-center rounded-sm bg-black px-4">
             <FlipTextButton>
