@@ -117,6 +117,8 @@ export const ReadBookDetail = ({
                     alt={showInlineCover ? book.title : ""}
                     draggable={false}
                     priority
+                    decoding="sync"
+                    sizes="(min-width: 768px) 224px, (min-width: 640px) 176px, 144px"
                     className="h-auto w-36 object-cover select-none sm:w-44 md:w-56"
                   />
                   {showInlineCover && (
@@ -304,7 +306,7 @@ export const ReadBookDetail = ({
         </section>
 
         {/* Below-the-fold Personal Takeaways Section */}
-        <section className="relative z-10 flex min-h-dvh w-full flex-col items-center justify-center -translate-y-3.5 px-4 text-center">
+        <section className="relative z-10 flex min-h-dvh w-full -translate-y-3.5 flex-col items-center justify-center px-4 text-center">
           <p className="font-mona-sans max-w-lg text-center text-[16px] leading-relaxed font-bold text-black lg:text-[20px]">
             {PLACEHOLDER_TAKEAWAYS}
           </p>

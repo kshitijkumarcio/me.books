@@ -46,6 +46,7 @@ export function useReadBookDetail({
     clearActiveModal,
     setHeroCoverRect,
     transitionPhase,
+    isCoverLayerPainted,
   } = useReadBookModal();
 
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -86,7 +87,7 @@ export function useReadBookDetail({
   }, [isIntercepted, setIsInterceptedOpen]);
 
   useLayoutEffect(() => {
-    if (!isIntercepted || !heroContainerRef.current) return;
+    if (!isIntercepted || !heroContainerRef.current || isClosing) return;
     const heroEl = heroContainerRef.current;
     const parentEl = heroEl.parentElement;
     const drawerEl = heroEl.closest('[data-drawer="true"]');
@@ -120,7 +121,7 @@ export function useReadBookDetail({
       window.removeEventListener("resize", measure);
       drawerEl?.removeEventListener("scroll", measure);
     };
-  }, [isIntercepted, setHeroCoverRect]);
+  }, [isIntercepted, isClosing, setHeroCoverRect]);
 
   const handleClose = useCallback(() => {
     triggerClose(() => {
@@ -229,7 +230,10 @@ export function useReadBookDetail({
     [animateKeywordX, genreX]
   );
 
-  const showInlineCover = !isIntercepted || transitionPhase === "entered";
+  const showInlineCover =
+    !isIntercepted ||
+    transitionPhase === "entered" ||
+    (transitionPhase === "exiting" && !isCoverLayerPainted);
   const publishedDisplay =
     book.publishedYear ?? book.firstPublishedYear ?? book.yearRead;
   const firstLayoutImage = book.layout?.find(

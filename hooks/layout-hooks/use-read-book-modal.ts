@@ -50,6 +50,7 @@ export interface SharedCoverPayload {
   initialRect: CoverRect;
   restingRect?: CoverRect;
   coverImage?: StaticImageData | string;
+  coverResolvedSrc?: string;
   coverAlt?: string;
   format?: BookFormat;
   rotation?: string;
@@ -67,10 +68,12 @@ interface ReadBookModalState {
   restingCoverRect: CoverRect | null;
   heroCoverRect: CoverRect | null;
   coverImage: StaticImageData | string | null;
+  coverResolvedSrc: string | null;
   coverAlt: string;
   coverFormat: BookFormat;
   coverRotation: string;
   transitionPhase: SharedCoverPhase;
+  isCoverLayerPainted: boolean;
   onCloseCallback: (() => void) | null;
 
   openModal: (modal: ActiveModalBook) => void;
@@ -81,6 +84,7 @@ interface ReadBookModalState {
 
   startCoverTransition: (payload: SharedCoverPayload) => void;
   setHeroCoverRect: (rect: CoverRect | null) => void;
+  markCoverLayerPainted: () => void;
   completeEnterTransition: () => void;
   completeExitTransition: () => void;
 }
@@ -96,10 +100,12 @@ export const useReadBookModal = create<ReadBookModalState>((set, get) => ({
   restingCoverRect: null,
   heroCoverRect: null,
   coverImage: null,
+  coverResolvedSrc: null,
   coverAlt: "",
   coverFormat: "standard",
   coverRotation: "rotate-0",
   transitionPhase: "idle",
+  isCoverLayerPainted: false,
   onCloseCallback: null,
 
   openModal: (activeModal) => {
@@ -121,6 +127,8 @@ export const useReadBookModal = create<ReadBookModalState>((set, get) => ({
       restingCoverRect: null,
       heroCoverRect: null,
       coverImage: null,
+      coverResolvedSrc: null,
+      isCoverLayerPainted: false,
       onCloseCallback: null,
     });
   },
@@ -151,25 +159,33 @@ export const useReadBookModal = create<ReadBookModalState>((set, get) => ({
       set({
         isDrawerClosing: true,
         transitionPhase: activeBookId ? "exiting" : "idle",
+        isCoverLayerPainted: false,
       });
 
-      // If there is no active shared cover transition (e.g. /about, /use-case), complete via timeout.
-      // Keep isClosing & isDrawerClosing true so BookShelfAnimator / OverlayNavigators don't flicker
-      // while router.back() finishes; BookShelfAnimator resets them once !isModalRoute.
-      if (!activeBookId) {
-        fallbackCompleteTimer = setTimeout(() => {
+      // Safety fallback for non-cover modals AND if onAnimationComplete ever drops
+      fallbackCompleteTimer = setTimeout(
+        () => {
           fallbackCompleteTimer = null;
-          const callback = get().onCloseCallback;
-          set({
-            isInterceptedOpen: false,
-            activeModal: null,
-            onCloseCallback: null,
-          });
-          if (callback) {
-            callback();
+          if (get().transitionPhase === "exiting") {
+            get().completeExitTransition();
+            return;
           }
-        }, READ_BOOK_TRANSITION_DURATION_MS);
-      }
+          if (!activeBookId) {
+            const callback = get().onCloseCallback;
+            set({
+              isInterceptedOpen: false,
+              activeModal: null,
+              onCloseCallback: null,
+            });
+            if (callback) {
+              callback();
+            }
+          }
+        },
+        activeBookId
+          ? READ_BOOK_TRANSITION_DURATION_MS + 150
+          : READ_BOOK_TRANSITION_DURATION_MS
+      );
     }, MODAL_EXIT_DELAY_MS);
   },
 
@@ -179,10 +195,12 @@ export const useReadBookModal = create<ReadBookModalState>((set, get) => ({
       initialCoverRect: payload.initialRect,
       restingCoverRect: payload.restingRect ?? payload.initialRect,
       coverImage: payload.coverImage ?? null,
+      coverResolvedSrc: payload.coverResolvedSrc ?? null,
       coverAlt: payload.coverAlt ?? "",
       coverFormat: payload.format ?? "standard",
       coverRotation: payload.rotation ?? "rotate-0",
       transitionPhase: "entering",
+      isCoverLayerPainted: false,
       heroCoverRect: null,
     }),
 
@@ -190,6 +208,8 @@ export const useReadBookModal = create<ReadBookModalState>((set, get) => ({
     set({
       heroCoverRect: rect,
     }),
+
+  markCoverLayerPainted: () => set({ isCoverLayerPainted: true }),
 
   completeEnterTransition: () =>
     set({
@@ -206,6 +226,8 @@ export const useReadBookModal = create<ReadBookModalState>((set, get) => ({
       restingCoverRect: null,
       heroCoverRect: null,
       coverImage: null,
+      coverResolvedSrc: null,
+      isCoverLayerPainted: false,
       isClosing: false,
       isDrawerClosing: false,
       isInterceptedOpen: false,

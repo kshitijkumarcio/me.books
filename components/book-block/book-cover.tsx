@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useEffect } from "react";
+import { useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -39,25 +39,28 @@ const BookCover = ({
   href,
 }: BookCoverProps) => {
   const router = useRouter();
-  const { openModal, startCoverTransition, activeBookId, transitionPhase } =
-    useReadBookModal();
+  const {
+    openModal,
+    startCoverTransition,
+    activeBookId,
+    transitionPhase,
+    isCoverLayerPainted,
+  } = useReadBookModal();
   const coverInnerRef = useRef<HTMLDivElement>(null);
 
   const effectiveId =
     id ||
     (href ? href.split("/").filter(Boolean).pop()?.split("?")[0] : undefined);
 
+  // Stay visible during the first frame of "entering" until the transition layer paints,
+  // then stay hidden continuously through "entered" and "exiting".
   const isTransitioningCurrent = Boolean(
-    effectiveId && activeBookId === effectiveId && transitionPhase !== "idle"
+    effectiveId &&
+      activeBookId === effectiveId &&
+      (transitionPhase === "entered" ||
+        transitionPhase === "exiting" ||
+        (transitionPhase === "entering" && isCoverLayerPainted))
   );
-
-  // Restore visibility when transition ends back to idle
-  useEffect(() => {
-    if (coverInnerRef.current && !isTransitioningCurrent) {
-      coverInnerRef.current.style.visibility = "visible";
-      coverInnerRef.current.style.opacity = "1";
-    }
-  }, [isTransitioningCurrent]);
 
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -86,10 +89,12 @@ const BookCover = ({
           height: restingHeight,
         };
 
-        // Instantly hide the grid book cover so ONLY 1 book cover exists at all times
-        el.style.visibility = "hidden";
-        el.style.opacity = "0";
+        // Grab the exact already-decoded URL from the grid <img>
+        const imgEl = el.querySelector("img");
+        const coverResolvedSrc = imgEl?.currentSrc || imgEl?.src || undefined;
 
+        // DO NOT set el.style.visibility = "hidden" here—let isTransitioningCurrent handle it
+        // once SharedBookCoverTransitionLayer confirms its first paint.
         startCoverTransition({
           bookId,
           initialRect: {
@@ -100,6 +105,7 @@ const BookCover = ({
           },
           restingRect,
           coverImage: src,
+          coverResolvedSrc,
           coverAlt: alt,
           format,
           rotation,

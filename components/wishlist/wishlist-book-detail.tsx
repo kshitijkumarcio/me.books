@@ -33,6 +33,7 @@ export const WishlistBookDetail = ({
     clearActiveModal,
     setHeroCoverRect,
     transitionPhase,
+    isCoverLayerPainted,
   } = useReadBookModal();
   const drawerRef = useRef<HTMLDivElement>(null);
   const heroContainerRef = useRef<HTMLDivElement>(null);
@@ -51,7 +52,7 @@ export const WishlistBookDetail = ({
   }, [isIntercepted, setIsInterceptedOpen]);
 
   useEffect(() => {
-    if (!isIntercepted || !heroContainerRef.current) return;
+    if (!isIntercepted || !heroContainerRef.current || isClosing) return;
     const heroEl = heroContainerRef.current;
     const drawerEl = heroEl.closest('[data-drawer="true"]');
 
@@ -72,7 +73,7 @@ export const WishlistBookDetail = ({
     measure();
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
-  }, [isIntercepted, setHeroCoverRect]);
+  }, [isIntercepted, isClosing, setHeroCoverRect]);
 
   const handleClose = useCallback(() => {
     triggerClose(() => {
@@ -98,6 +99,11 @@ export const WishlistBookDetail = ({
   }, [handleClose]);
 
   if (!book) return null;
+
+  const showInlineCover =
+    !isIntercepted ||
+    transitionPhase === "entered" ||
+    (transitionPhase === "exiting" && !isCoverLayerPainted);
 
   const displayPrice = book.price ? `~${book.price}` : "~500";
 
@@ -166,7 +172,7 @@ export const WishlistBookDetail = ({
             ref={heroContainerRef}
             className="relative flex items-center justify-center select-none"
           >
-            {!isIntercepted || transitionPhase === "entered" ? (
+            {showInlineCover ? (
               /* Standalone or settled book cover */
               <div className="shadow-book relative overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
                 <Image
@@ -174,6 +180,8 @@ export const WishlistBookDetail = ({
                   alt={book.title}
                   draggable={false}
                   priority
+                  decoding="sync"
+                  sizes="(min-width: 1024px) 224px, (min-width: 640px) 208px, 176px"
                   className="h-auto w-44 object-cover select-none sm:w-52 lg:w-56"
                 />
                 <div className="pointer-events-none absolute inset-y-0 -left-0.5 w-2 bg-linear-to-r from-black/25 via-white/20 to-transparent" />
@@ -186,6 +194,8 @@ export const WishlistBookDetail = ({
                   alt=""
                   draggable={false}
                   priority
+                  decoding="sync"
+                  sizes="(min-width: 1024px) 224px, (min-width: 640px) 208px, 176px"
                   className="h-auto w-44 object-cover sm:w-52 lg:w-56"
                 />
               </div>

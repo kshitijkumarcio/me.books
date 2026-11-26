@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useLayoutEffect, useMemo, useRef } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
 import {
@@ -51,12 +51,16 @@ export const SharedBookCoverTransitionLayer = () => {
     restingCoverRect,
     heroCoverRect,
     coverImage,
+    coverResolvedSrc,
     coverAlt,
     coverRotation,
     transitionPhase,
+    markCoverLayerPainted,
     completeEnterTransition,
     completeExitTransition,
   } = useReadBookModal();
+
+  const imgRef = useRef<HTMLImageElement>(null);
 
   const targetRect = useMemo(() => {
     if (!initialCoverRect) return null;
@@ -68,16 +72,13 @@ export const SharedBookCoverTransitionLayer = () => {
     [coverRotation]
   );
 
-  // Remains active continuously throughout the entire intercepted route session:
-  // "entering" -> "entered" -> "exiting"
-  // It is the ONLY book cover element visible on screen at all times.
-  const isTransitioning =
+  // Only mount while actively flying ("entering" or "exiting")—never sit idle as invisible opacity-0
+  const isActiveFlight =
     activeBookId !== null &&
     initialCoverRect !== null &&
     coverImage !== null &&
-    transitionPhase !== "idle";
+    (transitionPhase === "entering" || transitionPhase === "exiting");
 
-  // Base dimensions are the true unscaled 1.0 resting grid slot
   const returnRect = useMemo<CoverRect | null>(() => {
     if (!initialCoverRect) return null;
     if (restingCoverRect) return restingCoverRect;
@@ -91,8 +92,24 @@ export const SharedBookCoverTransitionLayer = () => {
     };
   }, [initialCoverRect, restingCoverRect]);
 
+  // Signal the underlying cover to hide only after this layer has a frame to paint
+  useLayoutEffect(() => {
+    if (!isActiveFlight) return;
+    let rafId = 0;
+    const markWhenReady = () => {
+      rafId = requestAnimationFrame(() => {
+        markCoverLayerPainted();
+      });
+    };
+
+    if (!imgRef.current || imgRef.current.complete) {
+      markWhenReady();
+    }
+    return () => cancelAnimationFrame(rafId);
+  }, [isActiveFlight, transitionPhase, activeBookId, markCoverLayerPainted]);
+
   if (
-    !isTransitioning ||
+    !isActiveFlight ||
     !initialCoverRect ||
     !targetRect ||
     !returnRect ||
@@ -101,7 +118,6 @@ export const SharedBookCoverTransitionLayer = () => {
     return null;
   }
 
-  // Calculate center-to-center deltas and scales
   const gridCenterX = returnRect.left + returnRect.width / 2;
   const gridCenterY = returnRect.top + returnRect.height / 2;
   const heroCenterX = targetRect.left + targetRect.width / 2;
@@ -115,17 +131,54 @@ export const SharedBookCoverTransitionLayer = () => {
     returnRect.height > 0 ? targetRect.height / returnRect.height : 1;
 
   const isEntering = transitionPhase === "entering";
-  const isEntered = transitionPhase === "entered";
+
+  const initialTransform = isEntering
+    ? {
+        x: 0,
+        y: 0,
+        scaleX: HOVER_SCALE,
+        scaleY: HOVER_SCALE,
+        rotate: initialRotationDeg,
+      }
+    : {
+        x: heroDeltaX,
+        y: heroDeltaY,
+        scaleX: heroScaleX,
+        scaleY: heroScaleY,
+        rotate: 0,
+      };
+
+  const animateTransform = isEntering
+    ? {
+        x: heroDeltaX,
+        y: heroDeltaY,
+        scaleX: heroScaleX,
+        scaleY: heroScaleY,
+        rotate: 0,
+        transition: {
+          duration: READ_BOOK_TRANSITION_DURATION,
+          ease: READ_BOOK_TRANSITION_EASE,
+        },
+      }
+    : {
+        x: 0,
+        y: 0,
+        scaleX: 1,
+        scaleY: 1,
+        rotate: initialRotationDeg,
+        transition: {
+          duration: READ_BOOK_TRANSITION_DURATION,
+          ease: READ_BOOK_TRANSITION_EASE,
+        },
+      };
 
   return (
     <div
       aria-hidden="true"
-      className={`pointer-events-none fixed inset-0 z-70 overflow-hidden ${
-        isEntered ? "invisible opacity-0" : "visible opacity-100"
-      }`}
+      className="pointer-events-none fixed inset-0 z-70 overflow-hidden"
     >
       <motion.div
-        key={`shared-cover-${activeBookId}`}
+        key={`shared-cover-${activeBookId}-${transitionPhase}`}
         style={{
           position: "fixed",
           top: returnRect.top,
@@ -134,66 +187,44 @@ export const SharedBookCoverTransitionLayer = () => {
           height: returnRect.height,
           transformOrigin: "center center",
           willChange: "transform",
-          WebkitBackfaceVisibility: "hidden",
-          backfaceVisibility: "hidden",
         }}
-        initial={{
-          x: 0,
-          y: 0,
-          scaleX: HOVER_SCALE,
-          scaleY: HOVER_SCALE,
-          rotate: initialRotationDeg,
-        }}
-        animate={
-          transitionPhase === "exiting"
-            ? {
-                x: 0,
-                y: 0,
-                scaleX: 1,
-                scaleY: 1,
-                rotate: initialRotationDeg,
-                transition: {
-                  duration: READ_BOOK_TRANSITION_DURATION,
-                  ease: READ_BOOK_TRANSITION_EASE,
-                },
-              }
-            : {
-                x: heroDeltaX,
-                y: heroDeltaY,
-                scaleX: heroScaleX,
-                scaleY: heroScaleY,
-                rotate: 0,
-                transition: isEntered
-                  ? { duration: 0 }
-                  : {
-                      duration: READ_BOOK_TRANSITION_DURATION,
-                      ease: READ_BOOK_TRANSITION_EASE,
-                    },
-              }
-        }
+        initial={initialTransform}
+        animate={animateTransform}
         onAnimationComplete={() => {
           if (isEntering) {
             completeEnterTransition();
-          } else if (transitionPhase === "exiting") {
+          } else {
             completeExitTransition();
           }
         }}
         className="pointer-events-none z-70 select-none"
       >
         <div className="shadow-book relative h-full w-full overflow-hidden">
-          <Image
-            src={coverImage}
-            alt={coverAlt || "Book Cover"}
-            draggable={false}
-            priority
-            decoding="sync"
-            fill
-            sizes="(min-width: 1024px) 240px, 200px"
-            className="h-full w-full object-cover select-none"
-          />
-          {/* Subtle spine glare effect */}
+          {coverResolvedSrc ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              ref={imgRef}
+              src={coverResolvedSrc}
+              alt={coverAlt || "Book Cover"}
+              draggable={false}
+              decoding="sync"
+              onLoad={markCoverLayerPainted}
+              className="h-full w-full object-cover select-none"
+            />
+          ) : (
+            <Image
+              src={coverImage}
+              alt={coverAlt || "Book Cover"}
+              draggable={false}
+              priority
+              decoding="sync"
+              fill
+              sizes="(min-width: 1024px) 240px, 200px"
+              onLoad={markCoverLayerPainted}
+              className="h-full w-full object-cover select-none"
+            />
+          )}
           <div className="pointer-events-none absolute inset-y-0 -left-0.5 w-[calc(8px*var(--book-scale))] bg-linear-to-r from-black/25 via-white/20 to-transparent" />
-          {/* Subtle border outline */}
           <div className="pointer-events-none absolute inset-0 ring-1 ring-black/10 ring-inset" />
         </div>
       </motion.div>
