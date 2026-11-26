@@ -115,11 +115,14 @@ export const SharedBookCoverTransitionLayer = () => {
     returnRect.height > 0 ? targetRect.height / returnRect.height : 1;
 
   const isEntering = transitionPhase === "entering";
+  const isEntered = transitionPhase === "entered";
 
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-70 overflow-hidden"
+      className={`pointer-events-none fixed inset-0 z-70 overflow-hidden ${
+        isEntered ? "invisible opacity-0" : "visible opacity-100"
+      }`}
     >
       <motion.div
         key={`shared-cover-${activeBookId}`}
@@ -160,10 +163,12 @@ export const SharedBookCoverTransitionLayer = () => {
                 scaleX: heroScaleX,
                 scaleY: heroScaleY,
                 rotate: 0,
-                transition: {
-                  duration: READ_BOOK_TRANSITION_DURATION,
-                  ease: READ_BOOK_TRANSITION_EASE,
-                },
+                transition: isEntered
+                  ? { duration: 0 }
+                  : {
+                      duration: READ_BOOK_TRANSITION_DURATION,
+                      ease: READ_BOOK_TRANSITION_EASE,
+                    },
               }
         }
         onAnimationComplete={() => {

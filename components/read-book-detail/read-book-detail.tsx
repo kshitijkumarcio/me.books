@@ -1,23 +1,23 @@
 "use client";
 
-import React, { useEffect, useCallback, useId, useRef, useState } from "react";
+import React from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import {
-  motion,
-  AnimatePresence,
-  useMotionValue,
-  useSpring,
-} from "motion/react";
+import { motion } from "motion/react";
+import { ChevronDown } from "lucide-react";
 import type { ReadBook } from "@/books/books-index";
 import GridCursorHighlighter from "@/components/ui-components/grid-cursor-highlighter";
 import FullWidthPageTitle from "@/components/ui-components/full-width-page-title";
+import { StarRating } from "@/components/read-book-detail/star-rating";
 import {
-  useReadBookModal,
   READ_BOOK_TRANSITION_DURATION,
   READ_BOOK_TRANSITION_EASE,
 } from "@/hooks/layout-hooks/use-read-book-modal";
-import { easing016 } from "@/constants";
+import { useReadBookDetail } from "@/hooks/layout-hooks/use-read-book-detail";
+import { easing016, icons } from "@/constants";
+import {
+  PLACEHOLDER_QUOTE,
+  PLACEHOLDER_TAKEAWAYS,
+} from "@/lib/read-book-detail-utils";
 
 interface ReadBookDetailProps {
   book: ReadBook;
@@ -25,278 +25,31 @@ interface ReadBookDetailProps {
   isIntercepted?: boolean;
 }
 
-const STAR_POINTS =
-  "12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2";
-
-// Star Icon component supporting fractional / partial star ratings up to 2 decimal places
-const StarRating = ({
-  rating = 4.5,
-  isIntercepted,
-  isClosing,
-}: {
-  rating: number;
-  isIntercepted: boolean;
-  isClosing: boolean;
-}) => {
-  const baseId = useId().replace(/[^a-zA-Z0-9_-]/g, "");
-  const stars = [1, 2, 3, 4, 5];
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
-
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const springX = useSpring(mouseX, {
-    damping: 60,
-    stiffness: 300,
-    mass: 0.5,
-  });
-  const springY = useSpring(mouseY, {
-    damping: 60,
-    stiffness: 300,
-    mass: 0.5,
-  });
-
-  const OFFSET_X = 20;
-  const OFFSET_Y = 20;
-
-  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left + OFFSET_X;
-      const y = e.clientY - rect.top + OFFSET_Y;
-      mouseX.set(x);
-      mouseY.set(y);
-      springX.jump(x);
-      springY.jump(y);
-    }
-    setIsHovered(true);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left + OFFSET_X;
-      const y = e.clientY - rect.top + OFFSET_Y;
-      if (!isHovered) {
-        mouseX.set(x);
-        mouseY.set(y);
-        springX.jump(x);
-        springY.jump(y);
-        setIsHovered(true);
-      } else {
-        mouseX.set(x);
-        mouseY.set(y);
-      }
-    }
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-  };
-
-  // Format rating in digits and decimals (e.g. 3.8, 4.25, or 5.0 for integers)
-  const formattedRating = Number.isInteger(rating)
-    ? rating.toFixed(1)
-    : `${Math.round(rating * 100) / 100}`;
-
-  return (
-    <div
-      ref={containerRef}
-      onMouseEnter={handleMouseEnter}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="relative inline-flex cursor-default flex-col items-center justify-center select-none"
-      aria-label={`Rating: ${rating} out of 5 stars`}
-    >
-      {/* Stars row with masked reveal */}
-      <div className="overflow-hidden">
-        <motion.div
-          initial={isIntercepted ? { y: "115%" } : { y: "0%" }}
-          animate={{
-            y: isClosing ? "115%" : "0%",
-            transition: {
-              duration: isClosing ? 1 : 0.6,
-              delay: isClosing ? 0 : 0.6,
-              ease: easing016,
-            },
-          }}
-          className="flex items-center justify-center gap-1.5"
-        >
-          {stars.map((star) => {
-            // Calculate fill fraction for this specific star (0 to 1)
-            // e.g. for star 4 with rating 3.68 -> (3.68 - 3) = 0.68 (68% width)
-            const fillFraction = Math.max(0, Math.min(1, rating - (star - 1)));
-            // Round to 2 decimal places to avoid floating point imprecision
-            const roundedFraction = Math.round(fillFraction * 100) / 100;
-
-            if (roundedFraction >= 1) {
-              // Fully filled star
-              return (
-                <svg
-                  key={star}
-                  className="h-5 w-5 transition-transform hover:scale-110 sm:h-6 sm:w-6"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polygon points={STAR_POINTS} />
-                </svg>
-              );
-            }
-
-            if (roundedFraction <= 0) {
-              // Fully empty star
-              return (
-                <svg
-                  key={star}
-                  className="h-5 w-5 transition-transform hover:scale-110 sm:h-6 sm:w-6"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polygon points={STAR_POINTS} />
-                </svg>
-              );
-            }
-
-            // Partially filled star (e.g. 0.68 width for rating 3.68)
-            const clipId = `star-clip-${baseId}-${star}`;
-            return (
-              <svg
-                key={star}
-                className="h-5 w-5 transition-transform hover:scale-110 sm:h-6 sm:w-6"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <defs>
-                  <clipPath id={clipId} clipPathUnits="objectBoundingBox">
-                    <rect x="0" y="0" width={roundedFraction} height="1" />
-                  </clipPath>
-                </defs>
-                {/* Clipped filled portion of the star */}
-                <polygon
-                  points={STAR_POINTS}
-                  fill="currentColor"
-                  stroke="none"
-                  clipPath={`url(#${clipId})`}
-                />
-                {/* Full outline of the star */}
-                <polygon points={STAR_POINTS} fill="none" />
-              </svg>
-            );
-          })}
-        </motion.div>
-      </div>
-
-      {/* Floating cursor-following rating label */}
-      <AnimatePresence>
-        {isHovered && (
-          <motion.div
-            style={{ x: springX, y: springY }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="pointer-events-none absolute top-0 left-0 z-50 select-none"
-          >
-            <div className="bg-neon flex items-center gap-2 rounded-lg border border-neutral-600 px-2 py-1.5 whitespace-nowrap">
-              <div className="flex items-center gap-1.5 leading-none">
-                <div className="font-mona-sans flex items-center gap-1.5 text-[14px] leading-none font-semibold text-black">
-                  <p className="text-[16px] leading-none font-medium">+</p>
-                  <p>{formattedRating}</p>
-                  <p className="text-[16px] leading-none font-medium">+</p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
-
 export const ReadBookDetail = ({
   book,
   isIntercepted = true,
 }: ReadBookDetailProps) => {
-  const router = useRouter();
   const {
     isClosing,
     isDrawerClosing,
-    triggerClose,
-    setIsInterceptedOpen,
-    clearActiveModal,
-    setHeroCoverRect,
-    transitionPhase,
-  } = useReadBookModal();
-  const heroContainerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (isIntercepted) {
-      setIsInterceptedOpen(true);
-      return () => {
-        setIsInterceptedOpen(false);
-      };
-    } else {
-      setIsInterceptedOpen(false);
-    }
-  }, [isIntercepted, setIsInterceptedOpen]);
-
-  useEffect(() => {
-    if (!isIntercepted || !heroContainerRef.current) return;
-    const heroEl = heroContainerRef.current;
-    const drawerEl = heroEl.closest('[data-drawer="true"]');
-
-    const measure = () => {
-      const rect = heroEl.getBoundingClientRect();
-      const drawerRect = drawerEl?.getBoundingClientRect();
-      const drawerTop = drawerRect ? drawerRect.top : 0;
-      const drawerLeft = drawerRect ? drawerRect.left : 0;
-
-      setHeroCoverRect({
-        top: Math.round(rect.top - drawerTop),
-        left: Math.round(rect.left - drawerLeft),
-        width: Math.round(rect.width),
-        height: Math.round(rect.height),
-      });
-    };
-
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, [isIntercepted, setHeroCoverRect]);
-
-  const handleClose = useCallback(() => {
-    triggerClose(() => {
-      clearActiveModal();
-      if (isIntercepted) {
-        router.back();
-      } else {
-        router.push("/");
-      }
-    });
-  }, [isIntercepted, triggerClose, router, clearActiveModal]);
-
-  // Handle ESC key press
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        handleClose();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleClose]);
+    drawerRef,
+    heroContainerRef,
+    keywordViewportRef,
+    keywordCycleRef,
+    keywordX,
+    keywordRepeatCount,
+    hasScrolledPast,
+    showInlineCover,
+    handleScrollKeywords,
+    handleKeywordPanStart,
+    handleKeywordPan,
+    handleKeywordPanEnd,
+    tagItems,
+    publishedDisplay,
+    firstLayoutImage,
+    revealInitial,
+    revealAnimate,
+  } = useReadBookDetail({ book, isIntercepted });
 
   return (
     <motion.div
@@ -329,62 +82,206 @@ export const ReadBookDetail = ({
         backfaceVisibility: "hidden",
         WebkitBackfaceVisibility: "hidden",
       }}
+      ref={drawerRef}
       data-drawer="true"
       className="no-scrollbar fixed inset-0 isolate z-50 h-dvh w-dvw origin-top transform-gpu overflow-x-clip overflow-y-auto bg-white text-black will-change-[transform,clip-path] backface-hidden"
     >
-      {/* Main Content Area - title top padded by 1 cell height, book cover centered at 45% viewport height */}
       <main className="bg-grid-dashed-accurate relative min-h-dvh w-full">
         <GridCursorHighlighter dynamicGrid />
-        <div className="pt-cell pointer-events-none absolute inset-x-0 top-0 z-10">
-          <FullWidthPageTitle
-            title={book.title}
-            isIntercepted={isIntercepted}
-            isClosing={isClosing}
-          />
-        </div>
 
-        {/* Center Column: Book Cover centered at 50% X, 45% Y + Stars below */}
-        <div className="absolute top-[45%] left-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
-          {/* Book Cover Container: Blank white space on intercepted route; real cover on standalone page */}
-          <div
-            ref={heroContainerRef}
-            className="relative flex items-center justify-center select-none"
-          >
-            {isIntercepted ? (
-              /* Blank placeholder that reserves exact hero cover space for layout and measurement */
-              <div className="pointer-events-none invisible">
-                <Image
-                  src={book.coverImage}
-                  alt=""
-                  draggable={false}
-                  priority
-                  className="h-auto w-44 object-cover sm:w-52 lg:w-56"
+        {/* Above-the-fold Hero Section */}
+        <section className="pt-cell relative z-10 min-h-dvh w-full">
+          <div className="pt-cell flex flex-col items-center">
+            {/* Title Marquee + Overlapping Centered Book Cover */}
+            <div className="relative flex w-full items-center justify-center">
+              <div className="pointer-events-none w-full">
+                <FullWidthPageTitle
+                  title={book.title}
+                  isIntercepted={isIntercepted}
+                  isClosing={isClosing}
                 />
               </div>
-            ) : (
-              /* Standalone direct-visit book cover */
-              <div className="shadow-book relative overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
-                <Image
-                  src={book.coverImage}
-                  alt={book.title}
-                  draggable={false}
-                  priority
-                  className="h-auto w-44 object-cover select-none sm:w-52 lg:w-56"
-                />
-                <div className="pointer-events-none absolute inset-y-0 -left-0.5 w-2 bg-linear-to-r from-black/25 via-white/20 to-transparent" />
+
+              {/* Book Cover centered vertically over the title marquee */}
+              <div
+                ref={heroContainerRef}
+                className="absolute top-[51%] left-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center select-none"
+              >
+                <div
+                  className={
+                    showInlineCover
+                      ? "shadow-book relative overflow-hidden transition-transform duration-300 hover:scale-[1.02]"
+                      : "pointer-events-none invisible"
+                  }
+                >
+                  <Image
+                    src={book.coverImage}
+                    alt={showInlineCover ? book.title : ""}
+                    draggable={false}
+                    priority
+                    className="h-auto w-36 object-cover select-none sm:w-44 md:w-56"
+                  />
+                  {showInlineCover && (
+                    <>
+                      <div className="pointer-events-none absolute inset-y-0 -left-0.5 w-2 bg-linear-to-r from-black/25 via-white/20 to-transparent" />
+                      <div className="pointer-events-none absolute inset-0 ring-1 ring-black/10 ring-inset" />
+                    </>
+                  )}
+                </div>
               </div>
+            </div>
+            {/* Author, Star Rating, Published Year row */}
+            <div className="mt-cell-1.5 grid w-full grid-cols-1 items-center gap-3 px-4 sm:grid-cols-[1fr_auto_1fr] sm:gap-4 sm:px-6 lg:px-6">
+              <motion.p
+                initial={revealInitial}
+                animate={revealAnimate}
+                className="font-mona-sans order-2 -translate-y-1 text-center text-sm text-[16px] font-bold text-black sm:order-1 sm:justify-self-start sm:text-left sm:text-base lg:text-[20px]"
+              >
+                {book.author}
+              </motion.p>
+              <div className="order-1 -translate-y-0.5">
+                <StarRating
+                  rating={book.rating ?? 5}
+                  isIntercepted={isIntercepted}
+                  isClosing={isClosing}
+                />
+              </div>
+              {publishedDisplay && (
+                <motion.p
+                  initial={revealInitial}
+                  animate={revealAnimate}
+                  className="font-mona-sans order-3 -translate-y-1 text-center text-sm text-[16px] font-semibold text-black sm:justify-self-end sm:text-right sm:text-base lg:text-[20px]"
+                >
+                  published - {publishedDisplay}
+                </motion.p>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-cell w-full translate-y-px px-4 sm:px-6 lg:px-6">
+            {/* Keywords / Themes Horizontal Carousel Bar */}
+            {tagItems.length > 0 && (
+              <motion.div
+                initial={revealInitial}
+                animate={revealAnimate}
+                className="h-cell relative flex w-full items-center rounded-lg border border-black bg-white"
+              >
+                <button
+                  type="button"
+                  onClick={() => handleScrollKeywords("left")}
+                  aria-label="Scroll keywords left"
+                  className="hover:from-neon hover:via-neon absolute top-0 left-0 flex aspect-2/1 h-full shrink-0 cursor-pointer items-center justify-start rounded-l-lg bg-linear-to-r from-white via-white to-transparent z-10"
+                >
+                  <Image
+                    src={icons.Chevron}
+                    alt="left-chevron-icon"
+                    className="ml-5 h-4 w-4"
+                  />
+                </button>
+
+                <div
+                  ref={keywordViewportRef}
+                  className="flex flex-1 items-center overflow-hidden px-2 whitespace-nowrap"
+                >
+                  <motion.div
+                    onPanStart={handleKeywordPanStart}
+                    onPan={handleKeywordPan}
+                    onPanEnd={handleKeywordPanEnd}
+                    style={{ x: keywordX, touchAction: "pan-y" }}
+                    className="flex w-max cursor-grab items-center select-none active:cursor-grabbing"
+                  >
+                    {Array.from({ length: keywordRepeatCount }).map(
+                      (_, cycleIndex) => (
+                        <div
+                          key={cycleIndex}
+                          ref={cycleIndex === 0 ? keywordCycleRef : undefined}
+                          aria-hidden={cycleIndex > 0 ? true : undefined}
+                          className="flex shrink-0 items-center gap-4 pr-4 sm:gap-12 sm:pr-12"
+                        >
+                          {tagItems.map((tag, index) => (
+                            <React.Fragment key={`${cycleIndex}-${tag}-${index}`}>
+                              <span className="font-mona-sans text-[20px] font-bold text-black">
+                                {tag}
+                              </span>
+                              <div
+                                aria-hidden="true"
+                                className="aspect-square h-2.5 shrink-0 rounded-full bg-black"
+                              />
+                            </React.Fragment>
+                          ))}
+                        </div>
+                      )
+                    )}
+                  </motion.div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleScrollKeywords("right")}
+                  aria-label="Scroll keywords right"
+                  className="hover:from-neon hover:via-neon absolute top-0 right-0 z-10 flex aspect-2/1 h-full shrink-0 cursor-pointer items-center justify-end rounded-r-lg bg-linear-to-l from-white via-white to-transparent"
+                >
+                  <Image
+                    src={icons.Chevron}
+                    alt="right-chevron-icon"
+                    className="mr-5 h-4 w-4 rotate-180"
+                  />
+                </button>
+              </motion.div>
             )}
+
+            {/* Centered Quote */}
+            <div className="font-mona-sans mt-cell-1.5 flex w-full -translate-y-1.25 items-center justify-center">
+              <p className="font-mona-sans max-w-2xl text-center text-[16px] leading-relaxed font-bold text-black lg:text-[20px]">
+                {PLACEHOLDER_QUOTE}
+              </p>
+            </div>
           </div>
 
-          {/* Star Rating */}
-          <div className="absolute top-full left-1/2 mt-4 w-max -translate-x-1/2 sm:mt-8">
-            <StarRating
-              rating={book.rating ?? 5}
-              isIntercepted={isIntercepted}
-              isClosing={isClosing}
-            />
-          </div>
-        </div>
+          <motion.div
+            initial={revealInitial}
+            animate={{
+              opacity: isClosing || hasScrolledPast ? 0 : 1,
+              y: isClosing ? 12 : hasScrolledPast ? -100 : 0,
+              transition: {
+                duration: hasScrolledPast ? 0.45 : isClosing ? 0.25 : 0.55,
+                delay: hasScrolledPast || isClosing ? 0 : 0.6,
+                ease: easing016,
+              },
+            }}
+            className="bottom-cell-[0.85] pointer-events-none absolute inset-x-0 flex w-full items-center justify-between px-4 select-none sm:px-6 lg:px-6"
+          >
+            <div className="flex items-center justify-center gap-x-2">
+              <p className="font-mona-sans text-[13px] leading-none font-semibold text-black sm:text-[14px]">
+                Thoughts below
+              </p>
+              <ChevronDown className="h-4 w-4 stroke-3" />
+            </div>
+
+            <p className="font-mona-sans text-[13px] leading-none font-semibold text-black sm:text-[14px]">
+              (&nbsp;Scroll <span className="tracking-[-1.5px]">---------</span>
+              &nbsp;)
+            </p>
+          </motion.div>
+        </section>
+
+        {/* Below-the-fold Personal Takeaways Section */}
+        <section className="relative z-10 flex min-h-dvh w-full flex-col items-center justify-center gap-6 px-4 text-center">
+          {firstLayoutImage && (
+            <div className="relative overflow-hidden rounded-xl shadow-sm">
+              <Image
+                src={firstLayoutImage.src}
+                alt={firstLayoutImage.alt || book.title}
+                draggable={false}
+                className="h-auto w-28 object-cover select-none sm:w-32"
+              />
+            </div>
+          )}
+
+          <p className="font-mona-sans max-w-md text-xs leading-relaxed font-semibold text-black sm:text-sm">
+            {PLACEHOLDER_TAKEAWAYS}
+          </p>
+        </section>
       </main>
     </motion.div>
   );

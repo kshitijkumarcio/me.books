@@ -136,11 +136,11 @@ export const FullWidthPageTitle = ({
                   >
                     <h1
                       style={fontStyle}
-                      className="font-mona-sans shrink-0 px-[0.3em] leading-none font-bold tracking-tight whitespace-nowrap text-black select-none"
+                      className="font-mona-sans shrink-0 px-[0.25em] leading-none font-semibold tracking-tight whitespace-nowrap text-black select-none"
                     >
                       {item}
                     </h1>
-                    <div className="w-cell-2.5 h-2 bg-black" />
+                    <div className="w-cell-2 h-2 bg-black" />
                   </div>
                 ) : (
                   <div
@@ -150,11 +150,11 @@ export const FullWidthPageTitle = ({
                     <span
                       aria-hidden="true"
                       style={fontStyle}
-                      className="font-mona-sans shrink-0 px-[0.3em] leading-none font-bold tracking-tight whitespace-nowrap text-black select-none"
+                      className="font-mona-sans shrink-0 px-[0.25em] leading-none font-semibold tracking-tight whitespace-nowrap text-black select-none"
                     >
                       {item}
                     </span>
-                    <div className="w-cell-2.5 h-2 bg-black" />
+                    <div className="w-cell-2 h-2 bg-black" />
                   </div>
                 )
               )}

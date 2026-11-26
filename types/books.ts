@@ -108,7 +108,7 @@ export interface BaseBookItem {
   title: string;
   author: string;
   coverImage: StaticImageData;
-  genre?: string;
+  keywords?: string[];
   genres?: string[];
   status: BookStatus;
   format: BookFormat;

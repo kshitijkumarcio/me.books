@@ -12,6 +12,7 @@ import {
   READ_BOOK_TRANSITION_DURATION,
   READ_BOOK_TRANSITION_EASE,
 } from "@/hooks/layout-hooks/use-read-book-modal";
+import { useDrawerLenis } from "@/hooks/layout-hooks/use-drawer-lenis";
 
 interface CRBookDetailProps {
   book: CurrentlyReadingBook;
@@ -33,7 +34,10 @@ export const CRBookDetail = ({
     setHeroCoverRect,
     transitionPhase,
   } = useReadBookModal();
+  const drawerRef = useRef<HTMLDivElement>(null);
   const heroContainerRef = useRef<HTMLDivElement>(null);
+
+  useDrawerLenis(drawerRef, isIntercepted);
 
   useEffect(() => {
     if (isIntercepted) {
@@ -135,6 +139,7 @@ export const CRBookDetail = ({
         backfaceVisibility: "hidden",
         WebkitBackfaceVisibility: "hidden",
       }}
+      ref={drawerRef}
       data-drawer="true"
       className="no-scrollbar fixed inset-0 isolate z-50 h-dvh w-dvw origin-top transform-gpu overflow-x-clip overflow-y-auto bg-white text-black will-change-[transform,clip-path] backface-hidden"
     >
@@ -156,19 +161,8 @@ export const CRBookDetail = ({
             ref={heroContainerRef}
             className="relative flex items-center justify-center select-none"
           >
-            {isIntercepted ? (
-              /* Blank placeholder that reserves exact hero cover space for layout and measurement */
-              <div className="pointer-events-none invisible">
-                <Image
-                  src={book.coverImage}
-                  alt=""
-                  draggable={false}
-                  priority
-                  className="h-auto w-44 object-cover sm:w-52 lg:w-56"
-                />
-              </div>
-            ) : (
-              /* Standalone direct-visit book cover */
+            {!isIntercepted || transitionPhase === "entered" ? (
+              /* Standalone or settled book cover */
               <div className="shadow-book relative overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
                 <Image
                   src={book.coverImage}
@@ -178,6 +172,17 @@ export const CRBookDetail = ({
                   className="h-auto w-44 object-cover select-none sm:w-52 lg:w-56"
                 />
                 <div className="pointer-events-none absolute inset-y-0 -left-0.5 w-2 bg-linear-to-r from-black/25 via-white/20 to-transparent" />
+              </div>
+            ) : (
+              /* Blank placeholder that reserves exact hero cover space during FLIP transition */
+              <div className="pointer-events-none invisible">
+                <Image
+                  src={book.coverImage}
+                  alt=""
+                  draggable={false}
+                  priority
+                  className="h-auto w-44 object-cover sm:w-52 lg:w-56"
+                />
               </div>
             )}
           </div>

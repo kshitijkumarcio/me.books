@@ -270,155 +270,155 @@ const OverlayNavigators = () => {
           )}
         </div>
 
-      {/* Top Center Moodboard Toggle (Smoothly animated out during read book route) */}
-      <AnimatePresence initial={false}>
-        {!isShowingBookControls && (
-          <motion.div
-            key="moodboard-toggle"
-            initial={{ opacity: 0 }}
-            animate={{
-              opacity: 1,
-              transition: { duration: 1, delay: 0.5, ease: easing016 },
-            }}
-            exit={{
-              opacity: 0,
-              transition: { duration: 0.4, ease: easing016 },
-            }}
-            onPointerEnter={() => {
-              setIsMoodboardClickLocked(false);
-              setIsMoodboardHovered(true);
-            }}
-            onPointerLeave={() => {
-              setIsMoodboardClickLocked(false);
-              setIsMoodboardHovered(false);
-            }}
-            onClick={() => {
-              setIsMoodboardClickLocked(true);
-              setPageView(pageView === "moodboard" ? "index" : "moodboard");
-            }}
-            className="group/vb pointer-events-auto absolute top-10 left-1/2 hidden -translate-x-1/2 cursor-pointer items-center justify-center gap-x-1 lg:flex"
-          >
-            <div className="group-hover/vb:bg-neon flex aspect-square h-10 items-center justify-center rounded-sm border border-black bg-white transition-colors duration-200">
-              <ViewDotsIcon
-                pattern={currentPattern}
-                transition={dotTransition}
-              />
-            </div>
-            <div className="group-hover/vb:bg-neon flex h-10 min-w-40 items-center justify-center rounded-sm border border-black bg-white px-4 transition-colors duration-200">
-              <FlipTextButton
-                isHovered={effectiveHovered}
-                hoverText={
-                  pageView === "moodboard" ? "grid view" : "moodboard view"
-                }
-              >
-                <p className="font-mona-sans text-[14px] font-semibold whitespace-nowrap text-black">
-                  {pageView === "moodboard" ? "moodboard view" : "grid view"}
-                </p>
-              </FlipTextButton>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* bottom buttons (strictly max 90% of screen width) */}
-      <div className="relative mx-auto flex w-max max-w-[90vw] items-center justify-center">
-        <AnimatePresence mode="wait" initial={false}>
-          {!isShowingBookControls ? (
+        {/* Top Center Moodboard Toggle (Smoothly animated out during read book route) */}
+        <AnimatePresence initial={false}>
+          {!isShowingBookControls && (
             <motion.div
-              key="main-bottom-buttons"
-              layout
-              transition={{ duration: 0.4, ease: easing016 }}
+              key="moodboard-toggle"
               initial={{ opacity: 0 }}
               animate={{
                 opacity: 1,
-                transition: { duration: 0.4, delay: 0.1, ease: easing016 },
+                transition: { duration: 1, delay: 0.5, ease: easing016 },
               }}
               exit={{
                 opacity: 0,
-                transition: { duration: 0.4, delay: 0.2, ease: easing016 },
+                transition: { duration: 0.4, ease: easing016 },
               }}
-              className="flex w-max max-w-[90vw] items-center justify-center"
+              onPointerEnter={() => {
+                setIsMoodboardClickLocked(false);
+                setIsMoodboardHovered(true);
+              }}
+              onPointerLeave={() => {
+                setIsMoodboardClickLocked(false);
+                setIsMoodboardHovered(false);
+              }}
+              onClick={() => {
+                setIsMoodboardClickLocked(true);
+                setPageView(pageView === "moodboard" ? "index" : "moodboard");
+              }}
+              className="group/vb pointer-events-auto absolute top-10 left-1/2 hidden -translate-x-1/2 cursor-pointer items-center justify-center gap-x-1 lg:flex"
             >
-              <ChaptersMenu
-                chaptersMenuRef={chaptersMenuRef}
-                isChaptersMenuOpen={isChaptersMenuOpen}
-                isChaptersHovered={isChaptersHovered}
-                setIsChaptersHovered={setIsChaptersHovered}
-                isCurateMenuOpen={isCurateMenuOpen}
-                setExpandedCurateSection={setExpandedCurateSection}
-                isShortlistMenuOpen={isShortlistMenuOpen}
-                setExpandedShortlistSection={setExpandedShortlistSection}
-                openChaptersMenu={openChaptersMenu}
-                toggleChaptersMenu={toggleChaptersMenu}
-                activeZoneId={activeZoneId}
-              />
-
-              <CurateMenu
-                curateMenuRef={curateMenuRef}
-                isCurateVisible={isCurateVisible}
-                isCurateMenuOpen={isCurateMenuOpen}
-                isCurateHovered={isCurateHovered}
-                setIsCurateHovered={setIsCurateHovered}
-                isChaptersMenuOpen={isChaptersMenuOpen}
-                openCurateMenu={openCurateMenu}
-                toggleCurateMenu={toggleCurateMenu}
-                setExpandedCurateSection={setExpandedCurateSection}
-                activeFilters={activeFilters}
-                isClassicsActive={isClassicsActive}
-                setIsClassicsActive={setIsClassicsActive}
-                selectedGenres={selectedGenres}
-                toggleGenre={toggleGenre}
-                selectedLengths={selectedLengths}
-                toggleLength={toggleLength}
-                pageRange={pageRange}
-                setPageRange={setPageRange}
-                expandedCurateSection={expandedCurateSection}
-                curateFocusedIndex={curateFocusedIndex}
-                handleToggleSection={handleToggleSection}
-                handleHorizontalWheel={handleHorizontalWheel}
-                resetAllFilters={resetAllFilters}
-                isResetFlashing={isCurateResetFlashing}
-                resetSpinCount={curateResetSpinCount}
-              />
-
-              <ShortlistMenu
-                shortlistMenuRef={shortlistMenuRef}
-                isShortlistVisible={isShortlistVisible}
-                isShortlistMenuOpen={isShortlistMenuOpen}
-                isShortlistHovered={isShortlistHovered}
-                setIsShortlistHovered={setIsShortlistHovered}
-                isChaptersMenuOpen={isChaptersMenuOpen}
-                openShortlistMenu={openShortlistMenu}
-                toggleShortlistMenu={toggleShortlistMenu}
-                setExpandedShortlistSection={setExpandedShortlistSection}
-                activeFilters={activeShortlistFilters}
-                priceRange={priceRange}
-                setPriceRange={setPriceRange}
-                selectedPriorities={selectedPriorities}
-                togglePriority={togglePriority}
-                expandedShortlistSection={expandedShortlistSection}
-                shortlistFocusedIndex={shortlistFocusedIndex}
-                handleToggleSection={handleToggleShortlistSection}
-                handleHorizontalWheel={handleShortlistHorizontalWheel}
-                resetAllFilters={resetAllShortlistFilters}
-                isResetFlashing={isShortlistResetFlashing}
-                resetSpinCount={shortlistResetSpinCount}
-              />
+              <div className="group-hover/vb:bg-neon flex aspect-square h-10 items-center justify-center rounded-sm border border-black bg-white transition-colors duration-200">
+                <ViewDotsIcon
+                  pattern={currentPattern}
+                  transition={dotTransition}
+                />
+              </div>
+              <div className="group-hover/vb:bg-neon flex h-10 min-w-40 items-center justify-center rounded-sm border border-black bg-white px-4 transition-colors duration-200">
+                <FlipTextButton
+                  isHovered={effectiveHovered}
+                  hoverText={
+                    pageView === "moodboard" ? "grid view" : "moodboard view"
+                  }
+                >
+                  <p className="font-mona-sans text-[14px] font-semibold whitespace-nowrap text-black">
+                    {pageView === "moodboard" ? "moodboard view" : "grid view"}
+                  </p>
+                </FlipTextButton>
+              </div>
             </motion.div>
-          ) : isAboutRoute || isUseCaseRoute ? null : (
-            <BookModalBottomButtons
-              isWishlistRoute={isWishlistRoute}
-              isReadingRoute={isReadingRoute}
-              wishlistAmazonUrl={wishlistAmazonUrl}
-              wishlistGoodreadsUrl={wishlistGoodreadsUrl}
-              crGoodreadsUrl={crGoodreadsUrl}
-              borrowUrl={borrowUrl}
-              readGoodreadsUrl={readGoodreadsUrl}
-            />
           )}
         </AnimatePresence>
+
+        {/* bottom buttons (strictly max 90% of screen width) */}
+        <div className="relative mx-auto flex w-max max-w-[90vw] items-center justify-center">
+          <AnimatePresence mode="wait" initial={false}>
+            {!isShowingBookControls ? (
+              <motion.div
+                key="main-bottom-buttons"
+                layout
+                transition={{ duration: 0.4, ease: easing016 }}
+                initial={{ opacity: 0 }}
+                animate={{
+                  opacity: 1,
+                  transition: { duration: 0.4, delay: 0.1, ease: easing016 },
+                }}
+                exit={{
+                  opacity: 0,
+                  transition: { duration: 0.4, delay: 0.2, ease: easing016 },
+                }}
+                className="flex w-max max-w-[90vw] items-center justify-center"
+              >
+                <ChaptersMenu
+                  chaptersMenuRef={chaptersMenuRef}
+                  isChaptersMenuOpen={isChaptersMenuOpen}
+                  isChaptersHovered={isChaptersHovered}
+                  setIsChaptersHovered={setIsChaptersHovered}
+                  isCurateMenuOpen={isCurateMenuOpen}
+                  setExpandedCurateSection={setExpandedCurateSection}
+                  isShortlistMenuOpen={isShortlistMenuOpen}
+                  setExpandedShortlistSection={setExpandedShortlistSection}
+                  openChaptersMenu={openChaptersMenu}
+                  toggleChaptersMenu={toggleChaptersMenu}
+                  activeZoneId={activeZoneId}
+                />
+
+                <CurateMenu
+                  curateMenuRef={curateMenuRef}
+                  isCurateVisible={isCurateVisible}
+                  isCurateMenuOpen={isCurateMenuOpen}
+                  isCurateHovered={isCurateHovered}
+                  setIsCurateHovered={setIsCurateHovered}
+                  isChaptersMenuOpen={isChaptersMenuOpen}
+                  openCurateMenu={openCurateMenu}
+                  toggleCurateMenu={toggleCurateMenu}
+                  setExpandedCurateSection={setExpandedCurateSection}
+                  activeFilters={activeFilters}
+                  isClassicsActive={isClassicsActive}
+                  setIsClassicsActive={setIsClassicsActive}
+                  selectedGenres={selectedGenres}
+                  toggleGenre={toggleGenre}
+                  selectedLengths={selectedLengths}
+                  toggleLength={toggleLength}
+                  pageRange={pageRange}
+                  setPageRange={setPageRange}
+                  expandedCurateSection={expandedCurateSection}
+                  curateFocusedIndex={curateFocusedIndex}
+                  handleToggleSection={handleToggleSection}
+                  handleHorizontalWheel={handleHorizontalWheel}
+                  resetAllFilters={resetAllFilters}
+                  isResetFlashing={isCurateResetFlashing}
+                  resetSpinCount={curateResetSpinCount}
+                />
+
+                <ShortlistMenu
+                  shortlistMenuRef={shortlistMenuRef}
+                  isShortlistVisible={isShortlistVisible}
+                  isShortlistMenuOpen={isShortlistMenuOpen}
+                  isShortlistHovered={isShortlistHovered}
+                  setIsShortlistHovered={setIsShortlistHovered}
+                  isChaptersMenuOpen={isChaptersMenuOpen}
+                  openShortlistMenu={openShortlistMenu}
+                  toggleShortlistMenu={toggleShortlistMenu}
+                  setExpandedShortlistSection={setExpandedShortlistSection}
+                  activeFilters={activeShortlistFilters}
+                  priceRange={priceRange}
+                  setPriceRange={setPriceRange}
+                  selectedPriorities={selectedPriorities}
+                  togglePriority={togglePriority}
+                  expandedShortlistSection={expandedShortlistSection}
+                  shortlistFocusedIndex={shortlistFocusedIndex}
+                  handleToggleSection={handleToggleShortlistSection}
+                  handleHorizontalWheel={handleShortlistHorizontalWheel}
+                  resetAllFilters={resetAllShortlistFilters}
+                  isResetFlashing={isShortlistResetFlashing}
+                  resetSpinCount={shortlistResetSpinCount}
+                />
+              </motion.div>
+            ) : isAboutRoute || isUseCaseRoute ? null : (
+              <BookModalBottomButtons
+                isWishlistRoute={isWishlistRoute}
+                isReadingRoute={isReadingRoute}
+                wishlistAmazonUrl={wishlistAmazonUrl}
+                wishlistGoodreadsUrl={wishlistGoodreadsUrl}
+                crGoodreadsUrl={crGoodreadsUrl}
+                borrowUrl={borrowUrl}
+                readGoodreadsUrl={readGoodreadsUrl}
+              />
+            )}
+          </AnimatePresence>
+        </div>
       </div>
-    </div>
     </>
   );
 };

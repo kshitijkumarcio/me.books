@@ -60,7 +60,7 @@ export function computeTitleMarqueeMetrics(
       Math.round((baselineFromTop - actualAscent) * 10) / 10
     );
     const lowestInkFromTop = baselineFromTop + actualDescent;
-    bottomPad = Math.max(0, Math.ceil(lowestInkFromTop - fontSize));
+    bottomPad = Math.max(6, Math.ceil(lowestInkFromTop - fontSize + 8));
   }
 
   const singleWidth = measureItem.getBoundingClientRect().width;

@@ -64,7 +64,9 @@ export const CRBlock = ({ book, className }: CRBlockProps) => {
     Array.isArray(book.genres) &&
     book.genres.length > 0
       ? book.genres
-      : [book?.genre || "Fiction"];
+      : book?.keywords && book.keywords.length > 0
+        ? book.keywords
+        : ["Fiction"];
 
   const bookNum =
     parseInt(book?.id ? book.id.replace(/\D/g, "") : "1", 10) || 1;

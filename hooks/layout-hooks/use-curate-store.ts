@@ -90,9 +90,6 @@ export function isShelfBookMatchingFilters(
   }
 
   const bookGenres = (book.genres || []).map((g) => g.toLowerCase());
-  if (book.genre) {
-    bookGenres.push(book.genre.toLowerCase());
-  }
 
   // 1. Classics filter
   if (isClassicsActive) {

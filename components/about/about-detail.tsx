@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import GridCursorHighlighter from "@/components/ui-components/grid-cursor-highlighter";
@@ -10,6 +10,7 @@ import {
   READ_BOOK_TRANSITION_DURATION,
   READ_BOOK_TRANSITION_EASE,
 } from "@/hooks/layout-hooks/use-read-book-modal";
+import { useDrawerLenis } from "@/hooks/layout-hooks/use-drawer-lenis";
 
 interface AboutDetailProps {
   /** If rendered inside modal interceptor vs direct standalone page */
@@ -25,6 +26,10 @@ export const AboutDetail = ({ isIntercepted = true }: AboutDetailProps) => {
     setIsInterceptedOpen,
     clearActiveModal,
   } = useReadBookModal();
+
+  const drawerRef = useRef<HTMLDivElement>(null);
+
+  useDrawerLenis(drawerRef, isIntercepted);
 
   useEffect(() => {
     if (isIntercepted) {
@@ -91,6 +96,7 @@ export const AboutDetail = ({ isIntercepted = true }: AboutDetailProps) => {
         backfaceVisibility: "hidden",
         WebkitBackfaceVisibility: "hidden",
       }}
+      ref={drawerRef}
       data-drawer="true"
       className="no-scrollbar fixed inset-0 isolate z-50 h-dvh w-dvw origin-top transform-gpu overflow-x-clip overflow-y-auto bg-white text-black will-change-[transform,clip-path] backface-hidden"
     >

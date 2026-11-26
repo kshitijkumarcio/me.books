@@ -58,9 +58,8 @@ export const WishListBlock = ({
     ) {
       return book.genres;
     }
-    if (book?.genre) {
-      const parts = book.genre
-        .split("/")
+    if (book?.keywords && book.keywords.length > 0) {
+      const parts = book.keywords
         .map((s) => s.trim().toLowerCase())
         .filter(Boolean);
       if (parts.length >= 2) return parts;
