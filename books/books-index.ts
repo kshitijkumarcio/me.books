@@ -338,7 +338,7 @@ export const BooksRead: ReadBook[] = [
       "Quite melancholic",
       "Longing",
       "Heart-wrenching",
-      "fleating happiness",
+      "Fleating happiness",
     ],
     synopsis: [
       "For twenty years, Sciona has devoted every waking moment to the study of magic.",

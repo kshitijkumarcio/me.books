@@ -1,10 +1,12 @@
-import { easing016 } from "@/constants";
+import { easing016, easing065 } from "@/constants";
 
 export const PLACEHOLDER_QUOTE =
   "“Lorem ipsum is scrambled Latin placeholder text used in graphic design, publishing, and web development to preview layouts”";
 
+export const PLACEHOLDER_QUOTE_WORDS = PLACEHOLDER_QUOTE.split(" ");
+
 export const PLACEHOLDER_TAKEAWAYS =
-  "Adding here my personal takeaways from this read soon as i get more time to work on this project.";
+  "Adding here my personal takeaways from this read, soon as i get more time to design this.";
 
 export const STAR_POINTS =
   "12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2";
@@ -42,21 +44,38 @@ export function getKeywordRepeatCount(
   return Math.max(3, Math.ceil(viewportWidth / cycleWidth) + 2);
 }
 
+/** Returns initial and animate props for masked y-slide reveals in ReadBookDetail. */
+export function getMaskedSlideVariants(
+  isIntercepted: boolean,
+  isClosing: boolean,
+  revealDelay = 0.2
+) {
+  return {
+    initial: isIntercepted ? { y: "100%" } : { y: "0%" },
+    animate: {
+      y: isClosing ? "100%" : "0%",
+      transition: {
+        duration: isClosing ? 0.6 : 1,
+        delay: isClosing ? 0 : revealDelay,
+        ease: easing065,
+      },
+    },
+  };
+}
+
 /** Returns initial and animate props for masked/faded content reveals in ReadBookDetail. */
 export function getReadBookRevealVariants(
   isIntercepted: boolean,
   isClosing: boolean
 ) {
   return {
-    revealInitial: isIntercepted
-      ? { opacity: 0, y: 12 }
-      : { opacity: 1, y: 0 },
+    revealInitial: isIntercepted ? { opacity: 0, y: 12 } : { opacity: 1, y: 0 },
     revealAnimate: {
       opacity: isClosing ? 0 : 1,
       y: isClosing ? 12 : 0,
       transition: {
-        duration: isClosing ? 0.25 : 0.55,
-        delay: isClosing ? 0 : 0.6,
+        duration: isClosing ? 0.6 : 1,
+        delay: isClosing ? 0 : 0.2,
         ease: easing016,
       },
     },

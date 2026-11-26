@@ -13,10 +13,11 @@ import {
   READ_BOOK_TRANSITION_EASE,
 } from "@/hooks/layout-hooks/use-read-book-modal";
 import { useReadBookDetail } from "@/hooks/layout-hooks/use-read-book-detail";
-import { easing016, icons } from "@/constants";
+import { easing065, icons } from "@/constants";
 import {
-  PLACEHOLDER_QUOTE,
+  PLACEHOLDER_QUOTE_WORDS,
   PLACEHOLDER_TAKEAWAYS,
+  getMaskedSlideVariants,
 } from "@/lib/read-book-detail-utils";
 
 interface ReadBookDetailProps {
@@ -46,9 +47,6 @@ export const ReadBookDetail = ({
     handleKeywordPanEnd,
     tagItems,
     publishedDisplay,
-    firstLayoutImage,
-    revealInitial,
-    revealAnimate,
   } = useReadBookDetail({ book, isIntercepted });
 
   return (
@@ -132,13 +130,14 @@ export const ReadBookDetail = ({
             </div>
             {/* Author, Star Rating, Published Year row */}
             <div className="mt-cell-1.5 grid w-full grid-cols-1 items-center gap-3 px-4 sm:grid-cols-[1fr_auto_1fr] sm:gap-4 sm:px-6 lg:px-6">
-              <motion.p
-                initial={revealInitial}
-                animate={revealAnimate}
-                className="font-mona-sans order-2 -translate-y-1 text-center text-sm text-[16px] font-bold text-black sm:order-1 sm:justify-self-start sm:text-left sm:text-base lg:text-[20px]"
-              >
-                {book.author}
-              </motion.p>
+              <div className="order-2 -translate-y-1 overflow-hidden sm:order-1 sm:justify-self-start">
+                <motion.p
+                  {...getMaskedSlideVariants(isIntercepted, isClosing)}
+                  className="font-mona-sans py-0.5 text-center text-sm text-[16px] font-bold text-black sm:text-left sm:text-base lg:text-[20px]"
+                >
+                  {book.author}
+                </motion.p>
+              </div>
               <div className="order-1 -translate-y-0.5">
                 <StarRating
                   rating={book.rating ?? 5}
@@ -147,13 +146,17 @@ export const ReadBookDetail = ({
                 />
               </div>
               {publishedDisplay && (
-                <motion.p
-                  initial={revealInitial}
-                  animate={revealAnimate}
-                  className="font-mona-sans order-3 -translate-y-1 text-center text-sm text-[16px] font-semibold text-black sm:justify-self-end sm:text-right sm:text-base lg:text-[20px]"
-                >
-                  published - {publishedDisplay}
-                </motion.p>
+                <div className="order-3 -translate-y-1 overflow-hidden sm:justify-self-end">
+                  <motion.p
+                    {...getMaskedSlideVariants(isIntercepted, isClosing)}
+                    className="font-mona-sans py-0.5 text-center text-sm text-[16px] font-bold text-black sm:text-right sm:text-base lg:text-[20px]"
+                  >
+                    {publishedDisplay}&nbsp;&nbsp;
+                    <span className="text-[13px] font-semibold lg:text-[14px]">
+                      published
+                    </span>
+                  </motion.p>
+                </div>
               )}
             </div>
           </div>
@@ -162,15 +165,22 @@ export const ReadBookDetail = ({
             {/* Keywords / Themes Horizontal Carousel Bar */}
             {tagItems.length > 0 && (
               <motion.div
-                initial={revealInitial}
-                animate={revealAnimate}
+                initial={{ opacity: isIntercepted ? 0 : 1 }}
+                animate={{
+                  opacity: isClosing ? 0 : 1,
+                  transition: {
+                    duration: isClosing ? 0.6 : 1,
+                    delay: isClosing ? 0 : 0.2,
+                    ease: easing065,
+                  },
+                }}
                 className="h-cell relative flex w-full items-center rounded-lg border border-black bg-white"
               >
                 <button
                   type="button"
                   onClick={() => handleScrollKeywords("left")}
                   aria-label="Scroll keywords left"
-                  className="hover:from-neon hover:via-neon absolute top-0 left-0 flex aspect-2/1 h-full shrink-0 cursor-pointer items-center justify-start rounded-l-lg bg-linear-to-r from-white via-white to-transparent z-10"
+                  className="hover:from-neon hover:via-neon absolute top-0 left-0 z-10 flex aspect-2/1 h-full shrink-0 cursor-pointer items-center justify-start rounded-l-lg bg-linear-to-r from-white via-white to-transparent"
                 >
                   <Image
                     src={icons.Chevron}
@@ -196,19 +206,36 @@ export const ReadBookDetail = ({
                           key={cycleIndex}
                           ref={cycleIndex === 0 ? keywordCycleRef : undefined}
                           aria-hidden={cycleIndex > 0 ? true : undefined}
-                          className="flex shrink-0 items-center gap-4 pr-4 sm:gap-12 sm:pr-12"
+                          className="shrink-0"
                         >
-                          {tagItems.map((tag, index) => (
-                            <React.Fragment key={`${cycleIndex}-${tag}-${index}`}>
-                              <span className="font-mona-sans text-[20px] font-bold text-black">
-                                {tag}
-                              </span>
-                              <div
-                                aria-hidden="true"
-                                className="aspect-square h-2.5 shrink-0 rounded-full bg-black"
-                              />
-                            </React.Fragment>
-                          ))}
+                          <motion.div
+                            initial={
+                              isIntercepted ? { y: "100%" } : { y: "0%" }
+                            }
+                            animate={{
+                              y: isClosing ? "100%" : "0%",
+                              transition: {
+                                duration: isClosing ? 0.6 : 1,
+                                delay: isClosing ? 0 : 0.2,
+                                ease: easing065,
+                              },
+                            }}
+                            className="flex items-center gap-4 pr-4 sm:gap-12 sm:pr-12"
+                          >
+                            {tagItems.map((tag, index) => (
+                              <React.Fragment
+                                key={`${cycleIndex}-${tag}-${index}`}
+                              >
+                                <span className="font-mona-sans text-[20px] font-bold text-black">
+                                  {tag}
+                                </span>
+                                <div
+                                  aria-hidden="true"
+                                  className="aspect-square h-2.5 shrink-0 rounded-full bg-black"
+                                />
+                              </React.Fragment>
+                            ))}
+                          </motion.div>
                         </div>
                       )
                     )}
@@ -232,53 +259,53 @@ export const ReadBookDetail = ({
 
             {/* Centered Quote */}
             <div className="font-mona-sans mt-cell-1.5 flex w-full -translate-y-1.25 items-center justify-center">
-              <p className="font-mona-sans max-w-2xl text-center text-[16px] leading-relaxed font-bold text-black lg:text-[20px]">
-                {PLACEHOLDER_QUOTE}
+              <p className="font-mona-sans flex max-w-2xl flex-wrap justify-center gap-x-[0.28em] text-center text-[16px] leading-relaxed font-bold text-black lg:text-[20px]">
+                {PLACEHOLDER_QUOTE_WORDS.map((word, index) => (
+                  <span key={index} className="inline-block overflow-hidden">
+                    <motion.span
+                      {...getMaskedSlideVariants(isIntercepted, isClosing)}
+                      className="inline-block"
+                    >
+                      {word}
+                    </motion.span>
+                  </span>
+                ))}
               </p>
             </div>
           </div>
 
-          <motion.div
-            initial={revealInitial}
-            animate={{
-              opacity: isClosing || hasScrolledPast ? 0 : 1,
-              y: isClosing ? 12 : hasScrolledPast ? -100 : 0,
-              transition: {
-                duration: hasScrolledPast ? 0.45 : isClosing ? 0.25 : 0.55,
-                delay: hasScrolledPast || isClosing ? 0 : 0.6,
-                ease: easing016,
-              },
-            }}
-            className="bottom-cell-[0.85] pointer-events-none absolute inset-x-0 flex w-full items-center justify-between px-4 select-none sm:px-6 lg:px-6"
-          >
-            <div className="flex items-center justify-center gap-x-2">
-              <p className="font-mona-sans text-[13px] leading-none font-semibold text-black sm:text-[14px]">
-                Thoughts below
-              </p>
-              <ChevronDown className="h-4 w-4 stroke-3" />
-            </div>
+          <div className="bottom-cell-[0.85] pointer-events-none absolute inset-x-0 overflow-hidden px-4 select-none sm:px-6 lg:px-6">
+            <motion.div
+              initial={isIntercepted ? { y: "100%" } : { y: "0%" }}
+              animate={{
+                y: hasScrolledPast ? "-100%" : isClosing ? "100%" : "0%",
+                transition: {
+                  duration: hasScrolledPast ? 0.4 : isClosing ? 0.6 : 1,
+                  delay: hasScrolledPast || isClosing ? 0 : 0.2,
+                  ease: easing065,
+                },
+              }}
+              className="flex w-full items-center justify-between py-0.5"
+            >
+              <div className="flex items-center justify-center gap-x-2">
+                <p className="font-mona-sans text-[13px] leading-none font-semibold text-black sm:text-[14px]">
+                  Thoughts below
+                </p>
+                <ChevronDown className="h-4 w-4 stroke-3" />
+              </div>
 
-            <p className="font-mona-sans text-[13px] leading-none font-semibold text-black sm:text-[14px]">
-              (&nbsp;Scroll <span className="tracking-[-1.5px]">---------</span>
-              &nbsp;)
-            </p>
-          </motion.div>
+              <p className="font-mona-sans text-[13px] leading-none font-semibold text-black sm:text-[14px]">
+                (&nbsp;Scroll{" "}
+                <span className="tracking-[-1.5px]">---------</span>
+                &nbsp;)
+              </p>
+            </motion.div>
+          </div>
         </section>
 
         {/* Below-the-fold Personal Takeaways Section */}
-        <section className="relative z-10 flex min-h-dvh w-full flex-col items-center justify-center gap-6 px-4 text-center">
-          {firstLayoutImage && (
-            <div className="relative overflow-hidden rounded-xl shadow-sm">
-              <Image
-                src={firstLayoutImage.src}
-                alt={firstLayoutImage.alt || book.title}
-                draggable={false}
-                className="h-auto w-28 object-cover select-none sm:w-32"
-              />
-            </div>
-          )}
-
-          <p className="font-mona-sans max-w-md text-xs leading-relaxed font-semibold text-black sm:text-sm">
+        <section className="relative z-10 flex min-h-dvh w-full flex-col items-center justify-center -translate-y-3.5 px-4 text-center">
+          <p className="font-mona-sans max-w-lg text-center text-[16px] leading-relaxed font-bold text-black lg:text-[20px]">
             {PLACEHOLDER_TAKEAWAYS}
           </p>
         </section>

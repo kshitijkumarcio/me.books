@@ -7,7 +7,7 @@ import {
   useMotionValue,
   useSpring,
 } from "motion/react";
-import { easing016 } from "@/constants";
+import { easing016, easing065 } from "@/constants";
 import {
   STAR_POINTS,
   formatRating,
@@ -87,13 +87,13 @@ export const StarRating = ({
       {/* Stars row with masked reveal */}
       <div className="overflow-hidden">
         <motion.div
-          initial={isIntercepted ? { y: "115%" } : { y: "0%" }}
+          initial={isIntercepted ? { y: "105%" } : { y: "0%" }}
           animate={{
-            y: isClosing ? "115%" : "0%",
+            y: isClosing ? "105%" : "0%",
             transition: {
-              duration: isClosing ? 1 : 0.6,
-              delay: isClosing ? 0 : 0.6,
-              ease: easing016,
+              duration: isClosing ? 0.6 : 1,
+              delay: isClosing ? 0 : 0.2,
+              ease: easing065,
             },
           }}
           className="flex items-center justify-center gap-1.5"

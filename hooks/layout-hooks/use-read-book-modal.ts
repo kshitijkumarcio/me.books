@@ -12,7 +12,7 @@ import type {
 
 export const READ_BOOK_TRANSITION_DURATION = 0.8;
 export const READ_BOOK_TRANSITION_DURATION_MS = 800;
-export const MODAL_EXIT_DELAY_MS = 200;
+export const MODAL_EXIT_DELAY_MS = 400;
 export const READ_BOOK_TRANSITION_EASE = easing076;
 
 let closeDelayTimer: ReturnType<typeof setTimeout> | null = null;
