@@ -56,10 +56,10 @@ const BookCover = ({
   // then stay hidden continuously through "entered" and "exiting".
   const isTransitioningCurrent = Boolean(
     effectiveId &&
-      activeBookId === effectiveId &&
-      (transitionPhase === "entered" ||
-        transitionPhase === "exiting" ||
-        (transitionPhase === "entering" && isCoverLayerPainted))
+    activeBookId === effectiveId &&
+    (transitionPhase === "entered" ||
+      transitionPhase === "exiting" ||
+      (transitionPhase === "entering" && isCoverLayerPainted))
   );
 
   const handleClick = useCallback(

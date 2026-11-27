@@ -23,6 +23,7 @@ interface FullWidthPageTitleProps {
   enterDelay?: number;
   enterDuration?: number;
   exitDuration?: number;
+  heightInCells?: number;
 }
 
 export const FullWidthPageTitle = ({
@@ -33,6 +34,7 @@ export const FullWidthPageTitle = ({
   enterDelay = 0.4,
   enterDuration = 0.6,
   exitDuration = 0.6,
+  heightInCells = 3,
 }: FullWidthPageTitleProps) => {
   const titles = Array.isArray(title) ? title : [title];
   const measureText = titles.join(" ");
@@ -59,9 +61,10 @@ export const FullWidthPageTitle = ({
       container,
       measureItem,
       measureText,
-      setMetrics
+      setMetrics,
+      heightInCells
     );
-  }, [measureText]);
+  }, [measureText, heightInCells]);
 
   useAnimationFrame((_, delta) => {
     const track = trackRef.current;

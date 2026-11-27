@@ -12,7 +12,8 @@ import {
   READ_BOOK_TRANSITION_DURATION,
   READ_BOOK_TRANSITION_EASE,
 } from "@/hooks/layout-hooks/use-read-book-modal";
-import { useReadBookDetail } from "@/hooks/layout-hooks/use-read-book-detail";
+import { useReadBookDetail } from "@/hooks/layout-hooks/use-book-detail";
+import { useAdaptiveGridCell } from "@/hooks/layout-hooks/use-adaptive-grid-cell";
 import { easing065, icons } from "@/constants";
 import {
   PLACEHOLDER_QUOTE_WORDS,
@@ -48,6 +49,10 @@ export const ReadBookDetail = ({
     tagItems,
     publishedDisplay,
   } = useReadBookDetail({ book, isIntercepted });
+  const { mainRef, sectionRef, titleCells } = useAdaptiveGridCell<
+    HTMLElement,
+    HTMLElement
+  >({ coverRef: heroContainerRef });
 
   return (
     <motion.div
@@ -82,90 +87,113 @@ export const ReadBookDetail = ({
       }}
       ref={drawerRef}
       data-drawer="true"
-      className="no-scrollbar fixed inset-0 isolate z-50 h-dvh w-dvw origin-top transform-gpu overflow-x-clip overflow-y-auto bg-white text-black will-change-[transform,clip-path] backface-hidden"
+      className="no-scrollbar bg-neon fixed inset-0 isolate z-50 h-dvh w-dvw origin-top transform-gpu overflow-x-clip overflow-y-auto text-black will-change-[transform,clip-path] backface-hidden"
     >
-      <main className="bg-grid-dashed-accurate relative min-h-dvh w-full">
+      <main
+        ref={mainRef}
+        className="bg-grid-dashed-accurate relative mx-auto min-h-dvh w-full max-w-[1920px]"
+      >
         <GridCursorHighlighter dynamicGrid />
 
         {/* Above-the-fold Hero Section */}
-        <section className="pt-cell relative z-10 min-h-dvh w-full">
-          <div className="pt-cell flex flex-col items-center">
-            {/* Title Marquee + Overlapping Centered Book Cover */}
-            <div className="relative flex w-full items-center justify-center">
-              <div className="pointer-events-none w-full">
-                <FullWidthPageTitle
-                  title={book.title}
-                  isIntercepted={isIntercepted}
-                  isClosing={isClosing}
-                />
-              </div>
+        <section ref={sectionRef} className="relative z-10 min-h-dvh w-full">
+          {/* Title Marquee: 1.5 cells (<1300px) or 2 cells (>=1300px) from the top */}
+          <div
+            style={{
+              top: "calc(var(--adaptive-cell-y, var(--cell-size)) * var(--title-top-cells, 2))",
+            }}
+            className="pointer-events-none absolute inset-x-0 w-full -translate-y-1"
+          >
+            <FullWidthPageTitle
+              title={book.title}
+              isIntercepted={isIntercepted}
+              isClosing={isClosing}
+              heightInCells={titleCells}
+            />
+          </div>
 
-              {/* Book Cover centered vertically over the title marquee */}
-              <div
-                ref={heroContainerRef}
-                className="absolute top-[51%] left-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center select-none"
-              >
-                <div
-                  className={
-                    showInlineCover
-                      ? "shadow-book relative overflow-hidden transition-transform duration-300 hover:scale-[1.02]"
-                      : "pointer-events-none invisible"
-                  }
-                >
-                  <Image
-                    src={book.coverImage}
-                    alt={showInlineCover ? book.title : ""}
-                    draggable={false}
-                    priority
-                    decoding="sync"
-                    sizes="(min-width: 768px) 224px, (min-width: 640px) 176px, 144px"
-                    className="h-auto w-36 object-cover select-none sm:w-44 md:w-56"
-                  />
-                  {showInlineCover && (
-                    <>
-                      <div className="pointer-events-none absolute inset-y-0 -left-0.5 w-2 bg-linear-to-r from-black/25 via-white/20 to-transparent" />
-                      <div className="pointer-events-none absolute inset-0 ring-1 ring-black/10 ring-inset" />
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-            {/* Author, Star Rating, Published Year row */}
-            <div className="mt-cell-1.5 grid w-full grid-cols-1 items-center gap-3 px-4 sm:grid-cols-[1fr_auto_1fr] sm:gap-4 sm:px-6 lg:px-6">
-              <div className="order-2 -translate-y-1 overflow-hidden sm:order-1 sm:justify-self-start">
-                <motion.p
-                  {...getMaskedSlideVariants(isIntercepted, isClosing)}
-                  className="font-mona-sans py-0.5 text-center text-sm text-[16px] font-bold text-black sm:text-left sm:text-base lg:text-[20px]"
-                >
-                  {book.author}
-                </motion.p>
-              </div>
-              <div className="order-1 -translate-y-0.5">
-                <StarRating
-                  rating={book.rating ?? 5}
-                  isIntercepted={isIntercepted}
-                  isClosing={isClosing}
-                />
-              </div>
-              {publishedDisplay && (
-                <div className="order-3 -translate-y-1 overflow-hidden sm:justify-self-end">
-                  <motion.p
-                    {...getMaskedSlideVariants(isIntercepted, isClosing)}
-                    className="font-mona-sans py-0.5 text-center text-sm text-[16px] font-bold text-black sm:text-right sm:text-base lg:text-[20px]"
-                  >
-                    {publishedDisplay}&nbsp;&nbsp;
-                    <span className="text-[13px] font-semibold lg:text-[14px]">
-                      published
-                    </span>
-                  </motion.p>
-                </div>
+          {/* Book Cover: adaptive 5.8/15.5 height ratio, bottom at adaptive 6.7/15.5 */}
+          <div
+            ref={heroContainerRef}
+            style={{
+              top: "calc(var(--adaptive-cell-y, var(--cell-size)) * var(--cover-bottom-cells, 6.7))",
+            }}
+            className="absolute left-1/2 z-10 flex -translate-x-1/2 -translate-y-full flex-col items-center justify-center select-none"
+          >
+            <div
+              className={
+                showInlineCover
+                  ? "shadow-book relative overflow-hidden transition-transform duration-300 hover:scale-[1.02]"
+                  : "pointer-events-none invisible"
+              }
+            >
+              <Image
+                src={book.coverImage}
+                alt={showInlineCover ? book.title : ""}
+                draggable={false}
+                priority
+                decoding="sync"
+                sizes="(min-width: 768px) 320px, 224px"
+                style={{
+                  height:
+                    "calc(var(--adaptive-cell-y, var(--cell-size)) * var(--cover-cells, 5.8))",
+                }}
+                className="w-auto object-cover select-none"
+              />
+              {showInlineCover && (
+                <>
+                  <div className="pointer-events-none absolute inset-y-0 -left-0.5 w-2 bg-linear-to-r from-black/25 via-white/20 to-transparent" />
+                  <div className="pointer-events-none absolute inset-0 ring-1 ring-black/10 ring-inset" />
+                </>
               )}
             </div>
           </div>
 
-          <div className="mt-cell w-full translate-y-px px-4 sm:px-6 lg:px-6">
-            {/* Keywords / Themes Horizontal Carousel Bar */}
-            {tagItems.length > 0 && (
+          {/* Author, Star Rating, Published Year row: always in the cell row below cover end */}
+          <div
+            style={{
+              top: "calc(var(--adaptive-cell-y, var(--cell-size)) * var(--meta-row, 7))",
+            }}
+            className="h-cell absolute inset-x-0 grid w-full grid-cols-1 items-center gap-3 px-4 sm:grid-cols-[1fr_auto_1fr] sm:gap-4 sm:px-6 lg:px-6"
+          >
+            <div className="order-2 overflow-hidden sm:order-1 sm:justify-self-start">
+              <motion.p
+                {...getMaskedSlideVariants(isIntercepted, isClosing)}
+                className="font-mona-sans py-0.5 text-center text-sm text-[16px] font-bold text-black sm:text-left sm:text-base lg:text-[20px]"
+              >
+                {book.author}
+              </motion.p>
+            </div>
+            <div className="order-1 translate-y-0.5">
+              <StarRating
+                rating={book.rating ?? 5}
+                isIntercepted={isIntercepted}
+                isClosing={isClosing}
+              />
+            </div>
+            {publishedDisplay && (
+              <div className="order-3 overflow-hidden sm:justify-self-end">
+                <motion.p
+                  {...getMaskedSlideVariants(isIntercepted, isClosing)}
+                  className="font-mona-sans py-0.5 text-center text-sm text-[16px] font-bold text-black sm:text-right sm:text-base lg:text-[20px]"
+                >
+                  {publishedDisplay}&nbsp;&nbsp;
+                  <span className="text-[13px] font-semibold lg:text-[14px]">
+                    published
+                  </span>
+                </motion.p>
+              </div>
+            )}
+          </div>
+
+          {/* Keywords / Themes Horizontal Carousel Bar: adaptive full cell row */}
+          {tagItems.length > 0 && (
+            <div
+              style={{
+                top: "calc(var(--adaptive-cell-y, var(--cell-size)) * var(--keyword-row, 9))",
+              }}
+              className="absolute inset-x-0 w-full px-4 sm:px-6 lg:px-6"
+            >
               <motion.div
                 initial={{ opacity: isIntercepted ? 0 : 1 }}
                 animate={{
@@ -257,26 +285,32 @@ export const ReadBookDetail = ({
                   />
                 </button>
               </motion.div>
-            )}
-
-            {/* Centered Quote */}
-            <div className="font-mona-sans mt-cell-1.5 flex w-full -translate-y-1.25 items-center justify-center">
-              <p className="font-mona-sans flex max-w-2xl flex-wrap justify-center gap-x-[0.28em] text-center text-[16px] leading-relaxed font-bold text-black lg:text-[20px]">
-                {PLACEHOLDER_QUOTE_WORDS.map((word, index) => (
-                  <span key={index} className="inline-block overflow-hidden">
-                    <motion.span
-                      {...getMaskedSlideVariants(isIntercepted, isClosing)}
-                      className="inline-block"
-                    >
-                      {word}
-                    </motion.span>
-                  </span>
-                ))}
-              </p>
             </div>
+          )}
+
+          {/* Centered Quote */}
+          <div
+            style={{
+              top: "calc(var(--adaptive-cell-y, var(--cell-size)) * var(--quote-center-cells, 12))",
+            }}
+            className="font-mona-sans h-cell-2 absolute inset-x-0 flex w-full -translate-y-1/2 items-center justify-center px-4 sm:px-6 lg:px-6"
+          >
+            <p className="font-mona-sans flex max-w-2xl flex-wrap justify-center gap-x-[0.28em] text-center text-[16px] leading-relaxed font-bold text-black lg:text-[20px]">
+              {PLACEHOLDER_QUOTE_WORDS.map((word, index) => (
+                <span key={index} className="inline-block overflow-hidden">
+                  <motion.span
+                    {...getMaskedSlideVariants(isIntercepted, isClosing)}
+                    className="inline-block"
+                  >
+                    {word}
+                  </motion.span>
+                </span>
+              ))}
+            </p>
           </div>
 
-          <div className="bottom-cell-[0.85] pointer-events-none absolute inset-x-0 overflow-hidden px-4 select-none sm:px-6 lg:px-6">
+          {/* Scroll indicator: 1 adaptive cell from the bottom */}
+          <div className="bottom-cell-1 pointer-events-none absolute inset-x-0 translate-y-1/2 overflow-hidden px-4 select-none sm:px-6 lg:px-6">
             <motion.div
               initial={isIntercepted ? { y: "100%" } : { y: "0%" }}
               animate={{

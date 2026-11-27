@@ -14,15 +14,26 @@ export function computeTitleMarqueeMetrics(
   container: HTMLElement,
   measureItem: HTMLElement,
   title: string,
-  ctx: CanvasRenderingContext2D | null
+  ctx: CanvasRenderingContext2D | null,
+  heightInCells = 3
 ): TitleMarqueeMetrics | null {
   const availableWidth = container.clientWidth;
   if (availableWidth <= 0 || !title) return null;
 
   const computedContainer = getComputedStyle(container);
+  const adaptiveCellY = parseFloat(
+    computedContainer.getPropertyValue("--adaptive-cell-y")
+  );
+  const baseCellSize = parseFloat(
+    computedContainer.getPropertyValue("--cell-size")
+  );
   const cellSize =
-    parseFloat(computedContainer.getPropertyValue("--cell-size")) || 60;
-  const targetCapHeight = cellSize * 3;
+    !isNaN(adaptiveCellY) && adaptiveCellY > 0
+      ? adaptiveCellY
+      : !isNaN(baseCellSize) && baseCellSize > 0
+        ? baseCellSize
+        : 60;
+  const targetCapHeight = cellSize * heightInCells;
 
   const computedText = getComputedStyle(measureItem);
   let capRatio = 0.725;
@@ -85,7 +96,8 @@ export function observeTitleMarqueeMetrics(
   container: HTMLElement,
   measureItem: HTMLElement,
   title: string,
-  onUpdate: (metrics: TitleMarqueeMetrics) => void
+  onUpdate: (metrics: TitleMarqueeMetrics) => void,
+  heightInCells = 3
 ): () => void {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
@@ -95,7 +107,8 @@ export function observeTitleMarqueeMetrics(
       container,
       measureItem,
       title,
-      ctx
+      ctx,
+      heightInCells
     );
     if (result) {
       onUpdate(result);

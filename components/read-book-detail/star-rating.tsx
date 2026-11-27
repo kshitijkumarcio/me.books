@@ -7,7 +7,7 @@ import {
   useMotionValue,
   useSpring,
 } from "motion/react";
-import { easing016, easing065 } from "@/constants";
+import { easing065 } from "@/constants";
 import {
   STAR_POINTS,
   formatRating,
@@ -100,12 +100,17 @@ export const StarRating = ({
         >
           {STARS.map((star) => {
             const roundedFraction = getStarFillFraction(rating, star);
+            const starStyle: React.CSSProperties = {
+              width: "calc((var(--cover-width, 224px) - 24px) / 5)",
+              height: "calc((var(--cover-width, 224px) - 24px) / 5)",
+            };
 
             if (roundedFraction >= 1) {
               return (
                 <svg
                   key={star}
-                  className="h-5 w-5 transition-transform hover:scale-110 sm:h-10 sm:w-10"
+                  style={starStyle}
+                  className="transition-transform hover:scale-110"
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   stroke="currentColor"
@@ -122,7 +127,8 @@ export const StarRating = ({
               return (
                 <svg
                   key={star}
-                  className="h-5 w-5 transition-transform hover:scale-110 sm:h-10 sm:w-10"
+                  style={starStyle}
+                  className="transition-transform hover:scale-110"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -139,7 +145,8 @@ export const StarRating = ({
             return (
               <svg
                 key={star}
-                className="h-5 w-5 transition-transform hover:scale-110 sm:h-10 sm:w-10"
+                style={starStyle}
+                className="transition-transform hover:scale-110"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
                 strokeWidth="1.5"

@@ -7,10 +7,10 @@ import GridCursorHighlighter from "@/components/ui-components/grid-cursor-highli
 import FullWidthPageTitle from "@/components/ui-components/full-width-page-title";
 import {
   useReadBookModal,
+  useDrawerLenis,
   READ_BOOK_TRANSITION_DURATION,
   READ_BOOK_TRANSITION_EASE,
 } from "@/hooks/layout-hooks/use-read-book-modal";
-import { useDrawerLenis } from "@/hooks/layout-hooks/use-drawer-lenis";
 
 interface AboutDetailProps {
   /** If rendered inside modal interceptor vs direct standalone page */
@@ -101,7 +101,7 @@ export const AboutDetail = ({ isIntercepted = true }: AboutDetailProps) => {
       className="no-scrollbar fixed inset-0 isolate z-50 h-dvh w-dvw origin-top transform-gpu overflow-x-clip overflow-y-auto bg-white text-black will-change-[transform,clip-path] backface-hidden"
     >
       {/* Main Content Area - 3-cell marquee heading */}
-      <main className="bg-grid-dashed-accurate relative flex min-h-dvh w-full flex-col items-center">
+      <main className="bg-grid-dashed-accurate relative mx-auto flex min-h-dvh w-full max-w-[1920px] flex-col items-center">
         <GridCursorHighlighter dynamicGrid />
 
         <div className="pt-cell pointer-events-none w-full">

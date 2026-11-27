@@ -18,7 +18,7 @@ import { useDevMode } from "@/hooks/ui-hooks/use-dev-mode";
 import {
   useShortlistStore,
   isWishlistBookMatchingFilters,
-} from "@/hooks/layout-hooks/use-shortlist-store";
+} from "@/hooks/layout-hooks/use-shortlist-menu";
 import WishListBlock from "./wishlist-block";
 import ScaleWrapper from "./scale-wrapper";
 import WishlistStampTicket from "./wishlist-stamp-ticket";

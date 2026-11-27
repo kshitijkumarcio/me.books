@@ -12,8 +12,10 @@ import Lenis from "lenis";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { cn } from "@/lib/utils";
-import { useCanvasNavigation } from "@/hooks/layout-hooks/usecanvasnavigation";
-import { useCanvasZoneObserver } from "@/hooks/layout-hooks/use-canvas-zone-observer";
+import {
+  useCanvasNavigation,
+  useCanvasZoneObserver,
+} from "@/hooks/layout-hooks/usecanvasnavigation";
 
 // ============================================================================
 // SINGLE SOURCE OF TRUTH: CANVAS PHYSICS & EASING CONFIGURATION

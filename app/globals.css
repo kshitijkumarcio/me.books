@@ -29,10 +29,10 @@
 }
 
 @utility top-cell-* {
-  top: calc(var(--cell-size) * --value(number, [*]));
+  top: calc(var(--adaptive-cell-y, var(--cell-size)) * --value(number, [*]));
 }
 @utility bottom-cell-* {
-  bottom: calc(var(--cell-size) * --value(number, [*]));
+  bottom: calc(var(--adaptive-cell-y, var(--cell-size)) * --value(number, [*]));
 }
 @utility left-cell-* {
   left: calc(var(--cell-size) * --value(number, [*]));
@@ -46,8 +46,11 @@
 @utility w-cell-* {
   width: calc(var(--cell-size) * --value(number, [*]));
 }
+@utility h-cell {
+  height: var(--adaptive-cell-y, var(--cell-size));
+}
 @utility h-cell-* {
-  height: calc(var(--cell-size) * --value(number, [*]));
+  height: calc(var(--adaptive-cell-y, var(--cell-size)) * --value(number, [*]));
 }
 @utility p-cell-* {
   padding: calc(var(--cell-size) * --value(number, [*]));

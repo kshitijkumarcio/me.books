@@ -4,7 +4,6 @@ import Image from "next/image";
 import { motion } from "motion/react";
 import { easing016 } from "@/constants";
 import icons from "@/constants/icons";
-import { AmazonIcon } from "./icons";
 import FlipTextButton from "../ui-components/flip-text-button";
 
 interface BookModalBottomButtonsProps {

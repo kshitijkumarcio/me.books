@@ -1,0 +1,575 @@
+"use client";
+
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { useRouter } from "next/navigation";
+import {
+  animate,
+  useMotionValue,
+  useMotionValueEvent,
+  useScroll,
+  useTransform,
+  type PanInfo,
+} from "motion/react";
+import type {
+  BaseBookItem,
+  CurrentlyReadingBook,
+  ReadBook,
+  WishlistBook,
+} from "@/books/books-index";
+import { easing016 } from "@/constants";
+import {
+  useDrawerLenis,
+  useReadBookModal,
+} from "@/hooks/layout-hooks/use-read-book-modal";
+import {
+  getKeywordRepeatCount,
+  getKeywordScrollStep,
+  getReadBookRevealVariants,
+  wrapKeywordX,
+} from "@/lib/read-book-detail-utils";
+
+interface UseBookDetailOptions {
+  book: BaseBookItem;
+  isIntercepted: boolean;
+}
+
+/**
+ * Shared drawer, Lenis smooth scroll, FLIP hero measurement, ESC close,
+ * scroll-past state, and infinite keyword carousel logic for book detail views.
+ */
+export function useBookDetail({ book, isIntercepted }: UseBookDetailOptions) {
+  const router = useRouter();
+  const {
+    isClosing,
+    isDrawerClosing,
+    triggerClose,
+    setIsInterceptedOpen,
+    clearActiveModal,
+    setHeroCoverRect,
+    transitionPhase,
+    isCoverLayerPainted,
+  } = useReadBookModal();
+
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const heroContainerRef = useRef<HTMLDivElement>(null);
+  const keywordViewportRef = useRef<HTMLDivElement>(null);
+  const keywordCycleRef = useRef<HTMLDivElement>(null);
+  const genreX = useMotionValue(0);
+  const cycleWidthMV = useMotionValue(0);
+  const keywordTargetXRef = useRef(0);
+  const isKeywordAnimatingRef = useRef(false);
+  const keywordAnimRef = useRef<ReturnType<typeof animate> | null>(null);
+  const [keywordRepeatCount, setKeywordRepeatCount] = useState(3);
+  const [hasScrolledPast, setHasScrolledPast] = useState(false);
+
+  const keywordX = useTransform([genreX, cycleWidthMV], ([x, width]) =>
+    wrapKeywordX(x as number, width as number)
+  );
+
+  useDrawerLenis(drawerRef, isIntercepted);
+
+  const { scrollY } = useScroll({ container: drawerRef });
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const past = latest >= 100;
+    if (past !== hasScrolledPast) {
+      setHasScrolledPast(past);
+    }
+  });
+
+  useEffect(() => {
+    if (isIntercepted) {
+      setIsInterceptedOpen(true);
+      return () => {
+        setIsInterceptedOpen(false);
+      };
+    } else {
+      setIsInterceptedOpen(false);
+    }
+  }, [isIntercepted, setIsInterceptedOpen]);
+
+  useLayoutEffect(() => {
+    if (!isIntercepted || !heroContainerRef.current || isClosing) return;
+    const heroEl = heroContainerRef.current;
+    const parentEl = heroEl.parentElement;
+    const drawerEl = heroEl.closest('[data-drawer="true"]');
+
+    const measure = () => {
+      const rect = heroEl.getBoundingClientRect();
+      const drawerRect = drawerEl?.getBoundingClientRect();
+      const drawerTop = drawerRect ? drawerRect.top : 0;
+      const drawerLeft = drawerRect ? drawerRect.left : 0;
+
+      setHeroCoverRect({
+        top: Math.round(rect.top - drawerTop),
+        left: Math.round(rect.left - drawerLeft),
+        width: Math.round(rect.width),
+        height: Math.round(rect.height),
+      });
+    };
+
+    measure();
+
+    const resizeObserver = new ResizeObserver(measure);
+    resizeObserver.observe(heroEl);
+    if (parentEl) {
+      resizeObserver.observe(parentEl);
+    }
+
+    window.addEventListener("resize", measure);
+    drawerEl?.addEventListener("scroll", measure, { passive: true });
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", measure);
+      drawerEl?.removeEventListener("scroll", measure);
+    };
+  }, [isIntercepted, isClosing, setHeroCoverRect]);
+
+  const handleClose = useCallback(() => {
+    triggerClose(() => {
+      clearActiveModal();
+      if (isIntercepted) {
+        router.back();
+      } else {
+        router.push("/");
+      }
+    });
+  }, [isIntercepted, triggerClose, router, clearActiveModal]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        handleClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleClose]);
+
+  const tagItems = useMemo(() => {
+    if (book.genres && book.genres.length > 0) return book.genres;
+    return book.keywords ?? [];
+  }, [book.genres, book.keywords]);
+
+  useLayoutEffect(() => {
+    const viewport = keywordViewportRef.current;
+    const cycle = keywordCycleRef.current;
+    if (!viewport || !cycle || tagItems.length === 0) return;
+
+    const measure = () => {
+      const viewportWidth = viewport.clientWidth;
+      const cycleWidth = cycle.getBoundingClientRect().width;
+      if (cycleWidth <= 0) return;
+
+      cycleWidthMV.set(cycleWidth);
+      const nextCount = getKeywordRepeatCount(viewportWidth, cycleWidth);
+      setKeywordRepeatCount((prev) => (prev === nextCount ? prev : nextCount));
+    };
+
+    measure();
+
+    const resizeObserver = new ResizeObserver(measure);
+    resizeObserver.observe(viewport);
+    resizeObserver.observe(cycle);
+    return () => resizeObserver.disconnect();
+  }, [tagItems, cycleWidthMV]);
+
+  useEffect(() => {
+    return () => {
+      keywordAnimRef.current?.stop();
+    };
+  }, []);
+
+  const animateKeywordX = useCallback(
+    (target: number, duration = 0.5) => {
+      keywordTargetXRef.current = target;
+      isKeywordAnimatingRef.current = true;
+      keywordAnimRef.current?.stop();
+      keywordAnimRef.current = animate(genreX, target, {
+        duration,
+        ease: easing016,
+        onComplete: () => {
+          isKeywordAnimatingRef.current = false;
+        },
+      });
+    },
+    [genreX]
+  );
+
+  const handleScrollKeywords = useCallback(
+    (direction: "left" | "right") => {
+      const viewport = keywordViewportRef.current;
+      if (!viewport) return;
+
+      const step = getKeywordScrollStep(viewport.clientWidth);
+      const base = isKeywordAnimatingRef.current
+        ? keywordTargetXRef.current
+        : genreX.get();
+      const target = direction === "left" ? base + step : base - step;
+      animateKeywordX(target, 0.5);
+    },
+    [animateKeywordX, genreX]
+  );
+
+  const handleKeywordPanStart = useCallback(() => {
+    keywordAnimRef.current?.stop();
+    isKeywordAnimatingRef.current = false;
+  }, []);
+
+  const handleKeywordPan = useCallback(
+    (_event: PointerEvent | MouseEvent | TouchEvent, info: PanInfo) => {
+      const next = genreX.get() + info.delta.x;
+      genreX.set(next);
+      keywordTargetXRef.current = next;
+    },
+    [genreX]
+  );
+
+  const handleKeywordPanEnd = useCallback(
+    (_event: PointerEvent | MouseEvent | TouchEvent, info: PanInfo) => {
+      if (Math.abs(info.velocity.x) > 20) {
+        animateKeywordX(genreX.get() + info.velocity.x * 0.15, 0.45);
+      }
+    },
+    [animateKeywordX, genreX]
+  );
+
+  const showInlineCover =
+    !isIntercepted ||
+    transitionPhase === "entered" ||
+    (transitionPhase === "exiting" && !isCoverLayerPainted);
+  const publishedDisplay = book.publishedYear ?? book.firstPublishedYear;
+  const { revealInitial, revealAnimate } = getReadBookRevealVariants(
+    isIntercepted,
+    isClosing
+  );
+
+  return {
+    isClosing,
+    isDrawerClosing,
+    drawerRef,
+    heroContainerRef,
+    keywordViewportRef,
+    keywordCycleRef,
+    keywordX,
+    keywordRepeatCount,
+    hasScrolledPast,
+    showInlineCover,
+    handleScrollKeywords,
+    handleKeywordPanStart,
+    handleKeywordPan,
+    handleKeywordPanEnd,
+    tagItems,
+    publishedDisplay,
+    revealInitial,
+    revealAnimate,
+  };
+}
+
+interface UseCRBookDetailOptions {
+  book: CurrentlyReadingBook;
+  isIntercepted: boolean;
+}
+
+/**
+ * View-model hook for Currently Reading book detail drawer/page.
+ */
+export function useCRBookDetail({
+  book,
+  isIntercepted,
+}: UseCRBookDetailOptions) {
+  const detail = useBookDetail({ book, isIntercepted });
+
+  const progress = typeof book.progress === "number" ? book.progress : 0;
+  const totalPages =
+    typeof book.total_pages === "number" && book.total_pages > 0
+      ? book.total_pages
+      : 100;
+  const displayPercentage = Math.min(
+    100,
+    Math.max(0, Math.round((progress / totalPages) * 100))
+  );
+
+  return {
+    ...detail,
+    progress,
+    totalPages,
+    displayPercentage,
+  };
+}
+
+interface UseWishlistBookDetailOptions {
+  book: WishlistBook;
+  isIntercepted: boolean;
+}
+
+/**
+ * View-model hook for Wishlist book detail drawer/page.
+ */
+export function useWishlistBookDetail({
+  book,
+  isIntercepted,
+}: UseWishlistBookDetailOptions) {
+  const detail = useBookDetail({ book, isIntercepted });
+
+  const displayPrice = book.price ? `~${book.price}` : "~500";
+  const priorityNormalized =
+    typeof book.priority === "string" ? book.priority.trim().toLowerCase() : "";
+
+  const displayTag =
+    priorityNormalized === "top"
+      ? "I need this!!"
+      : priorityNormalized === "high"
+        ? "I love this!"
+        : "I like this.";
+
+  return {
+    ...detail,
+    displayPrice,
+    displayTag,
+  };
+}
+
+interface UseReadBookDetailOptions {
+  book: ReadBook;
+  isIntercepted: boolean;
+}
+
+export function useReadBookDetail({
+  book,
+  isIntercepted,
+}: UseReadBookDetailOptions) {
+  const router = useRouter();
+  const {
+    isClosing,
+    isDrawerClosing,
+    triggerClose,
+    setIsInterceptedOpen,
+    clearActiveModal,
+    setHeroCoverRect,
+    transitionPhase,
+    isCoverLayerPainted,
+  } = useReadBookModal();
+
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const heroContainerRef = useRef<HTMLDivElement>(null);
+  const keywordViewportRef = useRef<HTMLDivElement>(null);
+  const keywordCycleRef = useRef<HTMLDivElement>(null);
+  const genreX = useMotionValue(0);
+  const cycleWidthMV = useMotionValue(0);
+  const keywordTargetXRef = useRef(0);
+  const isKeywordAnimatingRef = useRef(false);
+  const keywordAnimRef = useRef<ReturnType<typeof animate> | null>(null);
+  const [keywordRepeatCount, setKeywordRepeatCount] = useState(3);
+  const [hasScrolledPast, setHasScrolledPast] = useState(false);
+
+  const keywordX = useTransform([genreX, cycleWidthMV], ([x, width]) =>
+    wrapKeywordX(x as number, width as number)
+  );
+
+  useDrawerLenis(drawerRef, isIntercepted);
+
+  const { scrollY } = useScroll({ container: drawerRef });
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const past = latest >= 100;
+    if (past !== hasScrolledPast) {
+      setHasScrolledPast(past);
+    }
+  });
+
+  useEffect(() => {
+    if (isIntercepted) {
+      setIsInterceptedOpen(true);
+      return () => {
+        setIsInterceptedOpen(false);
+      };
+    } else {
+      setIsInterceptedOpen(false);
+    }
+  }, [isIntercepted, setIsInterceptedOpen]);
+
+  useLayoutEffect(() => {
+    if (!isIntercepted || !heroContainerRef.current || isClosing) return;
+    const heroEl = heroContainerRef.current;
+    const parentEl = heroEl.parentElement;
+    const drawerEl = heroEl.closest('[data-drawer="true"]');
+
+    const measure = () => {
+      const rect = heroEl.getBoundingClientRect();
+      const drawerRect = drawerEl?.getBoundingClientRect();
+      const drawerTop = drawerRect ? drawerRect.top : 0;
+      const drawerLeft = drawerRect ? drawerRect.left : 0;
+
+      setHeroCoverRect({
+        top: Math.round(rect.top - drawerTop),
+        left: Math.round(rect.left - drawerLeft),
+        width: Math.round(rect.width),
+        height: Math.round(rect.height),
+      });
+    };
+
+    measure();
+
+    const resizeObserver = new ResizeObserver(measure);
+    resizeObserver.observe(heroEl);
+    if (parentEl) {
+      resizeObserver.observe(parentEl);
+    }
+
+    window.addEventListener("resize", measure);
+    drawerEl?.addEventListener("scroll", measure, { passive: true });
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", measure);
+      drawerEl?.removeEventListener("scroll", measure);
+    };
+  }, [isIntercepted, isClosing, setHeroCoverRect]);
+
+  const handleClose = useCallback(() => {
+    triggerClose(() => {
+      clearActiveModal();
+      if (isIntercepted) {
+        router.back();
+      } else {
+        router.push("/");
+      }
+    });
+  }, [isIntercepted, triggerClose, router, clearActiveModal]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        handleClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleClose]);
+
+  const tagItems = useMemo(() => {
+    if (book.genres && book.genres.length > 0) return book.genres;
+    return book.keywords ?? [];
+  }, [book.genres, book.keywords]);
+
+  useLayoutEffect(() => {
+    const viewport = keywordViewportRef.current;
+    const cycle = keywordCycleRef.current;
+    if (!viewport || !cycle || tagItems.length === 0) return;
+
+    const measure = () => {
+      const viewportWidth = viewport.clientWidth;
+      const cycleWidth = cycle.getBoundingClientRect().width;
+      if (cycleWidth <= 0) return;
+
+      cycleWidthMV.set(cycleWidth);
+      const nextCount = getKeywordRepeatCount(viewportWidth, cycleWidth);
+      setKeywordRepeatCount((prev) => (prev === nextCount ? prev : nextCount));
+    };
+
+    measure();
+
+    const resizeObserver = new ResizeObserver(measure);
+    resizeObserver.observe(viewport);
+    resizeObserver.observe(cycle);
+    return () => resizeObserver.disconnect();
+  }, [tagItems, cycleWidthMV]);
+
+  useEffect(() => {
+    return () => {
+      keywordAnimRef.current?.stop();
+    };
+  }, []);
+
+  const animateKeywordX = useCallback(
+    (target: number, duration = 0.5) => {
+      keywordTargetXRef.current = target;
+      isKeywordAnimatingRef.current = true;
+      keywordAnimRef.current?.stop();
+      keywordAnimRef.current = animate(genreX, target, {
+        duration,
+        ease: easing016,
+        onComplete: () => {
+          isKeywordAnimatingRef.current = false;
+        },
+      });
+    },
+    [genreX]
+  );
+
+  const handleScrollKeywords = useCallback(
+    (direction: "left" | "right") => {
+      const viewport = keywordViewportRef.current;
+      if (!viewport) return;
+
+      const step = getKeywordScrollStep(viewport.clientWidth);
+      const base = isKeywordAnimatingRef.current
+        ? keywordTargetXRef.current
+        : genreX.get();
+      const target = direction === "left" ? base + step : base - step;
+      animateKeywordX(target, 0.5);
+    },
+    [animateKeywordX, genreX]
+  );
+
+  const handleKeywordPanStart = useCallback(() => {
+    keywordAnimRef.current?.stop();
+    isKeywordAnimatingRef.current = false;
+  }, []);
+
+  const handleKeywordPan = useCallback(
+    (_event: PointerEvent | MouseEvent | TouchEvent, info: PanInfo) => {
+      const next = genreX.get() + info.delta.x;
+      genreX.set(next);
+      keywordTargetXRef.current = next;
+    },
+    [genreX]
+  );
+
+  const handleKeywordPanEnd = useCallback(
+    (_event: PointerEvent | MouseEvent | TouchEvent, info: PanInfo) => {
+      if (Math.abs(info.velocity.x) > 20) {
+        animateKeywordX(genreX.get() + info.velocity.x * 0.15, 0.45);
+      }
+    },
+    [animateKeywordX, genreX]
+  );
+
+  const showInlineCover =
+    !isIntercepted ||
+    transitionPhase === "entered" ||
+    (transitionPhase === "exiting" && !isCoverLayerPainted);
+  const publishedDisplay = book.publishedYear ?? book.firstPublishedYear;
+  const { revealInitial, revealAnimate } = getReadBookRevealVariants(
+    isIntercepted,
+    isClosing
+  );
+
+  return {
+    isClosing,
+    isDrawerClosing,
+    drawerRef,
+    heroContainerRef,
+    keywordViewportRef,
+    keywordCycleRef,
+    keywordX,
+    keywordRepeatCount,
+    hasScrolledPast,
+    showInlineCover,
+    handleScrollKeywords,
+    handleKeywordPanStart,
+    handleKeywordPan,
+    handleKeywordPanEnd,
+    tagItems,
+    publishedDisplay,
+    revealInitial,
+    revealAnimate,
+  };
+}

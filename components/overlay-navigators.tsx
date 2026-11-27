@@ -8,9 +8,11 @@ import { AnimatePresence, motion, type Transition } from "motion/react";
 import { cn } from "@/lib/utils";
 import { easing016, easing065 } from "@/constants";
 import FlipTextButton from "./ui-components/flip-text-button";
-import { useOverlayButtons } from "@/hooks/layout-hooks/useoverlaybuttons";
 import { useReadBookModal } from "@/hooks/layout-hooks/use-read-book-modal";
-import { useActiveBookRoute } from "@/hooks/layout-hooks/use-active-book-route";
+import {
+  useActiveBookRoute,
+  useOverlayButtons,
+} from "@/hooks/layout-hooks/use-active-book-route";
 import { useCurateMenu } from "@/hooks/layout-hooks/use-curate-menu";
 import { useShortlistMenu } from "@/hooks/layout-hooks/use-shortlist-menu";
 import { ViewDotsIcon } from "./overlay-navigators/icons";
@@ -116,7 +118,7 @@ const OverlayNavigators = () => {
   return (
     <>
       {/* Blended top-bar text layer (isolated fixed layer so mix-blend-difference blends with page/modals behind) */}
-      <div className="pointer-events-none fixed top-0 left-0 z-999 flex w-full items-center justify-between px-4 pt-4 mix-blend-difference sm:px-6 sm:pt-6 lg:px-6 lg:pt-4">
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-999 mx-auto flex w-full max-w-[1920px] items-center justify-between px-4 pt-4 mix-blend-difference sm:px-6 sm:pt-6 lg:px-6 lg:pt-4">
         <div>
           <p className="font-mona-sans text-[16px] font-semibold text-white lg:text-[20px]">
             kshelf.
@@ -251,7 +253,7 @@ const OverlayNavigators = () => {
       </div>
 
       {/* Non-blended overlay controls layer */}
-      <div className="pointer-events-none fixed top-0 left-0 z-999 flex h-dvh w-full flex-col justify-between px-4 pt-4 pb-6 sm:px-6 sm:pt-6 sm:pb-8 lg:px-6 lg:pt-4 lg:pb-10">
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-999 mx-auto flex h-dvh w-full max-w-[1920px] flex-col justify-between px-4 pt-4 pb-6 sm:px-6 sm:pt-6 sm:pb-8 lg:px-6 lg:pt-4 lg:pb-10">
         {/* top bar mobile dot button */}
         <div className="flex items-center justify-end">
           {/* mobile dot pattern button (without text, hidden during read book route) */}

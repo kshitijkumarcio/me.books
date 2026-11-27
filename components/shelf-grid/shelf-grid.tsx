@@ -16,7 +16,7 @@ import { useDevMode } from "@/hooks/ui-hooks/use-dev-mode";
 import {
   useCurateStore,
   isShelfBookMatchingFilters,
-} from "@/hooks/layout-hooks/use-curate-store";
+} from "@/hooks/layout-hooks/use-curate-menu";
 import {
   rowIndexToLetters,
   lettersToRowIndex,
